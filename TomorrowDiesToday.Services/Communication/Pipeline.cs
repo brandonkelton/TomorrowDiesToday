@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Services.Communication.Exceptions;
 
 namespace TomorrowDiesToday.Services.Communication
 {
@@ -8,6 +10,15 @@ namespace TomorrowDiesToday.Services.Communication
     {
         private List<IPipelineService> _inServices = new List<IPipelineService>();
         private List<IPipelineService> _outServices = new List<IPipelineService>();
+
+        private ICommunicator _communicator;
+        private IDataService _dataService;
+
+        public Pipeline(ICommunicator communicator, IDataService dataService)
+        {
+            _communicator = communicator;
+            _dataService = dataService;
+        }
 
         public void AddService(PipelineDirection direction, IPipelineService service)
         {
@@ -24,11 +35,26 @@ namespace TomorrowDiesToday.Services.Communication
         public void Process(PipelineItem item)
         {
             var services = item.Direction == PipelineDirection.In ? _inServices : _outServices;
-            PipelineItem lastResult = item;
+            PipelineItem result = item;
             foreach (var service in services)
             {
-                service.Process(item);
+                service.Process(result);
+                result = service.Result;
+                if (result.StatusResult.Status == PipelineItemStatus.Fail)
+                {
+                    throw new PipelineException(result.StatusResult.Message);
+                }
+            }
 
+            if (result.Direction == PipelineDirection.In)
+            {
+                // This is rough around the edges; revisit
+                _dataService.HandleDataReceived(item.Data as IModel);
+            }
+            else if (result.Direction == PipelineDirection.Out)
+            {
+                // This is rough around the edges; revisit
+                _communicator.Send(item.Data as string);
             }
         }
     }

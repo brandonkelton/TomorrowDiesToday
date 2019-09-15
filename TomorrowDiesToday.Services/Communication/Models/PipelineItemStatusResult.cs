@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Communication
 {
-    internal class PipelineItemStatusResult
+    public class PipelineItemStatusResult
     {
         public PipelineItemStatusResult(PipelineItemStatus status, string message = null)
         {

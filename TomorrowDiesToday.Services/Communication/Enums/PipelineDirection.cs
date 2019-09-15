@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Communication
 {
-    internal enum PipelineDirection
+    public enum PipelineDirection
     {
         In,
         Out

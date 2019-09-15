@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Communication
 {
-    internal interface IPipeline
+    public interface IPipeline
     {
         void AddService(PipelineDirection direction, IPipelineService service);
 

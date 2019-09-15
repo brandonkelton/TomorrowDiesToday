@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Communication
 {
-    internal enum PipelineItemStatus
+    public enum PipelineItemStatus
     {
         Success,
         Fail

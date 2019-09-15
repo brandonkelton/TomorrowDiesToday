@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Communication
 {
-    internal class PipelineItem
+    public class PipelineItem
     {
         public PipelineItem(PipelineDirection direction, object data)
         {
