@@ -1,4 +1,5 @@
 ﻿using System;
+using TomorrowDiesToday.Services;
 using TomorrowDiesToday.Services.Communication;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -10,6 +11,8 @@ namespace TomorrowDiesToday
         public App()
         {
             InitializeComponent();
+
+            Startup.Configure();
 
             MainPage = new MainPage();
             

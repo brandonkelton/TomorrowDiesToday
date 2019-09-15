@@ -17,6 +17,7 @@ namespace TomorrowDiesToday.Services.Communication
         public Communicator(IPipeline pipeline)
         {
             _pipeline = pipeline;
+            _pipeline.OutRequest.Subscribe(async data => await Send(data));
         }
 
         public async Task Send(string data)

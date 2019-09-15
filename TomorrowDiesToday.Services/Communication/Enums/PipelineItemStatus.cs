@@ -7,6 +7,7 @@ namespace TomorrowDiesToday.Services.Communication
     public enum PipelineItemStatus
     {
         Success,
+        Drop,
         Fail
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Subjects;
 using System.Text;
 using TomorrowDiesToday.Models;
 
@@ -7,9 +8,9 @@ namespace TomorrowDiesToday.Services.Communication
 {
     public interface IPipeline
     {
-        event EventHandler<string> OutRequest;
+        IObservable<IModel> InRequest { get; }
 
-        event EventHandler<IModel> InRequest;
+        IObservable<string> OutRequest { get; }
 
         void AddService(PipelineDirection direction, IPipelineService service);
 

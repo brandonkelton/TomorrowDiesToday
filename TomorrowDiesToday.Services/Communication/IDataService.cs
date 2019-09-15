@@ -11,7 +11,5 @@ namespace TomorrowDiesToday.Services.Communication
         event EventHandler<IModel> DataReceived;
 
         Task Send(IModel model);
-
-        void HandleDataReceived(IModel model);
     }
 }

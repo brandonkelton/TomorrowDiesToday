@@ -22,6 +22,7 @@ namespace TomorrowDiesToday.Services.Communication
         public DataService(IPipeline pipeline)
         {
             _pipeline = pipeline;
+            _pipeline.InRequest.Subscribe(model => HandleDataReceived(model));
         }
 
         public Task Send(IModel model)
@@ -29,7 +30,7 @@ namespace TomorrowDiesToday.Services.Communication
             throw new NotImplementedException();
         }
 
-        public void HandleDataReceived(IModel model)
+        private void HandleDataReceived(IModel model)
         {
             DataReceived?.Invoke(this, model);
         }

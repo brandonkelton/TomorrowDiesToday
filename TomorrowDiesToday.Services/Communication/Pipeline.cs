@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Subjects;
 using System.Text;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Communication.Exceptions;
@@ -10,9 +11,11 @@ namespace TomorrowDiesToday.Services.Communication
     {
         private List<IPipelineService> _inServices = new List<IPipelineService>();
         private List<IPipelineService> _outServices = new List<IPipelineService>();
+        private Subject<IModel> _inRequest = new Subject<IModel>();
+        private Subject<string> _outRequest = new Subject<string>();
 
-        public event EventHandler<string> OutRequest;
-        public event EventHandler<IModel> InRequest;
+        public IObservable<IModel> InRequest => _inRequest as IObservable<IModel>;
+        public IObservable<string> OutRequest => _outRequest as IObservable<string>;
 
         public void AddService(PipelineDirection direction, IPipelineService service)
         {
@@ -38,15 +41,22 @@ namespace TomorrowDiesToday.Services.Communication
                 {
                     throw new PipelineException(result.StatusResult.Message);
                 }
+                else if (result.StatusResult.Status == PipelineItemStatus.Drop)
+                {
+                    break;
+                }
             }
 
-            if (result.Direction == PipelineDirection.In)
+            if (item.StatusResult.Status == PipelineItemStatus.Success)
             {
-                InRequest?.Invoke(this, item.Data as IModel);
-            }
-            else if (result.Direction == PipelineDirection.Out)
-            {
-                OutRequest?.Invoke(this, item.Data as string);
+                if (result.Direction == PipelineDirection.In)
+                {
+                    _inRequest.OnNext(item.Data as IModel);
+                }
+                else if (result.Direction == PipelineDirection.Out)
+                {
+                    _outRequest.OnNext(item.Data as string);
+                }
             }
         }
     }

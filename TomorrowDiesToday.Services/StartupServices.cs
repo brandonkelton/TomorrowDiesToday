@@ -6,19 +6,28 @@ using TomorrowDiesToday.Services.Communication;
 
 namespace TomorrowDiesToday.Services
 {
-    public class Startup
+    public static class StartupServices
     {
-        public void Configure()
+        private static IContainer _container;
+
+        public static void Configure()
         {
             RegisterServices();
         }
 
-        private void RegisterServices()
+        public static IDataService GetDataService()
+        {
+            return _container.Resolve<IDataService>();
+        }
+
+        private static void RegisterServices()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<Communicator>().As<ICommunicator>();
             builder.RegisterType<DataService>().As<IDataService>();
             builder.RegisterType<Pipeline>().As<IPipeline>();
+
+            _container = builder.Build();
         }
     }
 
