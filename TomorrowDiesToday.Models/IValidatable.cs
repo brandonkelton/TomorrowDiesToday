@@ -6,6 +6,6 @@ namespace TomorrowDiesToday.Models
 {
     public interface IValidatable
     {
-        bool IsValid { get; }
+        bool IsValid();
     }
 }

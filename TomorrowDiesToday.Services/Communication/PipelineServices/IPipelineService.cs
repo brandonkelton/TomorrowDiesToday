@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TomorrowDiesToday.Services.Communication
 {
-    public interface ICommunicator
+    internal interface IPipelineService
     {
-        Task Send(string data);
+        void Process(PipelineItem item);
+
+        PipelineItem Result { get; }
     }
 }

@@ -12,10 +12,6 @@ namespace TomorrowDiesToday
             InitializeComponent();
 
             MainPage = new MainPage();
-
-            DependencyService.Register<ICommunicator, Communicator>();
-            DependencyService.Register<IValidator, Validator>();
-            DependencyService.Register<IDataService, DataService>();
             
         }
 

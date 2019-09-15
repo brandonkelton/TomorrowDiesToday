@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TomorrowDiesToday.Services.Communication
 {
-    public class Communicator : ICommunicator
+    internal class Communicator : ICommunicator
     {
-        public event EventHandler<string> DataReceived;
+        
 
         public async Task Send(string data)
         {

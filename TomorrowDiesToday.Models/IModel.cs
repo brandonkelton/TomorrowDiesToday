@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Models
 {
-    public interface IModel : IValidatable, IUpdatable
+    public interface IModel : IValidatable, IHasTimestamp
     {
     }
 }

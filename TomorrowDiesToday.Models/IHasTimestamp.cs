@@ -4,8 +4,8 @@ using System.Text;
 
 namespace TomorrowDiesToday.Models
 {
-    public interface IUpdatable
+    public interface IHasTimestamp
     {
-        DateTime LastUpdated { get; }
+        DateTime Timestamp { get; }
     }
 }
