@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace TomorrowDiesToday.Services.Communication
 {
     /// <summary>
-    /// When receiving data, new up a PipelineItem, apply a "direction" to it (in this can "In"), and call _pipeline.Process(item).
+    /// When receiving data, new up a PipelineItem, apply PipelineDirection.In to it, and call _pipeline.Process(item).
     /// The pipeline will call the Communicator's Send method, which means the data is ready to be broadcast.
     /// </summary>
     internal class Communicator : ICommunicator

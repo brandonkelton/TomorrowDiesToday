@@ -12,7 +12,7 @@ namespace TomorrowDiesToday.Services.Communication
     /// basically there are integration decisions to make here.  It may also convert view-model data into data transfer objects because they will probably differ.
     /// This design is tentative, but I'm thinking the main project will access this service and send data using a Send() method, and listen for the
     /// DataReceived event to fire.
-    /// NOTE: The Send() method may only need to new up a PipelineItem and call _pipeline.Process(item).
+    /// NOTE: The Send() method may only need to new up a PipelineItem, apply PipelineDirection.Out and call _pipeline.Process(item).
     /// </summary>
     public class DataService : IDataService
     {

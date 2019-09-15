@@ -11,14 +11,8 @@ namespace TomorrowDiesToday.Services.Communication
         private List<IPipelineService> _inServices = new List<IPipelineService>();
         private List<IPipelineService> _outServices = new List<IPipelineService>();
 
-        private ICommunicator _communicator;
-        private IDataService _dataService;
-
-        public Pipeline(ICommunicator communicator, IDataService dataService)
-        {
-            _communicator = communicator;
-            _dataService = dataService;
-        }
+        public event EventHandler<string> OutRequest;
+        public event EventHandler<IModel> InRequest;
 
         public void AddService(PipelineDirection direction, IPipelineService service)
         {
@@ -48,13 +42,11 @@ namespace TomorrowDiesToday.Services.Communication
 
             if (result.Direction == PipelineDirection.In)
             {
-                // This is rough around the edges; revisit
-                _dataService.HandleDataReceived(item.Data as IModel);
+                InRequest?.Invoke(this, item.Data as IModel);
             }
             else if (result.Direction == PipelineDirection.Out)
             {
-                // This is rough around the edges; revisit
-                _communicator.Send(item.Data as string);
+                OutRequest?.Invoke(this, item.Data as string);
             }
         }
     }
