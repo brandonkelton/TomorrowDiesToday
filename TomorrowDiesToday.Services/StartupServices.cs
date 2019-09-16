@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using TomorrowDiesToday.Services.Communication;
 using TomorrowDiesToday.Services.Communication.PipelineServices;
+using TomorrowDiesToday.Services.Store;
 
 namespace TomorrowDiesToday.Services
 {
@@ -22,12 +23,18 @@ namespace TomorrowDiesToday.Services
             return _container.Resolve<IDataService>();
         }
 
+        public static IDataStore GetDataStore()
+        {
+            return _container.Resolve<IDataStore>();
+        }
+
         private static void RegisterServices()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<Communicator>().As<ICommunicator>();
             builder.RegisterType<DataService>().As<IDataService>();
             builder.RegisterType<Pipeline>().As<IPipeline>();
+            builder.RegisterType<DataStore>().As<IDataStore>();
 
             _container = builder.Build();
         }

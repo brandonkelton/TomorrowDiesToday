@@ -4,8 +4,12 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="TomorrowDiesToday.MainPage">
+             x:Class="TomorrowDiesToday.Views.MainPage"
+             xmlns:local="clr-namespace:TomorrowDiesToday.ViewModels;assembly=TomorrowDiesToday">
 
+    <ContentPage.BindingContext>
+        <local:MainPageViewModel/>
+    </ContentPage.BindingContext>
     <StackLayout>
         <!-- Place new controls here -->
         <Label Text="Welcome to Xamarin.Forms!" 
