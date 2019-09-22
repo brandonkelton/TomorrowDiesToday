@@ -26,7 +26,7 @@ namespace TomorrowDiesToday.Services.Communication.PipelineServices
             else if (item.Data is IValidatable)
             {
                 var validatableItem = item.Data as IValidatable;
-                if (validatableItem.IsValid)
+                if (validatableItem.IsValid())
                 {
                     statusResult = new PipelineItemStatusResult(PipelineItemStatus.Success);
                 }
