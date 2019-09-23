@@ -14,7 +14,7 @@ namespace TomorrowDiesToday.DB
     {
         public event EventHandler<List<TestItem>> SearchResultReceived;
 
-        private Guid _testGuid = Guid.NewGuid();
+        private string GameName = "TDT - Game 1";
 
         public async Task DeleteTable()
         {
@@ -88,7 +88,7 @@ namespace TomorrowDiesToday.DB
             var context = new DynamoDBContext(client);
             var item = new TestItem
             {
-                Id = _testGuid.ToString(),
+                Id = GameName,
                 Category = category,
                 Text = text
             };
@@ -100,7 +100,7 @@ namespace TomorrowDiesToday.DB
             var credentials = new TDTCredentials();
             var client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
             var context = new DynamoDBContext(client);
-            var search = context.QueryAsync<TestItem>(_testGuid.ToString());
+            var search = context.QueryAsync<TestItem>(GameName);
             var results = await search.GetRemainingAsync();
 
             SearchResultReceived(this, results);
