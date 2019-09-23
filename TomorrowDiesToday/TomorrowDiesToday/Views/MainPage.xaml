@@ -36,9 +36,9 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Label Text="{Binding Id}" Grid.Column="0" HorizontalOptions="Fill"/>
-                            <Label Text="{Binding Category}" Grid.Column="1" HorizontalOptions="Fill"/>
-                            <Label Text="{Binding Text}" Grid.Column="2" HorizontalOptions="Fill"/>
+                            <Label FontSize="20" Text="{Binding Id}" Grid.Column="0" HorizontalOptions="Fill"/>
+                            <Label FontSize="20" Text="{Binding Category}" Grid.Column="1" HorizontalOptions="Fill"/>
+                            <Label FontSize="20" Text="{Binding Text}" Grid.Column="2" HorizontalOptions="Fill"/>
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
