@@ -10,32 +10,29 @@ using TomorrowDiesToday.DB.DTOs;
 
 namespace TomorrowDiesToday.DB
 {
-
     public class DynamoClient
     {
-        
-
         public event EventHandler<List<TestItem>> SearchResultReceived;
         private AmazonDynamoDBClient _client;
-        private bool altConfig = false;
-
+        private bool _altConfig = false;
 
         private string GameName = "TDT - Game 1";
 
-
         public void ConfigureClient()
         {
-            if (altConfig)
-            {
+            if (_altConfig)
+            { // Use DynamoDB-local
                 var config = new AmazonDynamoDBConfig
                 {
+                    // Replace localhost with server IP to connect with DynamoDB-local on remote server
                     ServiceURL = "http://localhost:8000/"
                 };
+
                 // Client ID is set in DynamoDB-local shell, http://localhost:8000/shell
                 _client = new AmazonDynamoDBClient("TomorrowDiesToday", "fakeSecretKey", config);
             }
             else
-            {
+            { // Use AWS DynamoDB
                 var credentials = new TDTCredentials();
                 _client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
             }
@@ -98,7 +95,6 @@ namespace TomorrowDiesToday.DB
 
                 Console.WriteLine(response.HttpStatusCode.ToString());
             }
-            
         }
 
         public async Task Send(string text, string category)
