@@ -18,9 +18,9 @@ namespace TomorrowDiesToday
         {
             InitializeComponent();
 
-            DependencyResolver.ResolveUsing(type => Container.IsRegistered(type) ? Container.Resolve(type) : null);
-            RegisterServices();
-            Container = _builder.Build();
+            //DependencyResolver.ResolveUsing(type => Container.IsRegistered(type) ? Container.Resolve(type) : null);
+            //RegisterServices();
+            //Container = _builder.Build();
             MainPage = new MainPage();
         }
 

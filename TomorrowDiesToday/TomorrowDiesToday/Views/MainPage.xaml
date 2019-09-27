@@ -10,11 +10,41 @@
     <ContentPage.BindingContext>
         <local:MainPageViewModel/>
     </ContentPage.BindingContext>
-    <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+    <StackLayout Margin="20,35,20,20">
+        <Button Text="Delete Table" HeightRequest="40" Command="{Binding DeleteCommand}"/>
+        <Button Text="Create Table" HeightRequest="40" Command="{Binding CreateCommand}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Entry Grid.Row="0" Grid.Column="0" Text="{Binding SendText}"/>
+            <Picker Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}"/>
+        </Grid>
+        <Button HeightRequest="40" Text="Send" Command="{Binding SendCommand}"></Button>
+        <Button HeightRequest="40" Text="Receive" Command="{Binding ReceiveCommand}"></Button>
+        <ListView ItemsSource="{Binding SearchResults}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label FontSize="20" Text="{Binding Id}" Grid.Column="0" HorizontalOptions="Fill"/>
+                            <Label FontSize="20" Text="{Binding Category}" Grid.Column="1" HorizontalOptions="Fill"/>
+                            <Label FontSize="20" Text="{Binding Text}" Grid.Column="2" HorizontalOptions="Fill"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackLayout>
+
 
 </ContentPage>
