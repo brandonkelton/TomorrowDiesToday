@@ -13,29 +13,46 @@ namespace TomorrowDiesToday.DB
     public class DynamoClient
     {
         public event EventHandler<List<TestItem>> SearchResultReceived;
+        private AmazonDynamoDBClient _client;
+        private bool _altConfig = false;
 
         private string GameName = "TDT - Game 1";
 
-        public async Task DeleteTable()
+        public void ConfigureClient()
         {
-            var credentials = new TDTCredentials();
-            var client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
+            if (_altConfig)
+            { // Use DynamoDB-local
+                var config = new AmazonDynamoDBConfig
+                {
+                    // Replace localhost with server IP to connect with DynamoDB-local on remote server
+                    ServiceURL = "http://localhost:8000/"
+                };
 
-            var tables = (await client.ListTablesAsync()).TableNames;
+                // Client ID is set in DynamoDB-local shell, http://localhost:8000/shell
+                _client = new AmazonDynamoDBClient("TomorrowDiesToday", "fakeSecretKey", config);
+            }
+            else
+            { // Use AWS DynamoDB
+                var credentials = new TDTCredentials();
+                _client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
+            }
+        }
+
+        public async Task DeleteTable()
+        {       
+            var tables = (await _client.ListTablesAsync()).TableNames;
             if (tables.Contains("TestTable"))
             {
                 var request = new DeleteTableRequest("TestTable");
-                var response = await client.DeleteTableAsync(request);
+                var response = await _client.DeleteTableAsync(request);
                 Console.Write(response.HttpStatusCode.ToString());
             }
         }
 
         public async Task Initialize()
         {
-            var credentials = new TDTCredentials();
-            var client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
-
-            var tables = (await client.ListTablesAsync()).TableNames;
+            ConfigureClient();
+            var tables = (await _client.ListTablesAsync()).TableNames;
             if (!tables.Contains("TestTable"))
             {
                 var request = new CreateTableRequest
@@ -74,18 +91,15 @@ namespace TomorrowDiesToday.DB
                     }
                 };
 
-                var response = await client.CreateTableAsync(request);
+                var response = await _client.CreateTableAsync(request);
 
                 Console.WriteLine(response.HttpStatusCode.ToString());
             }
-            
         }
 
         public async Task Send(string text, string category)
         {
-            var credentials = new TDTCredentials();
-            var client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
-            var context = new DynamoDBContext(client);
+            var context = new DynamoDBContext(_client);
             var item = new TestItem
             {
                 Id = GameName,
@@ -97,9 +111,7 @@ namespace TomorrowDiesToday.DB
 
         public async Task Receive()
         {
-            var credentials = new TDTCredentials();
-            var client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
-            var context = new DynamoDBContext(client);
+            var context = new DynamoDBContext(_client);
             var search = context.QueryAsync<TestItem>(GameName);
             var results = await search.GetRemainingAsync();
 
