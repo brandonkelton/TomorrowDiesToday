@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TomorrowDiesToday.DB\TomorrowDiesToday.DB.csproj" />
     <ProjectReference Include="..\TomorrowDiesToday.Models\TomorrowDiesToday.Models.csproj" />
   </ItemGroup>
 

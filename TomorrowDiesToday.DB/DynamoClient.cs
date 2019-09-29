@@ -12,11 +12,13 @@ namespace TomorrowDiesToday.DB
 {
     public class DynamoClient
     {
-        public event EventHandler<List<TestItem>> SearchResultReceived;
+        public event EventHandler<List<Dictionary<string, AttributeValue>>> SquadRequestReceived;
+        public event EventHandler<List<Dictionary<string, AttributeValue>>> SquadsRequestReceived;
         private AmazonDynamoDBClient _client;
-        private bool _altConfig = false;
+        private bool _altConfig = true;
 
-        private string GameName = "TDT - Game 1";
+        private string PlayerName = "Test Player";
+
 
         public void ConfigureClient()
         {
@@ -39,11 +41,11 @@ namespace TomorrowDiesToday.DB
         }
 
         public async Task DeleteTable()
-        {       
+        {
             var tables = (await _client.ListTablesAsync()).TableNames;
-            if (tables.Contains("TestTable"))
+            if (tables.Contains("GameTable"))
             {
-                var request = new DeleteTableRequest("TestTable");
+                var request = new DeleteTableRequest("GameTable");
                 var response = await _client.DeleteTableAsync(request);
                 Console.Write(response.HttpStatusCode.ToString());
             }
@@ -53,21 +55,21 @@ namespace TomorrowDiesToday.DB
         {
             ConfigureClient();
             var tables = (await _client.ListTablesAsync()).TableNames;
-            if (!tables.Contains("TestTable"))
+            if (!tables.Contains("GameTable"))
             {
                 var request = new CreateTableRequest
                 {
-                    TableName = "TestTable",
+                    TableName = "GameTable",
                     AttributeDefinitions = new List<AttributeDefinition>
                     {
                         new AttributeDefinition
                         {
-                            AttributeName = "Id",
+                            AttributeName = "GameId",
                             AttributeType = "S"
                         },
                         new AttributeDefinition
                         {
-                            AttributeName = "Category",
+                            AttributeName = "SquadId",
                             AttributeType = "S"
                         }
                     },
@@ -75,13 +77,13 @@ namespace TomorrowDiesToday.DB
                     {
                         new KeySchemaElement
                         {
-                            AttributeName = "Id",
-                            KeyType = "HASH"
+                            AttributeName = "GameId",
+                            KeyType = "RANGE"
                         },
                         new KeySchemaElement
                         {
-                            AttributeName = "Category",
-                            KeyType = "RANGE"
+                            AttributeName = "SquadId",
+                            KeyType = "HASH"
                         }
                     },
                     ProvisionedThroughput = new ProvisionedThroughput
@@ -91,31 +93,49 @@ namespace TomorrowDiesToday.DB
                     }
                 };
 
-                var response = await _client.CreateTableAsync(request);
-
-                Console.WriteLine(response.HttpStatusCode.ToString());
+                await _client.CreateTableAsync(request);
             }
         }
 
-        public async Task Send(string text, string category)
+        public async Task RequestSquads(string gameId)
         {
-            var context = new DynamoDBContext(_client);
-            var item = new TestItem
+            var request = new ScanRequest
             {
-                Id = GameName,
-                Category = category,
-                Text = text
+                TableName = "GameTable",
+                ExpressionAttributeNames = new Dictionary<string, string>
+                {
+                  { "#id", "GameId" }
+                },
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { ":v_GameId", new AttributeValue { S = gameId } }
+                },
+                FilterExpression = "#id = :v_GameId",
+                ProjectionExpression = "#id, SquadId, PlayerId, SquadData"
             };
-            await context.SaveAsync(item);
+
+            var results = await _client.ScanAsync(request);
+            SquadsRequestReceived(this, results.Items);
         }
 
-        public async Task Receive()
+        public async Task RequestSquad(SquadRequestDTO squadDTO)
+        {
+            var request = new QueryRequest
+            {
+                TableName = "GameTable",
+                KeyConditionExpression = "SquadId = :v_SquadId",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue> {
+                    {":v_SquadId", new AttributeValue { S =  squadDTO.SquadId }}}
+            };
+            var results = await _client.QueryAsync(request);
+
+            SquadRequestReceived(this, results.Items);
+        }
+
+        public async Task SendSquad(SquadUpdateDTO squadDTO)
         {
             var context = new DynamoDBContext(_client);
-            var search = context.QueryAsync<TestItem>(GameName);
-            var results = await search.GetRemainingAsync();
-
-            SearchResultReceived(this, results);
+            await context.SaveAsync(squadDTO);
         }
     }
 }
