@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TomorrowDiesToday.Models
+namespace TomorrowDiesToday.Services.Data.Models
 {
-    public interface IModel
+    public interface IDataRequest
     {
     }
 }

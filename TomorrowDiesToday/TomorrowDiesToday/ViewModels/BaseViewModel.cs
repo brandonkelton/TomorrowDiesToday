@@ -1,18 +1,12 @@
-﻿using Autofac;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using TomorrowDiesToday.Services.Store;
-using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
-        // public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>() ?? new MockDataStore();
-        //public readonly IDataStore _store = App.Container.Resolve<IDataStore>();
-
         bool isBusy = false;
         public bool IsBusy
         {

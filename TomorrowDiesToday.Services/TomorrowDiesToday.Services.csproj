@@ -15,4 +15,8 @@
     <ProjectReference Include="..\TomorrowDiesToday.Models\TomorrowDiesToday.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Exceptions\" />
+  </ItemGroup>
+
 </Project>
