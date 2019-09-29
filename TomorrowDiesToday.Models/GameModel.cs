@@ -16,11 +16,5 @@ namespace TomorrowDiesToday.Models
         // Other Players: PlayerId -> List of Squads
         public Dictionary<string, List<SquadModel>>  OtherPlayers { get; set; }
 
-        public bool IsValid()
-        {
-            return false;
-        }
-
-        public DateTime Timestamp { get; private set; }
     }
 }
