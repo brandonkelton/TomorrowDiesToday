@@ -4,8 +4,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Models
 {
-    public interface IValidatable
+    public class SquadModel : IModel
     {
-        bool IsValid();
     }
 }
