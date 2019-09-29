@@ -13,8 +13,10 @@ namespace TomorrowDiesToday.Services.Communication
         event EventHandler<List<SquadModel>> SquadsRequestReceived;
         event EventHandler<SquadModel> SquadUpdateReceived;
 
-        Task RequestSquad(SquadModel squadModel);
+        Task RequestSquad(SquadModel squad);
 
-        Task UpdateSquad(SquadModel squadModel);
+        Task RequestOtherSquads(GameModel game);
+
+        Task UpdateSquad(SquadModel squad);
     }
 }

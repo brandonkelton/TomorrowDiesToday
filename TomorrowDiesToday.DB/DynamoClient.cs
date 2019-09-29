@@ -97,7 +97,7 @@ namespace TomorrowDiesToday.DB
             }
         }
 
-        public async Task RequestSquads(string gameId, string playerId)
+        public async Task RequestOtherSquads(string gameId, string playerId)
         {
             var request = new ScanRequest
             {

@@ -31,23 +31,23 @@ namespace TomorrowDiesToday.Services.Communication
 
         public async Task RequestSquad(SquadModel squadModel)
         {
-            var squad = new SquadRequestDTO
+            var squadDTO = new SquadRequestDTO
             {
                 SquadId = squadModel.SquadId,
                 GameId = squadModel.GameId
             };
 
-            await _client.RequestSquad(squad);
+            await _client.RequestSquad(squadDTO);
         }
 
-        public async Task RequestSquads(string gameId, string playerId)
+        public async Task RequestOtherSquads(GameModel game)
         {
-            await _client.RequestSquads(gameId, playerId);
+            await _client.RequestOtherSquads(game.GameId, game.MyPlayerId);
         }
 
         public async Task UpdateSquad(SquadModel squadModel)
         {
-            var squad = new SquadUpdateDTO
+            var squadDTO = new SquadUpdateDTO
             {
                 SquadId = squadModel.SquadId,
                 GameId = squadModel.GameId,
@@ -55,71 +55,49 @@ namespace TomorrowDiesToday.Services.Communication
                 SquadData = string.Join(",", squadModel.Data)
             };
 
-            await _client.SendSquad(squad);
+            await _client.SendSquad(squadDTO);
+        }
+
+        private List<SquadModel> ConvertSquadResponse(List<Dictionary<string, AttributeValue>> squads)
+        {
+            var squadModels = new List<SquadModel>();
+
+            for (int i = 0; i < squads.Count; i++)
+            {
+                var squadModel = new SquadModel();
+
+                foreach (KeyValuePair<string, AttributeValue> entry in squads[i])
+                {
+                    if (entry.Key == "SquadId")
+                    {
+                        squadModel.SquadId = entry.Value.S;
+                    }
+                    else if (entry.Key == "GameId")
+                    {
+                        squadModel.GameId = entry.Value.S;
+                    }
+                    else if (entry.Key == "PlayerId")
+                    {
+                        squadModel.PlayerId = entry.Value.S;
+                    }
+                    else if (entry.Key == "PlayerData")
+                    {
+                        squadModel.Data = Array.ConvertAll(entry.Value.S.Split(','), s => int.Parse(s));
+                    }
+                }
+                squadModels.Add(squadModel);
+            }
+            return squadModels;
         }
 
         private void OnSquadRequestReceived(object sender, List<Dictionary<string, AttributeValue>> squads)
         {
-            var squadModels = new List<SquadModel>();
-
-            for (int i = 0; i < squads.Count; i++)
-            {
-                var squadModel = new SquadModel();
-
-                foreach (KeyValuePair<string, AttributeValue> entry in squads[i])
-                {
-                    if (entry.Key == "SquadId")
-                    {
-                        squadModel.SquadId = entry.Value.S;
-                    }
-                    else if (entry.Key == "GameId")
-                    {
-                        squadModel.GameId = entry.Value.S;
-                    }
-                    else if (entry.Key == "PlayerId")
-                    {
-                        squadModel.PlayerId = entry.Value.S;
-                    }
-                    else if (entry.Key == "PlayerData")
-                    {
-                        squadModel.Data = Array.ConvertAll(entry.Value.S.Split(','), s => int.Parse(s));
-                    }
-                }
-                squadModels.Add(squadModel);
-            }
-            SquadRequestReceived(this, squadModels[0]);
+            SquadRequestReceived(this, ConvertSquadResponse(squads)[0]);
         }
 
         private void OnSquadsRequestReceived(object sender, List<Dictionary<string, AttributeValue>> squads)
         {
-            var squadModels = new List<SquadModel>();
-
-            for (int i = 0; i < squads.Count; i++)
-            {
-                var squadModel = new SquadModel();
-
-                foreach (KeyValuePair<string, AttributeValue> entry in squads[i])
-                {
-                    if (entry.Key == "SquadId")
-                    {
-                        squadModel.SquadId = entry.Value.S;
-                    }
-                    else if (entry.Key == "GameId")
-                    {
-                        squadModel.GameId = entry.Value.S;
-                    }
-                    else if (entry.Key == "PlayerId")
-                    {
-                        squadModel.PlayerId = entry.Value.S;
-                    }
-                    else if (entry.Key == "PlayerData")
-                    {
-                        squadModel.Data = Array.ConvertAll(entry.Value.S.Split(','), s => int.Parse(s));
-                    }
-                }
-                squadModels.Add(squadModel);
-            }
-            SquadsRequestReceived(this, squadModels);
+            SquadsRequestReceived(this, ConvertSquadResponse(squads));
         }
     }
 }
