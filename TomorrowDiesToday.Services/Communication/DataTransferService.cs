@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.DB;
 using TomorrowDiesToday.DB.DTOs;
+using Amazon.DynamoDBv2.Model;
 
 namespace TomorrowDiesToday.Services.Communication
 {
@@ -39,9 +40,9 @@ namespace TomorrowDiesToday.Services.Communication
             await _client.RequestSquad(squad);
         }
 
-        public async Task RequestSquads(string GameId)
+        public async Task RequestSquads(string gameId, string playerId)
         {
-            await _client.RequestSquads(GameId);
+            await _client.RequestSquads(gameId, playerId);
         }
 
         public async Task UpdateSquad(SquadModel squadModel)

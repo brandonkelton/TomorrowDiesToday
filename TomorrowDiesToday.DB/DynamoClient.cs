@@ -97,21 +97,23 @@ namespace TomorrowDiesToday.DB
             }
         }
 
-        public async Task RequestSquads(string gameId)
+        public async Task RequestSquads(string gameId, string playerId)
         {
             var request = new ScanRequest
             {
                 TableName = "GameTable",
                 ExpressionAttributeNames = new Dictionary<string, string>
                 {
-                  { "#id", "GameId" }
+                  { "#gameId", "GameId" },
+                  { "#playerId", "PlayerId" }
                 },
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
-                    { ":v_GameId", new AttributeValue { S = gameId } }
+                    { ":v_GameId", new AttributeValue { S = gameId } },
+                    { ":v_PlayerId", new AttributeValue { S = playerId } }
                 },
-                FilterExpression = "#id = :v_GameId",
-                ProjectionExpression = "#id, SquadId, PlayerId, SquadData"
+                FilterExpression = "#gameId = :v_GameId and #playerId <> :v_PlayerId",
+                ProjectionExpression = "#gameId, SquadId, PlayerId, SquadData"
             };
 
             var results = await _client.ScanAsync(request);
