@@ -4,8 +4,6 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TomorrowDiesToday.DB;
-using TomorrowDiesToday.DB.DTOs;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
 using Xamarin.Forms;

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using Amazon.DynamoDBv2.DataModel;
 
-namespace TomorrowDiesToday.DB.DTOs
+namespace TomorrowDiesToday.Services.Database.DTOs
 {
     [DynamoDBTable("GameTable")]
 
-    public class SquadUpdateDTO : IModelDTO
+    public class SquadResponseDTO : IResponseDTO
     {
         [DynamoDBHashKey]
 

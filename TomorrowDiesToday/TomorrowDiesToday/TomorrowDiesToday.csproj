@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TomorrowDiesToday.DB\TomorrowDiesToday.DB.csproj" />
     <ProjectReference Include="..\..\TomorrowDiesToday.Services\TomorrowDiesToday.Services.csproj" />
   </ItemGroup>
 </Project>

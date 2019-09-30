@@ -7,7 +7,7 @@ namespace TomorrowDiesToday.DB.DTOs
 {
     [DynamoDBTable("GameTable")]
 
-    public class SquadRequestDTO
+    public class SquadRequestDTO : IModelDTO
     {
         [DynamoDBHashKey]
 
