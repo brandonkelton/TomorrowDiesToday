@@ -11,5 +11,9 @@ namespace TomorrowDiesToday.Models
         string imageLocation { get; set; }
         Dictionary<string, int> tileStats { get; set; }
 
+        bool FlipToggle(bool isToggled);
+        int IncrementCounter(int counter);
+        int DecrementCounter(int counter);
+
     }
 }
