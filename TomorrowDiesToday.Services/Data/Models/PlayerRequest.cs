@@ -4,7 +4,10 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Data.Models
 {
-    public class SquadRequest : IDataRequest
+    public class PlayerRequest : IDataRequest
     {
+        public string GameId { get; set; }
+
+        public string PlayerId { get; set; }
     }
 }

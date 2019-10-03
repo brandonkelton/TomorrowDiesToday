@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TomorrowDiesToday.Services.Database.DTOs
+namespace TomorrowDiesToday.Services.Data.Models
 {
-    public class SquadListUpdateDTO : IUpdateDTO
+    public class PlayerListRequest : IDataRequest
     {
         public string GameId { get; set; }
     }

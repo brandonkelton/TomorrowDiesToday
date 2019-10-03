@@ -1,17 +1,17 @@
-﻿using System;
+﻿using Amazon.DynamoDBv2.DataModel;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace TomorrowDiesToday.Services.Database.DTOs
 {
+    /// <summary>
+    /// This is implemented as a List item within the Players table.
+    /// </summary>
     public class SquadDTO
     {
-        public string GameId { get; set; }
+        public string Id { get; set; }
 
-        public string PlayerId { get; set; }
-
-        public string SquadId { get; set; }
-
-        public int[] Data { get; set; }
+        public int Count { get; set; }
     }
 }

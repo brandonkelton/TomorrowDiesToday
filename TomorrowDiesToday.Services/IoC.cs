@@ -24,9 +24,9 @@ namespace TomorrowDiesToday.Services
         private static void RegisterServices()
         {
             _builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
-            _builder.RegisterType<SquadDataTransferService>().As<IDataTransferService<SquadRequestDTO, SquadResponseDTO, SquadUpdateDTO>>().SingleInstance();
-            _builder.RegisterType<SquadListDataTransferService>().As<IDataTransferService<SquadListRequestDTO, SquadListResponseDTO, SquadListUpdateDTO>>().SingleInstance();
-            _builder.RegisterType<SquadDataService>().As<IDataService<SquadModel, SquadRequest>>().SingleInstance();
+            //_builder.RegisterType<SquadDataTransferService>().As<IDataTransferService<SquadRequestDTO, SquadResponseDTO, SquadUpdateRequestDTO>>().SingleInstance();
+            //_builder.RegisterType<SquadListDataTransferService>().As<IDataTransferService<SquadListRequestDTO, SquadListResponseDTO, SquadListUpdateDTO>>().SingleInstance();
+            _builder.RegisterType<SquadDataService>().As<IDataService<SquadModel, PlayerRequest>>().SingleInstance();
         }
     }
 }

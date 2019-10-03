@@ -8,19 +8,20 @@ using TomorrowDiesToday.Services.Data.Models;
 
 namespace TomorrowDiesToday.Services.Data
 {
-    public class SquadDataService : IDataService<SquadModel, SquadRequest>
+    public class SquadDataService : IDataService<SquadModel, PlayerRequest>
     {
-        private ReplaySubject<SquadModel> _update = new ReplaySubject<SquadModel>(1);
-        public IObservable<SquadModel> Update => _update;
-
-        public void RequestUpdate(SquadRequest request)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly ReplaySubject<SquadModel> _update = new ReplaySubject<SquadModel>(1);
 
         public void Send(SquadModel model)
         {
             throw new NotImplementedException();
+        }
+        
+        public IObservable<SquadModel> Update => _update;
+
+        public void RequestUpdate(PlayerRequest request)
+        {
+            // currently does nothing; may never do anything if we integrate streaming
         }
     }
 }
