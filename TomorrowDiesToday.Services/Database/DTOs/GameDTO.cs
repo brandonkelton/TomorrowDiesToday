@@ -1,18 +1,16 @@
-﻿using System;
+﻿using Amazon.DynamoDBv2.DataModel;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Amazon.DynamoDBv2.DataModel;
 
 namespace TomorrowDiesToday.Services.Database.DTOs
 {
-    [DynamoDBTable("GameTable")]
-
-    public class SquadRequestDTO : IRequestDTO
+    [DynamoDBTable("Games")]
+    public class GameDTO
     {
         [DynamoDBHashKey]
-
-        public string SquadId { get; set; }
-
         public string GameId { get; set; }
+
+        public DateTime Created { get; set; }
     }
 }

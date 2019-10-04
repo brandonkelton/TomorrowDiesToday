@@ -4,8 +4,8 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Data.Models
 {
-    public interface IDataRequest
+    public class GameRequest : IDataRequest
     {
-        string GameId { get; set; }
+        public string GameId { get; set; }
     }
 }

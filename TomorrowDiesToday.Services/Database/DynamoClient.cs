@@ -1,8 +1,6 @@
 ﻿using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.Model;
-using Amazon.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,17 +8,103 @@ using TomorrowDiesToday.Services.Database.DTOs;
 
 namespace TomorrowDiesToday.Services.Database
 {
-    public class DynamoClient : IDBClient
+    public class DynamoClient : IDBClient, IDisposable
     {
-        public event EventHandler<List<Dictionary<string, AttributeValue>>> SquadResponseReceived;
-        public event EventHandler<List<Dictionary<string, AttributeValue>>> SquadsResponseReceived;
-
         private AmazonDynamoDBClient _client;
+        private DynamoDBContext _context;
         private bool _altConfig = true;
 
         public DynamoClient()
         {
-            ConfigureClient();
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            if (_altConfig)
+            { // Use DynamoDB-local
+                var config = new AmazonDynamoDBConfig
+                {
+                    // Replace localhost with server IP to connect with DynamoDB-local on remote server
+                    ServiceURL = "http://localhost:8000/"
+                };
+
+                // Client ID is set in DynamoDB-local shell, http://localhost:8000/shell
+                _client = new AmazonDynamoDBClient("TomorrowDiesToday", "fakeSecretKey", config);
+            }
+            else
+            { // Use AWS DynamoDB
+                var credentials = new TDTCredentials();
+                _client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
+            }
+
+            _context = new DynamoDBContext(_client);
+
+        }
+
+        public async Task CreateGame(string gameId)
+        {
+            var existingGame = await _context.LoadAsync<GameDTO>(gameId);
+            if (existingGame != null)
+            {
+                // TODO: create app specific exception and handle at a higher level
+                // ex: GameExistsException(gameId)
+                throw new Exception("Game already exists!");
+            }
+
+            var game = new GameDTO
+            {
+                GameId = gameId,
+                Created = DateTime.UtcNow
+            };
+            await _context.SaveAsync(game);
+        }
+
+        public async Task CreatePlayer(string gameId, string playerId)
+        {
+            var existingPlayer = await _context.LoadAsync<PlayerDTO>(gameId, playerId);
+            if (existingPlayer != null)
+            {
+                // TODO: create app specific exception and handle at a higher level
+                // ex:  PlayerExistsException(playerId)
+                throw new Exception("Player already exists!");
+            }
+
+            var player = new PlayerDTO
+            {
+                GameId = gameId,
+                PlayerId = playerId,
+                Squads = new List<SquadDTO>()
+            };
+            await _context.SaveAsync(player);
+        }
+
+        public async Task DeleteGame(string gameId, string playerId)
+        {
+            // NOTE: possible better solutions, but delete player when the player exits game,
+            // if no more players exist, then delete game; checking on game load for
+            // stale games would require a full table load, which would kill our
+            // buffer on free data.
+
+            await _context.DeleteAsync<PlayerDTO>(gameId, playerId);
+
+            if ((await RequestPlayerList(gameId)).Count == 0)
+            {
+                await _context.DeleteAsync<GameDTO>(gameId);
+            }
+        }
+
+        public async Task<List<PlayerDTO>> RequestPlayerList(string gameId)
+        {
+            var search = _context.QueryAsync<PlayerDTO>(gameId);
+            var results = await search.GetRemainingAsync();
+            return results;
+        }
+
+        public async Task<PlayerDTO> RequestPlayer(string gameId, string playerId)
+        {
+            var player = await _context.LoadAsync<PlayerDTO>(gameId, playerId);
+            return player;
         }
 
         //public async Task Initialize()
@@ -77,70 +161,13 @@ namespace TomorrowDiesToday.Services.Database
         //        var request = new DeleteTableRequest("GameTable");
         //        var response = await _client.DeleteTableAsync(request);
         //        Console.Write(response.HttpStatusCode.ToString());
-        //    }
-        //}
+        ////    }
+        ////}
 
-        public async Task RequestSquads(string gameId, string playerId)
+        public void Dispose()
         {
-            var request = new ScanRequest
-            {
-                TableName = "GameTable",
-                ExpressionAttributeNames = new Dictionary<string, string>
-                {
-                  { "#gameId", "GameId" },
-                  { "#playerId", "PlayerId" }
-                },
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                {
-                    { ":v_GameId", new AttributeValue { S = gameId } },
-                    { ":v_PlayerId", new AttributeValue { S = playerId } }
-                },
-                FilterExpression = "#gameId = :v_GameId and #playerId <> :v_PlayerId",
-                ProjectionExpression = "#gameId, SquadId, PlayerId, SquadData"
-            };
-
-            var results = await _client.ScanAsync(request);
-            SquadsResponseReceived?.Invoke(this, results.Items);
-        }
-
-        public async Task RequestSquad(SquadRequestDTO squadDTO)
-        {
-            var request = new QueryRequest
-            {
-                TableName = "GameTable",
-                KeyConditionExpression = "SquadId = :v_SquadId",
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue> {
-                    {":v_SquadId", new AttributeValue { S =  squadDTO.SquadId }}}
-            };
-            var results = await _client.QueryAsync(request);
-
-            SquadsResponseReceived?.Invoke(this, results.Items);
-        }
-
-        public async Task SendSquad(SquadUpdateDTO squadDTO)
-        {
-            var context = new DynamoDBContext(_client);
-            await context.SaveAsync(squadDTO);
-        }
-
-        private void ConfigureClient()
-        {
-            if (_altConfig)
-            { // Use DynamoDB-local
-                var config = new AmazonDynamoDBConfig
-                {
-                    // Replace localhost with server IP to connect with DynamoDB-local on remote server
-                    ServiceURL = "http://localhost:8000/"
-                };
-
-                // Client ID is set in DynamoDB-local shell, http://localhost:8000/shell
-                _client = new AmazonDynamoDBClient("TomorrowDiesToday", "fakeSecretKey", config);
-            }
-            else
-            { // Use AWS DynamoDB
-                //var credentials = new TDTCredentials();
-                //_client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
-            }
+            _context.Dispose();
+            _client.Dispose();
         }
     }
 }

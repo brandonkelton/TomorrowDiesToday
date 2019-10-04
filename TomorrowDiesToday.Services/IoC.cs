@@ -6,7 +6,6 @@ using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Services.Database;
-using TomorrowDiesToday.Services.Database.DTOs;
 
 namespace TomorrowDiesToday.Services
 {
@@ -24,9 +23,9 @@ namespace TomorrowDiesToday.Services
         private static void RegisterServices()
         {
             _builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
-            _builder.RegisterType<SquadDataTransferService>().As<IDataTransferService<SquadRequestDTO, SquadResponseDTO, SquadUpdateDTO>>().SingleInstance();
-            _builder.RegisterType<SquadListDataTransferService>().As<IDataTransferService<SquadListRequestDTO, SquadListResponseDTO, SquadListUpdateDTO>>().SingleInstance();
-            _builder.RegisterType<SquadDataService>().As<IDataService<SquadModel, SquadRequest>>().SingleInstance();
+            _builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
+            _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
+            _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
         }
     }
 }

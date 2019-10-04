@@ -28,7 +28,8 @@ namespace TomorrowDiesToday
 
         private static void RegisterServices()
         {
-            _builder.Register(c => Services.IoC.Container.Resolve<IDataService<SquadModel, SquadRequest>>()).As<IDataService<SquadModel, SquadRequest>>();
+            _builder.Register(c => Services.IoC.Container.Resolve<IDataService<GameModel, GameRequest>>()).As<IDataService<GameModel, GameRequest>>();
+            _builder.Register(c => Services.IoC.Container.Resolve<IDataService<PlayerModel, PlayerRequest>>()).As<IDataService<PlayerModel, PlayerRequest>>();
         }
 
         private static void RegisterViewModels()
