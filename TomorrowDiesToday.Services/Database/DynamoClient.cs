@@ -1,6 +1,7 @@
 ﻿using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -42,7 +43,13 @@ namespace TomorrowDiesToday.Services.Database
 
         }
 
-        public async Task CreateGame(string gameId)
+        public async Task<bool> Exists(string gameId)
+        {
+            var existingGame = await _context.LoadAsync<GameDTO>(gameId);
+            return existingGame != null;
+        }
+
+        public async Task Start(string gameId)
         {
             var existingGame = await _context.LoadAsync<GameDTO>(gameId);
             if (existingGame != null)
@@ -54,8 +61,7 @@ namespace TomorrowDiesToday.Services.Database
 
             var game = new GameDTO
             {
-                GameId = gameId,
-                Created = DateTime.UtcNow
+                GameId = gameId
             };
             await _context.SaveAsync(game);
         }
@@ -107,51 +113,85 @@ namespace TomorrowDiesToday.Services.Database
             return player;
         }
 
-        //public async Task Initialize()
-        //{
-        //    ConfigureClient();
-        //    var tables = (await _client.ListTablesAsync()).TableNames;
-        //    if (!tables.Contains("GameTable"))
-        //    {
-        //        var request = new CreateTableRequest
-        //        {
-        //            TableName = "GameTable",
-        //            AttributeDefinitions = new List<AttributeDefinition>
-        //            {
-        //                new AttributeDefinition
-        //                {
-        //                    AttributeName = "GameId",
-        //                    AttributeType = "S"
-        //                },
-        //                new AttributeDefinition
-        //                {
-        //                    AttributeName = "SquadId",
-        //                    AttributeType = "S"
-        //                }
-        //            },
-        //            KeySchema = new List<KeySchemaElement>
-        //            {
-        //                new KeySchemaElement
-        //                {
-        //                    AttributeName = "GameId",
-        //                    KeyType = "RANGE"
-        //                },
-        //                new KeySchemaElement
-        //                {
-        //                    AttributeName = "SquadId",
-        //                    KeyType = "HASH"
-        //                }
-        //            },
-        //            ProvisionedThroughput = new ProvisionedThroughput
-        //            {
-        //                ReadCapacityUnits = 5,
-        //                WriteCapacityUnits = 5
-        //            }
-        //        };
+        public async Task InitializeGameTable()
+        {
+            var tables = (await _client.ListTablesAsync()).TableNames;
+            if (!tables.Contains("Games"))
+            {
+                var request = new CreateTableRequest
+                {
+                    TableName = "Games",
+                    AttributeDefinitions = new List<AttributeDefinition>
+                    {
+                        new AttributeDefinition
+                        {
+                            AttributeName = "GameId",
+                            AttributeType = "S"
+                        }
+                    },
+                    KeySchema = new List<KeySchemaElement>
+                    {
+                        new KeySchemaElement
+                        {
+                            AttributeName = "GameId",
+                            KeyType = "HASH"
+                        }
+                    },
+                    ProvisionedThroughput = new ProvisionedThroughput
+                    {
+                        ReadCapacityUnits = 5,
+                        WriteCapacityUnits = 5
+                    }
+                };
 
-        //        await _client.CreateTableAsync(request);
-        //    }
-        //}
+                await _client.CreateTableAsync(request);
+            }
+        }
+
+        public async Task InitializePlayerTable()
+        {
+            var tables = (await _client.ListTablesAsync()).TableNames;
+            if (!tables.Contains("PlayerData"))
+            {
+                var request = new CreateTableRequest
+                {
+                    TableName = "PlayerData",
+                    AttributeDefinitions = new List<AttributeDefinition>
+                    {
+                        new AttributeDefinition
+                        {
+                            AttributeName = "GameId",
+                            AttributeType = "S"
+                        },
+                        new AttributeDefinition
+                        {
+                            AttributeName = "PlayerId",
+                            AttributeType = "S"
+                        }
+                    },
+                    KeySchema = new List<KeySchemaElement>
+                    {
+                        new KeySchemaElement
+                        {
+                            AttributeName = "GameId",
+                            KeyType = "HASH"
+                        },
+                        new KeySchemaElement
+                        {
+                            AttributeName = "PlayerId",
+                            KeyType = "RANGE"
+                        }
+                    },
+                    ProvisionedThroughput = new ProvisionedThroughput
+                    {
+                        ReadCapacityUnits = 5,
+                        WriteCapacityUnits = 5
+                    }
+                };
+
+                await _client.CreateTableAsync(request);
+            }
+        }
 
         //public async Task DeleteTable()
         //{

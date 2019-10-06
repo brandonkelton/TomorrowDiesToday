@@ -10,7 +10,5 @@ namespace TomorrowDiesToday.Services.Database.DTOs
     {
         [DynamoDBHashKey]
         public string GameId { get; set; }
-
-        public DateTime Created { get; set; }
     }
 }
