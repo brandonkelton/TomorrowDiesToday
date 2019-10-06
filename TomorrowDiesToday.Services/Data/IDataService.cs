@@ -9,9 +9,9 @@ namespace TomorrowDiesToday.Services.Data
 {
     public interface IDataService<T, U> where T : IModel where U : IDataRequest
     {
-        Task<bool> Exists(T model);
+        Task<bool> Exists(string id);
 
-        Task Create(T model);
+        Task Create(string id);
 
         Task Update(T model);
 
