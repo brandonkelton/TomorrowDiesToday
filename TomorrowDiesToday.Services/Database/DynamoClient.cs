@@ -11,36 +11,13 @@ namespace TomorrowDiesToday.Services.Database
 {
     public class DynamoClient : IDBClient, IDisposable
     {
-        private AmazonDynamoDBClient _client;
-        private DynamoDBContext _context;
-        private bool _altConfig = true;
+        private IAmazonDynamoDB _client;
+        private IDynamoDBContext _context;
 
-        public DynamoClient()
+        public DynamoClient(IAmazonDynamoDB client, IDynamoDBContext context)
         {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            if (_altConfig)
-            { // Use DynamoDB-local
-                var config = new AmazonDynamoDBConfig
-                {
-                    // Replace localhost with server IP to connect with DynamoDB-local on remote server
-                    ServiceURL = "http://localhost:8000/"
-                };
-
-                // Client ID is set in DynamoDB-local shell, http://localhost:8000/shell
-                _client = new AmazonDynamoDBClient("TomorrowDiesToday", "fakeSecretKey", config);
-            }
-            else
-            { // Use AWS DynamoDB
-                var credentials = new TDTCredentials();
-                _client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
-            }
-
-            _context = new DynamoDBContext(_client);
-
+            _client = client;
+            _context = context;
         }
 
         public async Task<bool> Exists(string gameId)
