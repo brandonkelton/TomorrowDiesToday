@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reactive.Subjects;
 using System.Text;
+using System.Threading.Tasks;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data.Models;
 
@@ -11,16 +12,26 @@ namespace TomorrowDiesToday.Services.Data
     {
         private readonly ReplaySubject<GameModel> _update = new ReplaySubject<GameModel>(1);
 
-        public void Send(GameModel model)
+        public IObservable<GameModel> DataReceived => _update;
+
+        public async Task Create(GameModel model)
         {
             throw new NotImplementedException();
         }
 
-        public IObservable<GameModel> Update => _update;
-
-        public void RequestUpdate(GameRequest request)
+        public async Task<bool> Exists(GameModel model)
         {
-            
+            throw new NotImplementedException();
+        }
+
+        public async Task RequestUpdate(GameRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task Update(GameModel model)
+        {
+            throw new NotImplementedException();
         }
     }
 }

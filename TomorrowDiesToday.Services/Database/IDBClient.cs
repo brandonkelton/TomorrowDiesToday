@@ -9,7 +9,9 @@ namespace TomorrowDiesToday.Services.Database
 {
     public interface IDBClient
     {
-        Task CreateGame(string gameId);
+        Task<bool> Exists(string gameId);
+
+        Task Start(string gameId);
 
         Task CreatePlayer(string gameId, string playerId);
 
@@ -18,5 +20,11 @@ namespace TomorrowDiesToday.Services.Database
         Task<PlayerDTO> RequestPlayer(string gameId, string playerId);
 
         Task<List<PlayerDTO>> RequestPlayerList(string gameId);
+
+        //Temporary
+        Task InitializeGameTable();
+
+        //Temporary
+        Task InitializePlayerTable();
     }
 }

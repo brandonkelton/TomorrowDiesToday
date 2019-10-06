@@ -12,16 +12,26 @@ namespace TomorrowDiesToday.Services.Data
     {
         private readonly ReplaySubject<PlayerModel> _update = new ReplaySubject<PlayerModel>(1);
 
-        public void Send(PlayerModel model)
+        public IObservable<PlayerModel> DataReceived => _update;
+
+        public async Task Create(PlayerModel model)
         {
             throw new NotImplementedException();
         }
-        
-        public IObservable<PlayerModel> Update => _update;
 
-        public void RequestUpdate(PlayerRequest request)
+        public async Task<bool> Exists(PlayerModel model)
         {
-            
+            throw new NotImplementedException();
+        }
+
+        public async Task RequestUpdate(PlayerRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task Update(PlayerModel model)
+        {
+            throw new NotImplementedException();
         }
     }
 }
