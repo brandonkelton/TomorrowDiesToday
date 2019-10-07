@@ -14,10 +14,10 @@ namespace TomorrowDiesToday.Services
             int[] valueArray = Array.ConvertAll(stringArray, int.Parse);
             Dictionary<string, int> squadData = new Dictionary<string, int>();
 
-            
-            if(keyArray.Length == valueArray.Length)
+
+            if (keyArray.Length == valueArray.Length)
             {
-                for(int i = 0; i < keyArray.Length; i++)
+                for (int i = 0; i < keyArray.Length; i++)
                 {
                     squadData.Add(keyArray[i], valueArray[i]);
                 }
@@ -36,7 +36,7 @@ namespace TomorrowDiesToday.Services
             total += (soldiers * 2);
             total += assassins;
 
-            switch(facedHenchmen)
+            switch (facedHenchmen)
             {
                 //Axle Robbins
                 case 2:
@@ -67,7 +67,7 @@ namespace TomorrowDiesToday.Services
                     break;
             }
 
-            if(facedHenchmen == 9)
+            if (facedHenchmen == 9)
             {
                 total += squadData["Ugo Combat"];
             }
@@ -79,5 +79,64 @@ namespace TomorrowDiesToday.Services
 
             return total;
         }
+
+        public int CalculateStealth(Dictionary<string, int> squadData)
+        {
+            int total = 0;
+            int facedHenchmen = squadData["Faced Henchmen"];
+            int soldiers = squadData["Soldier"];
+            int assassins = squadData["Assassin"];
+            int thieves = squadData["Thief"];
+            int hackers = squadData["Hacker"];
+
+            total += soldiers;
+            total += (assassins * 2);
+            total += (thieves * 2);
+            total += hackers;
+
+            switch(facedHenchmen)
+            {
+                //Archibald Kluge
+                case 1:
+                    total += 1;
+                    break;
+
+                //Azura Badeau
+                case 3:
+                    total += 2;
+                    break;
+
+                //Boris "Myasneek"
+                case 4:
+                    total += 1;
+                    break;
+
+                //Emmerson Barlow
+                case 6:
+                    total += 3;
+                    break;
+
+                //Jin Feng
+                case 7:
+                    total += 3;
+                    break;
+
+                //The Node
+                case 8:
+                    total += 2;
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (facedHenchmen == 9)
+            {
+                total += squadData["Ugo Stealth"];
+            }
+
+            return total;
+        }
     }
 }
+
