@@ -14,12 +14,12 @@ namespace TomorrowDiesToday.Services.Data
 
         public IObservable<PlayerModel> DataReceived => _update;
 
-        public async Task Create(PlayerModel model)
+        public async Task Create(string id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> Exists(PlayerModel model)
+        public async Task<bool> Exists(string id)
         {
             throw new NotImplementedException();
         }
