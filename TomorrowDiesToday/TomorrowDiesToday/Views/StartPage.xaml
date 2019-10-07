@@ -9,7 +9,8 @@
         <Binding Path="StartPageViewModel" Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="Center">
+        <StackLayout Orientation="Vertical" VerticalOptions="Start" HorizontalOptions="Center">
+            <Label Text="PROTOTYPE" TextColor="Red" FontSize = "36" FontAttributes="Bold" HorizontalOptions="LayoutOptions.Center"/>
             <Grid IsVisible="{Binding IsWaitingForSelection}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
