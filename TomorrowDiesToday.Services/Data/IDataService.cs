@@ -17,6 +17,8 @@ namespace TomorrowDiesToday.Services.Data
 
         IObservable<T> DataReceived { get; }
 
+        IObservable<List<T>> DataListReceived { get; }
+
         Task RequestUpdate(U request);
     }
 }

@@ -20,22 +20,20 @@ namespace TomorrowDiesToday.Services.Database
             _context = context;
         }
 
-        public async Task<bool> Exists(string gameId)
+        public async Task<bool> GameExists(string gameId)
         {
             var existingGame = await _context.LoadAsync<GameDTO>(gameId);
             return existingGame != null;
         }
 
-        public async Task Start(string gameId)
+        public async Task<bool> PlayerExists(string gameId, string playerId)
         {
-            var existingGame = await _context.LoadAsync<GameDTO>(gameId);
-            if (existingGame != null)
-            {
-                // TODO: create app specific exception and handle at a higher level
-                // ex: GameExistsException(gameId)
-                throw new Exception("Game already exists!");
-            }
+            var existingPlayer = await _context.LoadAsync<PlayerDTO>(gameId, playerId);
+            return existingPlayer != null;
+        }
 
+        public async Task CreateGame(string gameId)
+        {
             var game = new GameDTO
             {
                 GameId = gameId
@@ -45,14 +43,6 @@ namespace TomorrowDiesToday.Services.Database
 
         public async Task CreatePlayer(string gameId, string playerId)
         {
-            var existingPlayer = await _context.LoadAsync<PlayerDTO>(gameId, playerId);
-            if (existingPlayer != null)
-            {
-                // TODO: create app specific exception and handle at a higher level
-                // ex:  PlayerExistsException(playerId)
-                throw new Exception("Player already exists!");
-            }
-
             var player = new PlayerDTO
             {
                 GameId = gameId,
@@ -168,6 +158,11 @@ namespace TomorrowDiesToday.Services.Database
 
                 await _client.CreateTableAsync(request);
             }
+        }
+
+        public async Task Update(PlayerDTO player)
+        {
+            await _context.SaveAsync(player);
         }
 
         //public async Task DeleteTable()

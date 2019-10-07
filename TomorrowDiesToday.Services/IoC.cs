@@ -9,6 +9,7 @@ using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Services.Database;
+using TomorrowDiesToday.Services.Game;
 
 namespace TomorrowDiesToday.Services
 {
@@ -31,8 +32,8 @@ namespace TomorrowDiesToday.Services
         private static void RegisterServices()
         {
             _builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
+            _builder.RegisterType<GameService>().As<IGameService>().SingleInstance();
             _builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
-            _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
             _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
         }
 

@@ -6,6 +6,5 @@ namespace TomorrowDiesToday.Services.Data.Models
 {
     public interface IDataRequest
     {
-        bool AsList { get; set; }
     }
 }
