@@ -59,7 +59,7 @@ namespace TomorrowDiesToday.Services
                 _builder.Register(c => client).As<IAmazonDynamoDB>().SingleInstance();
             }
 
-            _builder.Register(c => new DynamoDBContext(client)).As<IDynamoDBContext>().SingleInstance();
+            _builder.RegisterType<DynamoDBContext>().As<IDynamoDBContext>().SingleInstance();
         }
     }
 }
