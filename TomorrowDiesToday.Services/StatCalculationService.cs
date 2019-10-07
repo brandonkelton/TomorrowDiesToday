@@ -255,6 +255,11 @@ namespace TomorrowDiesToday.Services
                     break;
             }
 
+            if (squadData["Hypnotic Spray"] == 1)
+            {
+                total += 2;
+            }
+
             if (facedHenchmen == 9)
             {
                 total += squadData["Ugo Diplomacy"];
