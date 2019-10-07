@@ -26,5 +26,58 @@ namespace TomorrowDiesToday.Services
             return squadData;
         }
 
+        public int CalculateCombat(Dictionary<string, int> squadData)
+        {
+            int total = 0;
+            int facedHenchmen = squadData["Faced Henchmen"];
+            int soldiers = squadData["Soldier"];
+            int assassins = squadData["Assassin"];
+
+            total += (soldiers * 2);
+            total += assassins;
+
+            switch(facedHenchmen)
+            {
+                //Axle Robbins
+                case 2:
+                    total += 1;
+                    break;
+
+                //Azura Badeau
+                case 3:
+                    total += 2;
+                    break;
+
+                //Boris "Myasneek"
+                case 4:
+                    total += 3;
+                    break;
+
+                //Emerson Barlow
+                case 6:
+                    total += 1;
+                    break;
+
+                //Ugo Dottore
+                case 9:
+                    total += 1;
+                    break;
+
+                default:
+                    break;
+            }
+
+            if(facedHenchmen == 9)
+            {
+                total += squadData["Ugo Combat"];
+            }
+
+            if (squadData["Explosive Rounds"] == 1)
+            {
+                total += 2;
+            }
+
+            return total;
+        }
     }
 }
