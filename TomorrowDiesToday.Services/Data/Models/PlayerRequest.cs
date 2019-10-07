@@ -6,6 +6,6 @@ namespace TomorrowDiesToday.Services.Data.Models
 {
     public class PlayerRequest : IDataRequest
     {
-        public bool AsList { get; set; }
+        public string Id { get; set; }
     }
 }

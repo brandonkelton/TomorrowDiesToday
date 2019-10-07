@@ -9,6 +9,7 @@ using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Services.Database;
+using TomorrowDiesToday.Services.Game;
 
 namespace TomorrowDiesToday.Services
 {
@@ -18,7 +19,7 @@ namespace TomorrowDiesToday.Services
         private static readonly ContainerBuilder _builder = new ContainerBuilder();
 
         // Temporary variable until we have something better
-        private static bool _altConfig = true;
+        private static bool _altConfig = false;
 
         public static void Initialize()
         {
@@ -31,8 +32,8 @@ namespace TomorrowDiesToday.Services
         private static void RegisterServices()
         {
             _builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
+            _builder.RegisterType<GameService>().As<IGameService>().SingleInstance();
             _builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
-            _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
             _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
         }
 
@@ -58,7 +59,7 @@ namespace TomorrowDiesToday.Services
                 _builder.Register(c => client).As<IAmazonDynamoDB>().SingleInstance();
             }
 
-            _builder.Register(c => new DynamoDBContext(client)).As<IDynamoDBContext>().SingleInstance();
+            _builder.RegisterType<DynamoDBContext>().As<IDynamoDBContext>().SingleInstance();
         }
     }
 }
