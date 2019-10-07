@@ -94,7 +94,7 @@ namespace TomorrowDiesToday.Services
             total += (thieves * 2);
             total += hackers;
 
-            switch(facedHenchmen)
+            switch (facedHenchmen)
             {
                 //Archibald Kluge
                 case 1:
@@ -133,6 +133,131 @@ namespace TomorrowDiesToday.Services
             if (facedHenchmen == 9)
             {
                 total += squadData["Ugo Stealth"];
+            }
+
+            return total;
+        }
+
+        public int CalculateCunning(Dictionary<string, int> squadData)
+        {
+            int total = 0;
+            int facedHenchmen = squadData["Faced Henchmen"];
+            int thieves = squadData["Thief"];
+            int scientists = squadData["Scientist"];
+            int fixers = squadData["Fixer"];
+            int hackers = squadData["Hacker"];
+
+            total += thieves;
+            total += (scientists * 2);
+            total += fixers;
+            total += (hackers * 2);
+
+            switch (facedHenchmen)
+            {
+                //Archibald Kluge
+                case 1:
+                    total += 3;
+                    break;
+
+                //"Axle" Robbins
+                case 2:
+                    total += 2;
+                    break;
+
+                //Azura Badeau
+                case 3:
+                    total += 1;
+                    break;
+
+                //Boris "Myasneek"
+                case 4:
+                    total += 1;
+                    break;
+
+                //Cassandra O'Shea
+                case 5:
+                    total += 2;
+                    break;
+
+                //Emmerson Barlow
+                case 6:
+                    total += 1;
+                    break;
+
+                //Jin Feng
+                case 7:
+                    total += 1;
+                    break;
+
+                //The Node
+                case 8:
+                    total += 2;
+                    break;
+
+                //Ugo Dottore
+                case 9:
+                    total += 3;
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (facedHenchmen == 9)
+            {
+                total += squadData["Ugo Cunning"];
+            }
+
+            return total;
+        }
+        public int CalculateDiplomacy(Dictionary<string, int> squadData)
+        {
+            int total = 0;
+            int facedHenchmen = squadData["Faced Henchmen"];
+            int scientists = squadData["Scientist"];
+            int fixers = squadData["Fixer"];
+
+            total += scientists;
+            total += (fixers * 2);
+
+            switch(facedHenchmen)
+            {
+                //Archibald Kluge
+                case 1:
+                    total += 1;
+                    break;
+
+                //"Axle" Robbins
+                case 2:
+                    total += 2;
+                    break;
+
+                //Cassandra O'Shea
+                case 5:
+                    total += 3;
+                    break;
+
+                //Jin Feng
+                case 7:
+                    total += 1;
+                    break;
+
+                //The Node
+                case 8:
+                    total += 1;
+                    break;
+
+                case 9:
+                    total += 1;
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (facedHenchmen == 9)
+            {
+                total += squadData["Ugo Diplomacy"];
             }
 
             return total;
