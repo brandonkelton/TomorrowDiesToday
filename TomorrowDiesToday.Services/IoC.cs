@@ -19,7 +19,7 @@ namespace TomorrowDiesToday.Services
         private static readonly ContainerBuilder _builder = new ContainerBuilder();
 
         // Temporary variable until we have something better
-        private static bool _altConfig = true;
+        private static bool _altConfig = false;
 
         public static void Initialize()
         {

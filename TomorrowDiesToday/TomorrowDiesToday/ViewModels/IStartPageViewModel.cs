@@ -17,6 +17,8 @@ namespace TomorrowDiesToday.ViewModels
         ICommand NextStepCommand { get; }
         ICommand CreatePlayerCommand { get; }
         ICommand RefreshPlayerListCommand { get; }
+        ICommand ConfigureTableCommand { get; }
+        //ICommand EncryptCommand { get; }
 
         string GameId { get; set; }
         bool IsWaitingForSelection { get; set; }

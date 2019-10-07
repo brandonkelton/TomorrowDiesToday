@@ -13,12 +13,12 @@ using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class StartPageViewModel : BaseViewModel, IStartPageViewModel
+    public class StartPageViewModel : BaseViewModel, IStartPageViewModel, IDisposable
     {
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
-        private static Random _random = new Random();
+        private IDisposable _playerListSubscription = null;
 
         public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
 
@@ -28,19 +28,29 @@ namespace TomorrowDiesToday.ViewModels
         public ICommand NextStepCommand { get; private set; }
         public ICommand CreatePlayerCommand { get; private set; }
         public ICommand RefreshPlayerListCommand { get; private set; }
+        public ICommand ConfigureTableCommand { get; private set; }
+        //public ICommand EncryptCommand { get; private set; }
 
         private string _gameId;
         public string GameId
         {
             get => _gameId;
-            set => SetProperty(ref _gameId, value);
+            set
+            {
+                SetProperty(ref _gameId, value);
+                _gameService.GameId = value;
+            }
         }
 
         private string _currentPlayer;
         public string CurrentPlayer
         {
             get => _currentPlayer;
-            set => SetProperty(ref _currentPlayer, value);
+            set
+            {
+                SetProperty(ref _currentPlayer, value);
+                _gameService.PlayerId = value;
+            }
         }
 
         private bool _isWaitingForSelection;
@@ -113,6 +123,20 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _isWaitingForPlayers, value);
         }
 
+        //private string _text;
+        //public string Text
+        //{
+        //    get => _text;
+        //    set => SetProperty(ref _text, value);
+        //}
+
+        private string _playerAlreadySelected;
+        public string PlayerAlreadySelected
+        {
+            get => _playerAlreadySelected;
+            set => SetProperty(ref _playerAlreadySelected, value);
+        }
+
         public StartPageViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
         {
             _gameService = gameService;
@@ -121,6 +145,7 @@ namespace TomorrowDiesToday.ViewModels
 
             IsWaitingForSelection = true;
             ConfigureCommands();
+            SubscribeToUpdates();
         }
 
         private void ConfigureCommands()
@@ -128,9 +153,32 @@ namespace TomorrowDiesToday.ViewModels
             CreateGameCommand = new Command(async () => await CreateGame());
             SetIsJoiningGameCommand = new Command(() => StartJoiningGame());
             JoinGameCommand = new Command(async () => await JoinGame());
-            NextStepCommand = new Command(() => NextStep());
+            NextStepCommand = new Command(() => IsSelectingPlayers = true);
             CreatePlayerCommand = new Command<string>(async playerId => await CreatePlayer(playerId));
             RefreshPlayerListCommand = new Command(() => RefreshPlayers());
+            ConfigureTableCommand = new Command(async () => await ConfigureTable());
+            //EncryptCommand = new Command(() => EncryptText());
+        }
+
+        //private void EncryptText()
+        //{
+        //    var encryptedText = TDTCredentials.EncryptString(Text);
+        //    Text = encryptedText;
+        //}
+
+        private void SubscribeToUpdates()
+        {
+            _playerListSubscription = _playerDataService.DataListReceived.Subscribe(list =>
+            {
+                Players.Clear();
+                list.ForEach(item => Players.Add(item));
+            });
+        }
+
+        private async Task ConfigureTable()
+        {
+            await _gameDataService.ConfigureTable();
+            await _playerDataService.ConfigureTable();
         }
 
         private void RefreshPlayers()
@@ -140,28 +188,26 @@ namespace TomorrowDiesToday.ViewModels
 
         private async Task CreatePlayer(string playerId)
         {
+            PlayerExists = false;
+
             if (!await _playerDataService.Exists(playerId))
             {
                 await _playerDataService.Create(playerId);
+                _gameService.PlayerId = playerId;
                 CurrentPlayer = $"You are {playerId}";
-                IsWaitingForSelection = false;
+                IsSelectingPlayers = false;
                 IsWaitingForPlayers = true;
                 return;
             }
 
+            PlayerAlreadySelected = $"{playerId} Has Already Been Selected";
             PlayerExists = true;
-        }
-
-        private void NextStep()
-        {
-            IsSelectingPlayers = true;
         }
 
         private void StartJoiningGame()
         {
             IsWaitingForSelection = false;
             IsJoiningGame = true;
-            IsCreatingGame = false;
             IsCreatingOrJoiningGame = true;
         }
 
@@ -169,28 +215,21 @@ namespace TomorrowDiesToday.ViewModels
         {
             IsWaitingForSelection = false;
             IsCreatingGame = true;
-            IsJoiningGame = false;
             IsCreatingOrJoiningGame = true;
 
             while (!GameCreated)
             {
-                var gameId = GenerateGameId();
+                var gameId = _gameService.GenerateGameId();
                 _gameService.GameId = gameId;
                 if (!await _gameDataService.Exists(gameId))
                 {
                     await _gameDataService.Create(gameId);
                     GameId = gameId;
                     GameCreated = true;
+                    IsCreatingGame = false;
+                    IsCreatingOrJoiningGame = false;
                 }
             }
-        }
-
-        // Maybe should be moved to service (GameStartService? GameService?)
-        private string GenerateGameId()
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, chars.Length)
-              .Select(s => s[_random.Next(s.Length)]).Take(6).ToArray());
         }
 
         private async Task JoinGame()
@@ -198,14 +237,20 @@ namespace TomorrowDiesToday.ViewModels
             if (await _gameDataService.Exists(GameId))
             {
                 InvalidGameId = false;
-                await _gameDataService.Update(new GameModel { GameId = GameId });
                 GameJoined = true;
-                NextStep();
+                IsJoiningGame = false;
+                IsCreatingOrJoiningGame = false;
+                IsSelectingPlayers = true;
                 return;
             }
 
             GameJoined = false;
             InvalidGameId = true;
+        }
+
+        public void Dispose()
+        {
+            if (_playerListSubscription != null) _playerListSubscription.Dispose();
         }
     }
 }

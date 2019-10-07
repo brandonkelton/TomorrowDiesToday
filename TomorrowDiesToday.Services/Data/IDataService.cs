@@ -20,5 +20,7 @@ namespace TomorrowDiesToday.Services.Data
         IObservable<List<T>> DataListReceived { get; }
 
         Task RequestUpdate(U request);
+
+        Task ConfigureTable();
     }
 }
