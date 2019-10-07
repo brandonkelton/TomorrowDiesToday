@@ -15,7 +15,7 @@ namespace TomorrowDiesToday.Services.Game
 
         public string GenerateGameId()
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             return new string(Enumerable.Repeat(chars, chars.Length)
               .Select(s => s[_random.Next(s.Length)]).Take(6).ToArray());
         }

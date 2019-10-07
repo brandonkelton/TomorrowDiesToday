@@ -28,7 +28,7 @@ namespace TomorrowDiesToday.ViewModels
         public ICommand NextStepCommand { get; private set; }
         public ICommand CreatePlayerCommand { get; private set; }
         public ICommand RefreshPlayerListCommand { get; private set; }
-        public ICommand ConfigureTableCommand { get; private set; }
+        //public ICommand ConfigureTableCommand { get; private set; }
         //public ICommand EncryptCommand { get; private set; }
 
         private string _gameId;
@@ -123,6 +123,13 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _isWaitingForPlayers, value);
         }
 
+        private bool _isLoadingData;
+        public bool IsLoadingData
+        {
+            get => _isLoadingData;
+            set => SetProperty(ref _isLoadingData, value);
+        }
+
         //private string _text;
         //public string Text
         //{
@@ -156,7 +163,7 @@ namespace TomorrowDiesToday.ViewModels
             NextStepCommand = new Command(() => NextAfterGameCreated());
             CreatePlayerCommand = new Command<string>(async playerId => await CreatePlayer(playerId));
             RefreshPlayerListCommand = new Command(() => RefreshPlayers());
-            ConfigureTableCommand = new Command(async () => await ConfigureTable());
+            // ConfigureTableCommand = new Command(async () => await ConfigureTable());
             //EncryptCommand = new Command(() => EncryptText());
         }
 
@@ -182,11 +189,11 @@ namespace TomorrowDiesToday.ViewModels
             });
         }
 
-        private async Task ConfigureTable()
-        {
-            await _gameDataService.ConfigureTable();
-            await _playerDataService.ConfigureTable();
-        }
+        //private async Task ConfigureTable()
+        //{
+        //    await _gameDataService.ConfigureTable();
+        //    await _playerDataService.ConfigureTable();
+        //}
 
         private void RefreshPlayers()
         {
@@ -195,11 +202,13 @@ namespace TomorrowDiesToday.ViewModels
 
         private async Task CreatePlayer(string playerId)
         {
+            IsLoadingData = true;
             PlayerExists = false;
 
             if (!await _playerDataService.Exists(playerId))
             {
                 await _playerDataService.Create(playerId);
+                IsLoadingData = false;
                 _gameService.PlayerId = playerId;
                 CurrentPlayer = $"You are {playerId}";
                 IsSelectingPlayers = false;
@@ -220,6 +229,7 @@ namespace TomorrowDiesToday.ViewModels
 
         private async Task CreateGame()
         {
+            IsLoadingData = true;
             IsWaitingForSelection = false;
             IsCreatingGame = true;
             IsCreatingOrJoiningGame = true;
@@ -231,6 +241,7 @@ namespace TomorrowDiesToday.ViewModels
                 if (!await _gameDataService.Exists(gameId))
                 {
                     await _gameDataService.Create(gameId);
+                    IsLoadingData = false;
                     GameId = gameId;
                     GameCreated = true;
                 }

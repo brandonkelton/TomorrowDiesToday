@@ -9,85 +9,96 @@
         <Binding Path="StartPageViewModel" Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical" VerticalOptions="Start" HorizontalOptions="Center">
-            <Label Text="PROTOTYPE" TextColor="Red" FontSize = "36" FontAttributes="Bold" HorizontalOptions="LayoutOptions.Center"/>
-            <Grid IsVisible="{Binding IsWaitingForSelection}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <!--<RowDefinition Height="100"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Text="PROTOTYPE" TextColor="Red" FontSize = "36" FontAttributes="Bold" HorizontalOptions="LayoutOptions.Center"/>
+            <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsLoadingData}"/>
+            <StackLayout Grid.Row="2" Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="Center">
+                <Grid IsVisible="{Binding IsWaitingForSelection}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <!--<RowDefinition Height="100"/>
                     <RowDefinition Height="40"/>-->
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
-                </Grid.ColumnDefinitions>
-                <Button Grid.Row="0" Text="Create Game" Command="{Binding CreateGameCommand}"/>
-                <Button Grid.Row="1" Text="Join Game" Command="{Binding SetIsJoiningGameCommand}"/>
-                <!--<Editor Grid.Row="2" Text="{Binding Text}"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Row="0" Text="Create Game" Command="{Binding CreateGameCommand}"/>
+                    <Button Grid.Row="1" Text="Join Game" Command="{Binding SetIsJoiningGameCommand}"/>
+                    <!--<Editor Grid.Row="2" Text="{Binding Text}"/>
                 <Button Grid.Row="3" Text="Encrypt" Command="{Binding EncryptCommand}"/>-->
-                <!--<Button Grid.Row="2" Text="Configure" Command="{Binding ConfigureTableCommand}"/>-->
-            </Grid>
-            <Grid IsVisible="{Binding IsCreatingOrJoiningGame}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" IsVisible="{Binding IsCreatingGame}" Text="Provide the following code to your team:"/>
-                <Label Grid.Row="1" IsVisible="{Binding IsCreatingGame}" Text="{Binding GameId}" FontSize="35" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
-                <Button Grid.Row="2" IsVisible="{Binding IsCreatingGame}" Text="Next" Command="{Binding NextStepCommand}"/>
-                <Entry Grid.Row="0" IsVisible="{Binding IsJoiningGame}" Text="{Binding GameId}" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
-                <Button Grid.Row="1" IsVisible="{Binding IsJoiningGame}" Text="Next" Command="{Binding JoinGameCommand}"/>
-            </Grid>
-            <Grid IsVisible="{Binding IsSelectingPlayers}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="300"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Text="Who would you like to be?"/>
-                <Label Grid.Row="1" TextColor="Red" FontAttributes="Bold" IsVisible="{Binding PlayerExists}" Text="{Binding PlayerAlreadySelected}"/>
-                <Button Grid.Row="2" Text="Player 1" Command="{Binding CreatePlayerCommand}" CommandParameter="Player 1"/>
-                <Button Grid.Row="3" Text="Player 2" Command="{Binding CreatePlayerCommand}" CommandParameter="Player 2"/>
-                <Button Grid.Row="4" Text="Player 3" Command="{Binding CreatePlayerCommand}" CommandParameter="Player 3"/>
-                <Button Grid.Row="5" Text="Player 4" Command="{Binding CreatePlayerCommand}" CommandParameter="Player 4"/>
-                <Button Grid.Row="6" Text="Player 5" Command="{Binding CreatePlayerCommand}" CommandParameter="Player 5"/>
-                <Button Grid.Row="7" Text="Player 6" Command="{Binding CreatePlayerCommand}" CommandParameter="Player 6"/>
-                <Button Grid.Row="8" Text="Player 7" Command="{Binding CreatePlayerCommand}" CommandParameter="Player 7"/>
-            </Grid>
-            <Grid IsVisible="{Binding IsWaitingForPlayers}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="200"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Text="{Binding CurrentPlayer}"/>
-                <Button Grid.Row="1" Text="Refresh List" Command="{Binding RefreshPlayerListCommand}"/>
-                <ListView Grid.Row="2" ItemsSource="{Binding Players}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <Label Text="{Binding PlayerId}"/>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
-        </StackLayout>
+                    <!--<Button Grid.Row="2" Text="Configure" Command="{Binding ConfigureTableCommand}"/>-->
+                </Grid>
+                <Grid IsVisible="{Binding IsCreatingOrJoiningGame}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" IsVisible="{Binding IsCreatingGame}" Text="Provide the following code to your team:"/>
+                    <Label Grid.Row="1" IsVisible="{Binding IsCreatingGame}" Text="{Binding GameId}" FontSize="35" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                    <Button Grid.Row="2" IsVisible="{Binding IsCreatingGame}" Text="Next" Command="{Binding NextStepCommand}"/>
+                    <Entry Grid.Row="0" IsVisible="{Binding IsJoiningGame}" Text="{Binding GameId}" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                    <Button Grid.Row="1" IsVisible="{Binding IsJoiningGame}" Text="Next" Command="{Binding JoinGameCommand}"/>
+                </Grid>
+                <Grid IsVisible="{Binding IsSelectingPlayers}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Text="Who would you like to be?"/>
+                    <Label Grid.Row="1" TextColor="Red" FontAttributes="Bold" IsVisible="{Binding PlayerExists}" Text="{Binding PlayerAlreadySelected}"/>
+                    <Button Grid.Row="2" Text="Archibald Kluge" Command="{Binding CreatePlayerCommand}" CommandParameter="Archibald Kluge"/>
+                    <Button Grid.Row="3" Text="Axle Robbins" Command="{Binding CreatePlayerCommand}" CommandParameter="Axle Robbins"/>
+                    <Button Grid.Row="4" Text="Azura Badeau" Command="{Binding CreatePlayerCommand}" CommandParameter="Azura Badeau"/>
+                    <Button Grid.Row="5" Text="Boris Myasneek" Command="{Binding CreatePlayerCommand}" CommandParameter="Boris Myasneek"/>
+                    <Button Grid.Row="6" Text="Cassandra O'Shea" Command="{Binding CreatePlayerCommand}" CommandParameter="Cassandra O'Shea"/>
+                    <Button Grid.Row="7" Text="Emerson Barlow" Command="{Binding CreatePlayerCommand}" CommandParameter="Emerson Barlow"/>
+                    <Button Grid.Row="8" Text="Jin Feng" Command="{Binding CreatePlayerCommand}" CommandParameter="Jin Feng"/>
+                    <Button Grid.Row="8" Text="The Node" Command="{Binding CreatePlayerCommand}" CommandParameter="The Node"/>
+                    <Button Grid.Row="8" Text="Ugo Dottore" Command="{Binding CreatePlayerCommand}" CommandParameter="Ugo Dottore"/>
+                    <Button Grid.Row="8" Text="General Goodman" Command="{Binding CreatePlayerCommand}" CommandParameter="General Goodman"/>
+                </Grid>
+                <Grid IsVisible="{Binding IsWaitingForPlayers}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="200"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" FontSize="24" Text="{Binding CurrentPlayer}"/>
+                    <Button Grid.Row="1" Text="Refresh List" Command="{Binding RefreshPlayerListCommand}"/>
+                    <ListView Grid.Row="2" ItemsSource="{Binding Players}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Label FontSize="20" Text="{Binding PlayerId}"/>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
