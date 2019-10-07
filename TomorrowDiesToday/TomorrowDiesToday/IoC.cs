@@ -35,6 +35,7 @@ namespace TomorrowDiesToday
         private static void RegisterViewModels()
         {
             _builder.RegisterType<MainPageViewModel>().As<IMainPageViewModel>().SingleInstance();
+            _builder.RegisterType<StartPageViewModel>().As<IStartPageViewModel>().SingleInstance();
         }
     }
 }
