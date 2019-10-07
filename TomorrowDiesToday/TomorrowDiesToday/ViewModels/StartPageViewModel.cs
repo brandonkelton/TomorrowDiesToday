@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
@@ -14,6 +15,7 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class StartPageViewModel : BaseViewModel, IStartPageViewModel
     {
+        private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
         private static Random _random = new Random();
@@ -111,11 +113,13 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _isWaitingForPlayers, value);
         }
 
-        public StartPageViewModel(IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
+        public StartPageViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
         {
+            _gameService = gameService;
             _gameDataService = gameDataService;
             _playerDataService = playerDataService;
 
+            IsWaitingForSelection = true;
             ConfigureCommands();
         }
 
@@ -131,7 +135,7 @@ namespace TomorrowDiesToday.ViewModels
 
         private void RefreshPlayers()
         {
-            _playerDataService.RequestUpdate(new PlayerRequest { AsList = true });
+            _playerDataService.RequestUpdate(new PlayerRequest());
         }
 
         private async Task CreatePlayer(string playerId)
@@ -171,6 +175,7 @@ namespace TomorrowDiesToday.ViewModels
             while (!GameCreated)
             {
                 var gameId = GenerateGameId();
+                _gameService.GameId = gameId;
                 if (!await _gameDataService.Exists(gameId))
                 {
                     await _gameDataService.Create(gameId);
