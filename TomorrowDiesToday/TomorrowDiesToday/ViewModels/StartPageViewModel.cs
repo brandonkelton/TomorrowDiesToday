@@ -228,6 +228,7 @@ namespace TomorrowDiesToday.ViewModels
                     GameCreated = true;
                     IsCreatingGame = false;
                     IsCreatingOrJoiningGame = false;
+                    IsSelectingPlayers = true;
                 }
             }
         }
