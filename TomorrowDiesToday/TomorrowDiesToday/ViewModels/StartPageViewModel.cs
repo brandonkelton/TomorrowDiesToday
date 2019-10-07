@@ -153,7 +153,7 @@ namespace TomorrowDiesToday.ViewModels
             CreateGameCommand = new Command(async () => await CreateGame());
             SetIsJoiningGameCommand = new Command(() => StartJoiningGame());
             JoinGameCommand = new Command(async () => await JoinGame());
-            NextStepCommand = new Command(() => IsSelectingPlayers = true);
+            NextStepCommand = new Command(() => NextAfterGameCreated());
             CreatePlayerCommand = new Command<string>(async playerId => await CreatePlayer(playerId));
             RefreshPlayerListCommand = new Command(() => RefreshPlayers());
             ConfigureTableCommand = new Command(async () => await ConfigureTable());
@@ -165,6 +165,13 @@ namespace TomorrowDiesToday.ViewModels
         //    var encryptedText = TDTCredentials.EncryptString(Text);
         //    Text = encryptedText;
         //}
+
+        private void NextAfterGameCreated()
+        {
+            IsCreatingGame = false;
+            IsCreatingOrJoiningGame = false;
+            IsSelectingPlayers = true;
+        }
 
         private void SubscribeToUpdates()
         {
@@ -226,9 +233,6 @@ namespace TomorrowDiesToday.ViewModels
                     await _gameDataService.Create(gameId);
                     GameId = gameId;
                     GameCreated = true;
-                    IsCreatingGame = false;
-                    IsCreatingOrJoiningGame = false;
-                    IsSelectingPlayers = true;
                 }
             }
         }

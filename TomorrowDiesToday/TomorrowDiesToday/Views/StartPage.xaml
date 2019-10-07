@@ -29,15 +29,17 @@
             <Grid IsVisible="{Binding IsCreatingOrJoiningGame}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
+                    <RowDefinition Height="50"/>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" IsVisible="{Binding IsCreatingGame}" Text="{Binding GameId}"/>
-                <Button Grid.Row="1" IsVisible="{Binding IsCreatingGame}" Text="Next" Command="{Binding NextStepCommand}"/>
-                <Entry Grid.Row="0" IsVisible="{Binding IsJoiningGame}" Text="{Binding GameId}"/>
-                <Button Grid.Row="1" IsVisible="{Binding IsJoiningGame}" Text="Join Game" Command="{Binding JoinGameCommand}"/>
+                <Label Grid.Row="0" IsVisible="{Binding IsCreatingGame}" Text="Provide the following code to your team:"/>
+                <Label Grid.Row="1" IsVisible="{Binding IsCreatingGame}" Text="{Binding GameId}" FontSize="35" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                <Button Grid.Row="2" IsVisible="{Binding IsCreatingGame}" Text="Next" Command="{Binding NextStepCommand}"/>
+                <Entry Grid.Row="0" IsVisible="{Binding IsJoiningGame}" Text="{Binding GameId}" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                <Button Grid.Row="1" IsVisible="{Binding IsJoiningGame}" Text="Next" Command="{Binding JoinGameCommand}"/>
             </Grid>
             <Grid IsVisible="{Binding IsSelectingPlayers}">
                 <Grid.RowDefinitions>
