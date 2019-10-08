@@ -4,37 +4,38 @@ using System.Text;
 
 namespace TomorrowDiesToday.Models
 {
-    class SquadModel : IModel
+    public class SquadModel : IModel
     {
+        public string SquadId { get; set; }
 
-        public Dictionary<string, int> SquadData { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Dictionary<string, int> SquadStats { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Dictionary<string, int> Data { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Dictionary<string, int> Stats { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public DateTime Timestamp => throw new NotImplementedException();
 
         public SquadModel()
         {
-            SquadStats.Add("Combat", 0);
-            SquadStats.Add("Stealth", 0);
-            SquadStats.Add("Cunning", 0);
-            SquadStats.Add("Diplomacy", 0);
+            Stats.Add("Combat", 0);
+            Stats.Add("Stealth", 0);
+            Stats.Add("Cunning", 0);
+            Stats.Add("Diplomacy", 0);
 
-            SquadData.Add("Thief", 0);
-            SquadData.Add("Hacker", 0);
-            SquadData.Add("Soldier", 0);
-            SquadData.Add("Assassin", 0);
-            SquadData.Add("Fixer", 0);
-            SquadData.Add("Scientist", 0);
+            Data.Add("Thief", 0);
+            Data.Add("Hacker", 0);
+            Data.Add("Soldier", 0);
+            Data.Add("Assassin", 0);
+            Data.Add("Fixer", 0);
+            Data.Add("Scientist", 0);
 
-            SquadData.Add("Faced Henchmen", 0);
+            Data.Add("Faced Henchmen", 0);
 
-            SquadData.Add("Hypnotic Spray", 0);
-            SquadData.Add("Explosive Rounds", 0);
+            Data.Add("Hypnotic Spray", 0);
+            Data.Add("Explosive Rounds", 0);
 
-            SquadData.Add("Ugo Combat", 0);
-            SquadData.Add("Ugo Stealth", 0);
-            SquadData.Add("Ugo Cunning", 0);
-            SquadData.Add("Ugo Diplomacy", 0);
+            Data.Add("Ugo Combat", 0);
+            Data.Add("Ugo Stealth", 0);
+            Data.Add("Ugo Cunning", 0);
+            Data.Add("Ugo Diplomacy", 0);
         }
 
         public bool IsValid()

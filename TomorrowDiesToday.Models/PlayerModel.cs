@@ -8,6 +8,6 @@ namespace TomorrowDiesToday.Models
     {
         public string PlayerId { get; set; }
 
-        public List<Squad> Squads { get; set; } = new List<Squad>();
+        public List<SquadModel> Squads { get; set; } = new List<SquadModel>();
     }
 }

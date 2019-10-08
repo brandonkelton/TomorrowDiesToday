@@ -10,8 +10,8 @@ namespace TomorrowDiesToday.Services.Database.DTOs
     /// </summary>
     public class SquadDTO
     {
-        public string Id { get; set; }
-
-        public int Count { get; set; }
+        public string SquadId { get; set; }
+        public Dictionary<string, int> Data { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Dictionary<string, int> Stats { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }
