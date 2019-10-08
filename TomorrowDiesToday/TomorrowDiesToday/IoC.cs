@@ -5,6 +5,7 @@ using System.Text;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
+using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.ViewModels;
 using Xamarin.Forms.Internals;
 
@@ -30,11 +31,13 @@ namespace TomorrowDiesToday
         {
             _builder.Register(c => Services.IoC.Container.Resolve<IDataService<GameModel, GameRequest>>()).As<IDataService<GameModel, GameRequest>>();
             _builder.Register(c => Services.IoC.Container.Resolve<IDataService<PlayerModel, PlayerRequest>>()).As<IDataService<PlayerModel, PlayerRequest>>();
+            _builder.Register(c => Services.IoC.Container.Resolve<IGameService>()).As<IGameService>();
         }
 
         private static void RegisterViewModels()
         {
             _builder.RegisterType<MainPageViewModel>().As<IMainPageViewModel>().SingleInstance();
+            _builder.RegisterType<StartPageViewModel>().As<IStartPageViewModel>().SingleInstance();
         }
     }
 }

@@ -25,6 +25,11 @@ namespace TomorrowDiesToday.Services.Data
             _game = game;
         }
 
+        public async Task ConfigureTable()
+        {
+            await _client.InitializeGameTable();
+        }
+
         public IObservable<GameModel> DataReceived => _update;
         public IObservable<List<GameModel>> DataListReceived => _updateList;
 
@@ -46,14 +51,17 @@ namespace TomorrowDiesToday.Services.Data
         public async Task Update(GameModel model)
         {
             var squadDTOs = new List<SquadDTO>();
-            foreach (Squad squad in model.MyPlayer.Squads)
+            if (model.MyPlayer?.Squads != null)
             {
-                var squadDTO = new SquadDTO
+                foreach (Squad squad in model.MyPlayer.Squads)
                 {
-                    Id = squad.Id,
-                    Count = squad.Count
-                };
-                squadDTOs.Add(squadDTO);
+                    var squadDTO = new SquadDTO
+                    {
+                        Id = squad.Id,
+                        Count = squad.Count
+                    };
+                    squadDTOs.Add(squadDTO);
+                }
             }
             var player = new PlayerDTO
             {

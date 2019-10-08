@@ -19,7 +19,7 @@ namespace TomorrowDiesToday.Services
         private static readonly ContainerBuilder _builder = new ContainerBuilder();
 
         // Temporary variable until we have something better
-        private static bool _altConfig = true;
+        private static bool _altConfig = false;
 
         public static void Initialize()
         {
@@ -59,7 +59,7 @@ namespace TomorrowDiesToday.Services
                 _builder.Register(c => client).As<IAmazonDynamoDB>().SingleInstance();
             }
 
-            _builder.Register(c => new DynamoDBContext(client)).As<IDynamoDBContext>().SingleInstance();
+            _builder.RegisterType<DynamoDBContext>().As<IDynamoDBContext>().SingleInstance();
         }
     }
 }

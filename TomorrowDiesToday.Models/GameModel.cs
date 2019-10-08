@@ -5,6 +5,8 @@ namespace TomorrowDiesToday.Models
 {
     public class GameModel : IModel
     {
+        public string GameId { get; set; }
+
         public PlayerModel MyPlayer { get; set; }
 
         public List<PlayerModel> OtherPlayers { get; set; }
