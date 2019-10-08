@@ -4,13 +4,15 @@ using System.Text;
 
 namespace TomorrowDiesToday.Models
 {
-    class Squad : ISquad
+    class SquadModel : IModel
     {
 
         public Dictionary<string, int> SquadData { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Dictionary<string, int> SquadStats { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public Squad()
+        public DateTime Timestamp => throw new NotImplementedException();
+
+        public SquadModel()
         {
             SquadStats.Add("Combat", 0);
             SquadStats.Add("Stealth", 0);
@@ -33,6 +35,11 @@ namespace TomorrowDiesToday.Models
             SquadData.Add("Ugo Stealth", 0);
             SquadData.Add("Ugo Cunning", 0);
             SquadData.Add("Ugo Diplomacy", 0);
+        }
+
+        public bool IsValid()
+        {
+            throw new NotImplementedException();
         }
     }
 }
