@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,96 +12,151 @@ namespace TomorrowDiesToday.Tests
 {
     public class MockAmazonDynamoDB : IAmazonDynamoDB
     {
-        public IClientConfig Config => throw new NotImplementedException();
+        private BatchGetItemResponse fakeBatchGetItemResponse = new BatchGetItemResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private BatchWriteItemResponse fakeBatchWriteItemResponse = new BatchWriteItemResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private CreateBackupResponse fakeCreateBackupResponse = new CreateBackupResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private CreateGlobalTableResponse fakeCreateGlobalTableResponse = new CreateGlobalTableResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private CreateTableResponse fakeCreateTableResponse = new CreateTableResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private DeleteBackupResponse fakeDeleteBackupResponse = new DeleteBackupResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private DeleteItemResponse fakeDeleteItemResponse = new DeleteItemResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private DeleteTableResponse fakeDeleteTableResponse = new DeleteTableResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private DescribeBackupResponse fakeDescribeBackupResponse = new DescribeBackupResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private DescribeContinuousBackupsResponse fakeDescribeContinuousBackupsResponse = new DescribeContinuousBackupsResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        private DescribeEndpointsResponse fakeDescribeEndpointsResponse = new DescribeEndpointsResponse
+        {
+            HttpStatusCode = HttpStatusCode.OK
+        };
+
+        public IClientConfig Config { get; } = new AmazonDynamoDBConfig();
 
         public async Task<BatchGetItemResponse> BatchGetItemAsync(Dictionary<string, KeysAndAttributes> requestItems, ReturnConsumedCapacity returnConsumedCapacity, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeBatchGetItemResponse);
         }
 
         public async Task<BatchGetItemResponse> BatchGetItemAsync(Dictionary<string, KeysAndAttributes> requestItems, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeBatchGetItemResponse);
         }
 
         public async Task<BatchGetItemResponse> BatchGetItemAsync(BatchGetItemRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeBatchGetItemResponse);
         }
 
         public async Task<BatchWriteItemResponse> BatchWriteItemAsync(Dictionary<string, List<WriteRequest>> requestItems, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeBatchWriteItemResponse);
         }
 
         public async Task<BatchWriteItemResponse> BatchWriteItemAsync(BatchWriteItemRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeBatchWriteItemResponse);
         }
 
         public async Task<CreateBackupResponse> CreateBackupAsync(CreateBackupRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeCreateBackupResponse);
         }
 
         public async Task<CreateGlobalTableResponse> CreateGlobalTableAsync(CreateGlobalTableRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeCreateGlobalTableResponse);
         }
 
         public async Task<CreateTableResponse> CreateTableAsync(string tableName, List<KeySchemaElement> keySchema, List<AttributeDefinition> attributeDefinitions, ProvisionedThroughput provisionedThroughput, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeCreateTableResponse);
         }
 
         public async Task<CreateTableResponse> CreateTableAsync(CreateTableRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeCreateTableResponse);
         }
 
         public async Task<DeleteBackupResponse> DeleteBackupAsync(DeleteBackupRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeDeleteBackupResponse);
         }
 
         public async Task<DeleteItemResponse> DeleteItemAsync(string tableName, Dictionary<string, AttributeValue> key, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeDeleteItemResponse);
         }
 
         public async Task<DeleteItemResponse> DeleteItemAsync(string tableName, Dictionary<string, AttributeValue> key, ReturnValue returnValues, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeDeleteItemResponse);
         }
 
         public async Task<DeleteItemResponse> DeleteItemAsync(DeleteItemRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeDeleteItemResponse);
         }
 
         public async Task<DeleteTableResponse> DeleteTableAsync(string tableName, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeDeleteTableResponse);
         }
 
         public async Task<DeleteTableResponse> DeleteTableAsync(DeleteTableRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeDeleteTableResponse);
         }
 
         public async Task<DescribeBackupResponse> DescribeBackupAsync(DescribeBackupRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeDescribeBackupResponse);
         }
 
         public async Task<DescribeContinuousBackupsResponse> DescribeContinuousBackupsAsync(DescribeContinuousBackupsRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeDescribeContinuousBackupsResponse);
         }
 
         public async Task<DescribeEndpointsResponse> DescribeEndpointsAsync(DescribeEndpointsRequest request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(fakeDescribeEndpointsResponse);
         }
 
         public async Task<DescribeGlobalTableResponse> DescribeGlobalTableAsync(DescribeGlobalTableRequest request, CancellationToken cancellationToken = default)

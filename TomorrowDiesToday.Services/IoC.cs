@@ -39,7 +39,6 @@ namespace TomorrowDiesToday.Services
 
         private static void RegisterAndConfigureDB()
         {
-            IAmazonDynamoDB client;
             if (_altConfig)
             { // Use DynamoDB-local
                 var config = new AmazonDynamoDBConfig
@@ -49,14 +48,23 @@ namespace TomorrowDiesToday.Services
                 };
 
                 // Client ID is set in DynamoDB-local shell, http://localhost:8000/shell
-                client = new AmazonDynamoDBClient("TomorrowDiesToday", "fakeSecretKey", config);
-                _builder.Register(c => client).As<IAmazonDynamoDB>().SingleInstance();
+                _builder.RegisterType<AmazonDynamoDBClient>().OnPreparing(args =>
+                {
+                    var accessKeyIdParam = new NamedParameter("awsAccessKeyId", "TomorrowDiesToday");
+                    var accessKeyParam = new NamedParameter("awsSecretAccessKey", "fakeSecretKey");
+                    var clientConfig = new NamedParameter("clientConfig", config);
+                    args.Parameters = new[] { accessKeyIdParam, accessKeyParam, clientConfig };
+                }).As<IAmazonDynamoDB>().SingleInstance();
             }
             else
             { // Use AWS DynamoDB
                 var credentials = new TDTCredentials();
-                client = new AmazonDynamoDBClient(credentials, RegionEndpoint.USEast2);
-                _builder.Register(c => client).As<IAmazonDynamoDB>().SingleInstance();
+                _builder.RegisterType<AmazonDynamoDBClient>().OnPreparing(args =>
+                {
+                    var credentialsParam = new NamedParameter("credentials", credentials);
+                    var regionParam = new NamedParameter("region", RegionEndpoint.USEast2);
+                    args.Parameters = new[] { credentialsParam, regionParam };
+                }).As<IAmazonDynamoDB>().SingleInstance();
             }
 
             _builder.RegisterType<DynamoDBContext>().As<IDynamoDBContext>().SingleInstance();
