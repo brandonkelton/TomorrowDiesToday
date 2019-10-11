@@ -50,28 +50,33 @@ namespace TomorrowDiesToday.Services.Data
 
         public async Task Update(GameModel gameModel)
         {
-            var squadDTOs = new List<SquadDTO>();
             if (gameModel.MyPlayer?.Squads != null)
             {
-                foreach (SquadModel squadModel in gameModel.MyPlayer.Squads)
-                {
-                    var squadDTO = new SquadDTO
-                    {
-                        SquadId = squadModel.SquadId,
-                        Data = squadModel.Data,
-                        Stats = squadModel.Stats
-                    };
-                    squadDTOs.Add(squadDTO);
-                }
+                var playerDTO = PlayerToDTO(gameModel.MyPlayer);
+                await _client.Update(playerDTO);
             }
-            var player = new PlayerDTO
+        }
+
+        public PlayerDTO PlayerToDTO(PlayerModel playerModel)
+        {
+            var squadDTOs = new List<SquadDTO>();
+            foreach (SquadModel squadModel in playerModel.Squads)
+            {
+                var squadDTO = new SquadDTO
+                {
+                    SquadId = squadModel.SquadId,
+                    Data = squadModel.Data,
+                    Stats = squadModel.Stats
+                };
+                squadDTOs.Add(squadDTO);
+            }
+            var playerDTO = new PlayerDTO
             {
                 GameId = _game.GameId,
-                PlayerId = gameModel.MyPlayer.PlayerId,
+                PlayerId = playerModel.PlayerId,
                 Squads = squadDTOs
             };
-
-            await _client.Update(player);
+            return playerDTO;
         }
     }
 }

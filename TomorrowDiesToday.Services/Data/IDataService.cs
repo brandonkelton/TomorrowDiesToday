@@ -4,23 +4,23 @@ using System.Text;
 using System.Threading.Tasks;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data.Models;
+using TomorrowDiesToday.Services.Database.DTOs;
 
 namespace TomorrowDiesToday.Services.Data
 {
     public interface IDataService<T, U> where T : IModel where U : IDataRequest
     {
-        Task<bool> Exists(string id);
+        IObservable<T> DataReceived { get; }
+        IObservable<List<T>> DataListReceived { get; }
+
+        Task ConfigureTable();
 
         Task Create(string id);
 
-        Task Update(T model);
-
-        IObservable<T> DataReceived { get; }
-
-        IObservable<List<T>> DataListReceived { get; }
+        Task<bool> Exists(string id);
 
         Task RequestUpdate(U request);
 
-        Task ConfigureTable();
+        Task Update(T model);
     }
 }
