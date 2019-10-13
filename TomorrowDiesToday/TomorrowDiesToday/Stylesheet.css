@@ -1,0 +1,18 @@
+﻿body {
+}
+
+^contentpage {
+    background-color: #000000;
+    color: #FF0000;
+}
+
+^button {
+    background-color: #000000;
+    border-width: 1.0;
+    border-color: #FF0000;
+    border-radius: 10;
+}
+
+listview {
+    color: #FF0000;
+}

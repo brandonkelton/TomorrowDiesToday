@@ -8,5 +8,29 @@
              x:Class="TomorrowDiesToday.App">
     <Application.Resources>
         <local:ViewModelLocator x:Key="ViewModelLocator"/>
+        <!-- <StyleSheet Source="Stylesheet.css" /> -->
+        
+        <!-- App-wide styles -->
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="Red" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="TextColor" Value="Red"/>
+            <Setter Property="BackgroundColor" Value="Black" />
+            <Setter Property="BorderColor" Value="Red" />
+            <Setter Property="BorderWidth" Value="1.0" />
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
+        <Style TargetType="Entry">
+            <Setter Property="PlaceholderColor" Value="Red" />
+            <Setter Property="TextColor" Value="Red" />
+        </Style>
+        <!-- Custom styles -->
+        <Style x:Key="PageStyle" TargetType="ContentPage">
+            <Setter Property="BackgroundColor" Value="Black" />
+        </Style>        
+        <Style x:Key="ListViewLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="Red" />
+        </Style>
     </Application.Resources>
 </Application>
