@@ -21,13 +21,15 @@
             <Setter Property="BorderWidth" Value="1.0" />
             <Setter Property="CornerRadius" Value="5" />
         </Style>
+        <!--
         <Style TargetType="BoxView">
             <Setter Property="CornerRadius" Value="5" />
             <Setter Property="Color" Value="Red" />
         </Style>
+        -->
         <Style TargetType="Entry">
-            <Setter Property="PlaceholderColor" Value="Black" />
-            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="PlaceholderColor" Value="Red" />
+            <Setter Property="TextColor" Value="Red" />
         </Style>
         <!-- Custom styles -->
         <Style x:Key="PageStyle" TargetType="ContentPage">

@@ -68,15 +68,19 @@
                            HorizontalOptions="CenterAndExpand"/>
                     <Button Grid.Row="2" 
                             IsVisible="{Binding IsCreatingGame}" 
-                            Text="Next" Command="{Binding NextStepCommand}"/>
-                    <BoxView Grid.Row="0" />
-                    <Entry IsVisible="{Binding IsJoiningGame}" 
+                            Text="Next" 
+                            Command="{Binding NextStepCommand}"/>
+                    <Label Grid.Row="0" 
+                           IsVisible="{Binding IsJoiningGame}"
+                           Text="Enter game code:"/>
+                    <Entry Grid.Row="1"
+                           IsVisible="{Binding IsJoiningGame}" 
                            Text="{Binding GameId}" 
                            Placeholder="Enter Code" 
                            FontSize="25" 
                            FontAttributes="Bold" 
                            HorizontalTextAlignment="Center"/>
-                    <Button Grid.Row="1" 
+                    <Button Grid.Row="2" 
                             IsVisible="{Binding IsJoiningGame}" 
                             Text="Next" 
                             Command="{Binding JoinGameCommand}"/>
