@@ -62,8 +62,8 @@ namespace TomorrowDiesToday.Tests
         public void Test1()
         {
             var db = Container.Resolve<IDBClient>();
-            var playerDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
+            var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
         }
     }
 }
