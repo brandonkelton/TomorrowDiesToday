@@ -4,6 +4,7 @@ using Autofac;
 using Autofac.Extras.Moq;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TomorrowDiesToday.Services.Database;
@@ -114,6 +115,26 @@ namespace TomorrowDiesToday.Tests
             await client.CreatePlayer(gameId, playerId);
 
             _mockContext.Verify();
+        }
+
+        [Fact]
+        public async Task DeleteGameIsSuccessful()
+        {
+            //var gameId = "1234";
+            //var playerId = "TestPlayer";
+            //// var playerDTO = new PlayerDTO { GameId = gameId, PlayerId = playerId };
+            //var playerList = new List<PlayerDTO>(0);
+            //var searchMock = new AsyncSearch<PlayerDTO>();
+
+            //searchMock.Setup(s => s.GetRemainingAsync(default)).Returns(Task.FromResult(playerList));
+            //_mockContext.Setup(s => s.QueryAsync<PlayerDTO>(gameId, default)).Returns(searchMock.Object);
+            //_mockContext.Setup(c => c.DeleteAsync(It.Is<PlayerDTO>(p => p.GameId == gameId && p.PlayerId == playerId), default)).Verifiable();
+            //_mockContext.Setup(g => g.DeleteAsync(It.Is<GameDTO>(x => x.GameId == gameId), default)).Verifiable();
+
+            //var client = Container.Resolve<IDBClient>();
+            //await client.DeleteGame(gameId, playerId);
+
+            //_mockContext.Verify();
         }
     }
 }
