@@ -13,12 +13,20 @@ using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    class CreateGameViewModel : BaseViewModel, ICreateGameViewModel, IDisposable
+    class CreateGameViewModel : BaseViewModel, ICreateGameViewModel
     {
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
 
         public ICommand CreateGameCommand { get; private set; }
+        public ICommand NextStepCommand { get; private set; }
+
+        private bool _isLoadingData;
+        public bool IsLoadingData
+        {
+            get => _isLoadingData;
+            set => SetProperty(ref _isLoadingData, value);
+        }
 
         private string _gameId;
         public string GameId
@@ -31,7 +39,14 @@ namespace TomorrowDiesToday.ViewModels
             }
         }
 
-        public StartPageViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
+        private bool _gameCreated;
+        public bool GameCreated
+        {
+            get => _gameCreated;
+            set => SetProperty(ref _gameCreated, value);
+        }
+
+        public CreateGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
         {
             _gameService = gameService;
             _gameDataService = gameDataService;
@@ -57,9 +72,9 @@ namespace TomorrowDiesToday.ViewModels
         private async Task CreateGame()
         {
             IsLoadingData = true;
-            IsWaitingForSelection = false;
-            IsCreatingGame = true;
-            IsCreatingOrJoiningGame = true;
+            //IsWaitingForSelection = false;
+            //IsCreatingGame = true;
+            //IsCreatingOrJoiningGame = true;
 
             while (!GameCreated)
             {
