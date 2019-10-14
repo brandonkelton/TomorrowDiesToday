@@ -7,7 +7,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Database
 {
-    internal class TDTCredentials : AWSCredentials
+    public class TDTCredentials : AWSCredentials
     {
         private string _keyId = "rsqfh1kp6DLiwIDczn7G4N0Xy5I15/7+";
         private string _key = "CwE8Hr5t/Dc2WiN1ixPbBpQLKL4NrcN2EtAp9TS9mXkclQefxf9a1vS77MZXA0W1";
