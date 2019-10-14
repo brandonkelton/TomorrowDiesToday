@@ -1,68 +1,60 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Autofac;
+using Autofac.Extras.Moq;
+using Moq;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using TomorrowDiesToday.Services.Database;
+using TomorrowDiesToday.Services.Database.DTOs;
 using Xunit;
 
 namespace TomorrowDiesToday.Tests
 {
     public class DBClientTests
     {
-        public static IContainer Container { get; private set; }
-        private static readonly ContainerBuilder _builder = new ContainerBuilder();
+        private IContainer Container;
+
+        private Mock<IAmazonDynamoDB> _mockClient = new Mock<IAmazonDynamoDB>();
+        private Mock<IDynamoDBContext> _mockContext = new Mock<IDynamoDBContext>();
 
         public DBClientTests()
         {
-            RegisterAndConfigureDB();
-            // RegisterAndConfigureDBLocal();
-            RegisterServices();
-            Container = _builder.Build();
-        }
-
-        /// <summary>
-        /// This should be called when running general tests. (Default)
-        /// </summary>
-        private void RegisterAndConfigureDB()
-        {
-            _builder.RegisterType<MockAmazonDynamoDB>().As<IAmazonDynamoDB>().SingleInstance();
-            _builder.RegisterType<MockDynamoDBContext>().As<IDynamoDBContext>().SingleInstance();
-        }
-
-        /// <summary>
-        /// If you need to test actual DB functionality, call this method instead of RegisterAndConfigureDB(). 
-        /// You will need a local copy of DynamoDB installed with the KeyID and SecretAccessKey specified 
-        /// in the client initialization within this method.
-        /// </summary>
-        private void RegisterAndConfigureDBLocal()
-        {
-            var config = new AmazonDynamoDBConfig
-            {
-                // Replace localhost with server IP to connect with DynamoDB-local on remote server
-                ServiceURL = "http://localhost:8000/"
-            };
-
-            // Client ID is set in DynamoDB-local shell, http://localhost:8000/shell
-            _builder.RegisterType<AmazonDynamoDBClient>().OnPreparing(args =>
-            {
-                var accessKeyIdParam = new NamedParameter("awsAccessKeyId", "TomorrowDiesToday");
-                var accessKeyParam = new NamedParameter("awsSecretAccessKey", "fakeSecretKey");
-                var clientConfig = new NamedParameter("clientConfig", config);
-                args.Parameters = new []{ accessKeyIdParam, accessKeyParam, clientConfig };
-            }).As<IAmazonDynamoDB>().SingleInstance();
-            _builder.RegisterType<DynamoDBContext>().As<IDynamoDBContext>().SingleInstance();
-        }
-
-        private void RegisterServices()
-        {
-            _builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DynamoClient>().As<IDBClient>().InstancePerLifetimeScope();
+            builder.RegisterInstance(_mockClient.Object).As<IAmazonDynamoDB>().SingleInstance();
+            builder.RegisterInstance(_mockContext.Object).As<IDynamoDBContext>().SingleInstance();
+            Container = builder.Build();
         }
 
         [Fact]
-        public void Test1()
+        public async Task GameExistsIsTrue()
         {
-            var db = Container.Resolve<IDBClient>();
-            
+            var checkingGameId = "1234";
+            var returnedGameId = "1234";
+            var returnedGameDTO = new GameDTO { GameId = returnedGameId };
+
+            _mockContext.Setup(c => c.LoadAsync<GameDTO>(checkingGameId, default)).Returns(Task.FromResult(returnedGameDTO));
+
+            var client = Container.Resolve<IDBClient>();
+            var result = await client.GameExists(checkingGameId);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task GameExistsIsFalse()
+        {
+            var checkingGameId = "1234";
+            GameDTO returnedGameDTO = null;
+
+            _mockContext.Setup(c => c.LoadAsync<GameDTO>(checkingGameId, default)).Returns(Task.FromResult(returnedGameDTO));
+
+            var client = Container.Resolve<IDBClient>();
+            var result = await client.GameExists(checkingGameId);
+
+            Assert.False(result);
         }
     }
 }
