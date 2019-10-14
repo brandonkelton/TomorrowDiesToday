@@ -14,16 +14,14 @@ namespace TomorrowDiesToday.Tests
 
         public DBClientTests()
         {
-            // RegisterAndConfigureDB();
-            RegisterAndConfigureDBLocal();
+            RegisterAndConfigureDB();
+            // RegisterAndConfigureDBLocal();
             RegisterServices();
             Container = _builder.Build();
         }
 
         /// <summary>
-        /// Use this instead of the local DB functionality if you don't want to test against an actual DB.
-        /// However, the current mocks throw an error as none of the methods are implemented, so some sort of very
-        /// basic implementation should be set up for all methods... as there are quite a few, so maybe use local for now.  ;)
+        /// This should be called when running general tests. (Default)
         /// </summary>
         private void RegisterAndConfigureDB()
         {
@@ -32,7 +30,9 @@ namespace TomorrowDiesToday.Tests
         }
 
         /// <summary>
-        /// Use this instead of the regular mock configuration if you want to really test against your local DB
+        /// If you need to test actual DB functionality, call this method instead of RegisterAndConfigureDB(). 
+        /// You will need a local copy of DynamoDB installed with the KeyID and SecretAccessKey specified 
+        /// in the client initialization within this method.
         /// </summary>
         private void RegisterAndConfigureDBLocal()
         {
@@ -43,9 +43,14 @@ namespace TomorrowDiesToday.Tests
             };
 
             // Client ID is set in DynamoDB-local shell, http://localhost:8000/shell
-            IAmazonDynamoDB client = new AmazonDynamoDBClient("TomorrowDiesToday", "fakeSecretKey", config);
-            _builder.Register(c => client).As<IAmazonDynamoDB>().SingleInstance();
-            _builder.Register(c => new DynamoDBContext(client)).As<IDynamoDBContext>().SingleInstance();
+            _builder.RegisterType<AmazonDynamoDBClient>().OnPreparing(args =>
+            {
+                var accessKeyIdParam = new NamedParameter("awsAccessKeyId", "TomorrowDiesToday");
+                var accessKeyParam = new NamedParameter("awsSecretAccessKey", "fakeSecretKey");
+                var clientConfig = new NamedParameter("clientConfig", config);
+                args.Parameters = new []{ accessKeyIdParam, accessKeyParam, clientConfig };
+            }).As<IAmazonDynamoDB>().SingleInstance();
+            _builder.RegisterType<DynamoDBContext>().As<IDynamoDBContext>().SingleInstance();
         }
 
         private void RegisterServices()
