@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.CreateGamePage">
     <ContentPage.BindingContext>
-        <Binding Path="StartPageViewModel" Source="{StaticResource ViewModelLocator}"/>
+        <Binding Path="CreateGameViewModel" Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <Grid IsVisible="{Binding IsCreatingOrJoiningGame}">
@@ -21,8 +21,6 @@
             <Label Grid.Row="0" IsVisible="{Binding IsCreatingGame}" Text="Provide the following code to your team:"/>
             <Label Grid.Row="1" IsVisible="{Binding IsCreatingGame}" Text="{Binding GameId}" FontSize="35" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
             <Button Grid.Row="2" IsVisible="{Binding IsCreatingGame}" Text="Next" Command="{Binding NextStepCommand}"/>
-            <Entry Grid.Row="0" IsVisible="{Binding IsJoiningGame}" Text="{Binding GameId}" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
-            <Button Grid.Row="1" IsVisible="{Binding IsJoiningGame}" Text="Next" Command="{Binding JoinGameCommand}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
