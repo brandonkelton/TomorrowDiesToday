@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Game
 {
-    class GameService : IGameService
+    public class GameService : IGameService
     {
         private static Random _random = new Random();
 

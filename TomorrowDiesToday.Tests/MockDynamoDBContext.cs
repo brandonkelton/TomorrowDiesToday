@@ -30,40 +30,19 @@ namespace TomorrowDiesToday.Tests
             throw new NotImplementedException();
         }
 
-        public async Task DeleteAsync<T>(T value, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task DeleteAsync<T>(T value, CancellationToken cancellationToken = default) { }
 
-        public async Task DeleteAsync<T>(T value, DynamoDBOperationConfig operationConfig, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task DeleteAsync<T>(T value, DynamoDBOperationConfig operationConfig, CancellationToken cancellationToken = default) { }
 
-        public async Task DeleteAsync<T>(object hashKey, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task DeleteAsync<T>(object hashKey, CancellationToken cancellationToken = default) { }
 
-        public async Task DeleteAsync<T>(object hashKey, DynamoDBOperationConfig operationConfig, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task DeleteAsync<T>(object hashKey, DynamoDBOperationConfig operationConfig, CancellationToken cancellationToken = default) { }
 
-        public async Task DeleteAsync<T>(object hashKey, object rangeKey, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task DeleteAsync<T>(object hashKey, object rangeKey, CancellationToken cancellationToken = default) { }
 
-        public async Task DeleteAsync<T>(object hashKey, object rangeKey, DynamoDBOperationConfig operationConfig, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task DeleteAsync<T>(object hashKey, object rangeKey, DynamoDBOperationConfig operationConfig, CancellationToken cancellationToken = default) { }
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+        public void Dispose() { }
 
         public async Task ExecuteBatchGetAsync(BatchGet[] batches, CancellationToken cancellationToken = default)
         {
@@ -112,32 +91,32 @@ namespace TomorrowDiesToday.Tests
 
         public async Task<T> LoadAsync<T>(object hashKey, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(default(T));
         }
 
         public async Task<T> LoadAsync<T>(object hashKey, DynamoDBOperationConfig operationConfig, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(default(T));
         }
 
         public async Task<T> LoadAsync<T>(object hashKey, object rangeKey, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(default(T));
         }
 
         public async Task<T> LoadAsync<T>(object hashKey, object rangeKey, DynamoDBOperationConfig operationConfig, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(default(T));
         }
 
         public async Task<T> LoadAsync<T>(T keyObject, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(default(T));
         }
 
         public async Task<T> LoadAsync<T>(T keyObject, DynamoDBOperationConfig operationConfig, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(default(T));
         }
 
         public AsyncSearch<T> QueryAsync<T>(object hashKeyValue, DynamoDBOperationConfig operationConfig = null)
@@ -147,6 +126,7 @@ namespace TomorrowDiesToday.Tests
 
         public AsyncSearch<T> QueryAsync<T>(object hashKeyValue, QueryOperator op, IEnumerable<object> values, DynamoDBOperationConfig operationConfig = null)
         {
+            
             throw new NotImplementedException();
         }
 

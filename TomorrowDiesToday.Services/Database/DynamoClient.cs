@@ -23,7 +23,7 @@ namespace TomorrowDiesToday.Services.Database
         public async Task<bool> GameExists(string gameId)
         {
             var existingGame = await _context.LoadAsync<GameDTO>(gameId);
-            return existingGame != null;
+            return existingGame != null && existingGame.GameId == gameId;
         }
 
         public async Task<bool> PlayerExists(string gameId, string playerId)
