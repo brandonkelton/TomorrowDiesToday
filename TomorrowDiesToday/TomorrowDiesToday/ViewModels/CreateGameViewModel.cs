@@ -50,31 +50,12 @@ namespace TomorrowDiesToday.ViewModels
         {
             _gameService = gameService;
             _gameDataService = gameDataService;
-            //_playerDataService = playerDataService;
-
-            //IsWaitingForSelection = true;
-            ConfigureCommands();
-            //SubscribeToUpdates();
-        }
-
-        private void ConfigureCommands()
-        {
-            CreateGameCommand = new Command(async () => await CreateGame());
-            //SetIsJoiningGameCommand = new Command(() => StartJoiningGame());
-            //JoinGameCommand = new Command(async () => await JoinGame());
-            //NextStepCommand = new Command(() => NextAfterGameCreated());
-            //CreatePlayerCommand = new Command<string>(async playerId => await CreatePlayer(playerId));
-            //RefreshPlayerListCommand = new Command(() => RefreshPlayers());
-            // ConfigureTableCommand = new Command(async () => await ConfigureTable());
-            //EncryptCommand = new Command(() => EncryptText());
+            var createGameTask = CreateGame();
         }
 
         private async Task CreateGame()
         {
             IsLoadingData = true;
-            //IsWaitingForSelection = false;
-            //IsCreatingGame = true;
-            //IsCreatingOrJoiningGame = true;
 
             while (!GameCreated)
             {
@@ -83,11 +64,11 @@ namespace TomorrowDiesToday.ViewModels
                 if (!await _gameDataService.Exists(gameId))
                 {
                     await _gameDataService.Create(gameId);
-                    IsLoadingData = false;
                     GameId = gameId;
                     GameCreated = true;
                 }
             }
+            IsLoadingData = false;
         }
     }
 }

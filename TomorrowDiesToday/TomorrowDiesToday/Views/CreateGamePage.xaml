@@ -6,21 +6,34 @@
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.CreateGamePage">
     <ContentPage.BindingContext>
-        <Binding Path="CreateGameViewModel" Source="{StaticResource ViewModelLocator}"/>
+        <Binding Path="CreateGameViewModel" 
+                 Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <Grid IsVisible="{Binding IsCreatingOrJoiningGame}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="40"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" IsVisible="{Binding IsCreatingGame}" Text="Provide the following code to your team:"/>
-            <Label Grid.Row="1" IsVisible="{Binding IsCreatingGame}" Text="{Binding GameId}" FontSize="35" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
-            <Button Grid.Row="2" IsVisible="{Binding IsCreatingGame}" Text="Next" Command="{Binding NextStepCommand}"/>
-        </Grid>
+        <StackLayout Grid.Row="2" 
+                     Orientation="Vertical" 
+                     VerticalOptions="Center" 
+                     HorizontalOptions="Center">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" 
+                       Text="Provide the following code to your team:"/>
+                <Label Grid.Row="1" 
+                       Text="{Binding GameId}" 
+                       FontSize="35" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="CenterAndExpand"/>
+                <Button Grid.Row="2" 
+                        Text="Next" 
+                        Command="{Binding NextStepCommand}"/>
+            </Grid>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>
