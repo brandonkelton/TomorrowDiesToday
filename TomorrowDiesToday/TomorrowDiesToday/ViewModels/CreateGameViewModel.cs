@@ -13,7 +13,7 @@ using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    class CreateGameViewModel : BaseViewModel, ICreateGameViewModel
+    public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel
     {
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;

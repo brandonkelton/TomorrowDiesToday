@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    interface ICreateGameViewModel
+    public interface ICreateGameViewModel
     {
         //ObservableCollection<PlayerModel> Players { get; }
 

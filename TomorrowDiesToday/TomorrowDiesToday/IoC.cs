@@ -38,6 +38,7 @@ namespace TomorrowDiesToday
         {
             _builder.RegisterType<MainPageViewModel>().As<IMainPageViewModel>().SingleInstance();
             _builder.RegisterType<StartPageViewModel>().As<IStartPageViewModel>().SingleInstance();
+            _builder.RegisterType<CreateGameViewModel>().As<ICreateGameViewModel>().SingleInstance();
         }
     }
 }

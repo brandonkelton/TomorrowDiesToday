@@ -11,5 +11,7 @@ namespace TomorrowDiesToday
         public IMainPageViewModel MainPageViewModel => IoC.Container.Resolve<IMainPageViewModel>();
 
         public IStartPageViewModel StartPageViewModel => IoC.Container.Resolve<IStartPageViewModel>();
+
+        public ICreateGameViewModel CreateGameViewModel => IoC.Container.Resolve<ICreateGameViewModel>();
     }
 }
