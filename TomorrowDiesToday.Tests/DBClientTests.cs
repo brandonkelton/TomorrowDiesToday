@@ -56,5 +56,64 @@ namespace TomorrowDiesToday.Tests
 
             Assert.False(result);
         }
+
+        [Fact]
+        public async Task PlayerExistsIsTrue()
+        {
+            var checkingGameId = "1234";
+            var checkingPlayerId = "TestPlayer";
+            var returnedGameId = "1234";
+            var returnedPlayerId = "TestPlayer";
+            var returnedPlayerDTO = new PlayerDTO { GameId = returnedGameId, PlayerId = returnedPlayerId };
+
+            _mockContext.Setup(c => c.LoadAsync<PlayerDTO>(checkingGameId, checkingPlayerId, default)).Returns(Task.FromResult(returnedPlayerDTO));
+
+            var client = Container.Resolve<IDBClient>();
+            var result = await client.PlayerExists(checkingGameId, checkingPlayerId);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task PlayerExistsIsFalse()
+        {
+            var checkingGameId = "1234";
+            var checkingPlayerId = "TestPlayer";
+            PlayerDTO returnedPlayerDTO = null;
+
+            _mockContext.Setup(c => c.LoadAsync<PlayerDTO>(checkingGameId, checkingPlayerId, default)).Returns(Task.FromResult(returnedPlayerDTO));
+
+            var client = Container.Resolve<IDBClient>();
+            var result = await client.PlayerExists(checkingGameId, checkingPlayerId);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task CreateGameIsSuccessful()
+        {
+            var gameId = "1234";
+
+            _mockContext.Setup(c => c.SaveAsync(It.Is<GameDTO>(g => g.GameId == gameId), default)).Verifiable();
+
+            var client = Container.Resolve<IDBClient>();
+            await client.CreateGame(gameId);
+
+            _mockContext.Verify();
+        }
+
+        [Fact]
+        public async Task CreatePlayerIsSuccessful()
+        {
+            var gameId = "1234";
+            var playerId = "TestPlayer";
+
+            _mockContext.Setup(c => c.SaveAsync(It.Is<PlayerDTO>(p => p.GameId == gameId && p.PlayerId == playerId), default)).Verifiable();
+
+            var client = Container.Resolve<IDBClient>();
+            await client.CreatePlayer(gameId, playerId);
+
+            _mockContext.Verify();
+        }
     }
 }
