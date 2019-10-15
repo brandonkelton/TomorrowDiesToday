@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using System;
 using TomorrowDiesToday.Services;
-using TomorrowDiesToday.Services.Communication;
 using TomorrowDiesToday.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -11,22 +10,11 @@ namespace TomorrowDiesToday
 {
     public partial class App : Application
     {
-        public static IContainer Container { get; private set; }
-        private static readonly ContainerBuilder _builder = new ContainerBuilder();
-
         public App()
         {
             InitializeComponent();
-
-            DependencyResolver.ResolveUsing(type => Container.IsRegistered(type) ? Container.Resolve(type) : null);
-            RegisterServices();
-            Container = _builder.Build();
-            MainPage = new MainPage();
-        }
-
-        private static void RegisterServices()
-        {
-            _builder.RegisterInstance(StartupServices.GetDataStore());
+            IoC.Initialize();
+            MainPage = new StartPage();
         }
 
         protected override void OnStart()

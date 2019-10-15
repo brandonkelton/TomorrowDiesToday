@@ -4,7 +4,10 @@ using System.Text;
 
 namespace TomorrowDiesToday.Models
 {
-    public interface IModel
+    public class Squad
     {
+        public string Id { get; set; }
+
+        public int Count { get; set; }
     }
 }

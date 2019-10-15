@@ -5,16 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.MainPage"
-             xmlns:local="clr-namespace:TomorrowDiesToday.ViewModels;assembly=TomorrowDiesToday">
-
+             BackgroundColor="Black">
     <ContentPage.BindingContext>
-        <local:MainPageViewModel/>
+        <Binding Path="MainPageViewModel" Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
-    <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+    <StackLayout Margin="20,35,20,20" VerticalOptions="Start" HorizontalOptions="CenterAndExpand">
+        <Label FontSize="30" TextColor="Red" Text="{Binding Text}"/>
     </StackLayout>
-
 </ContentPage>

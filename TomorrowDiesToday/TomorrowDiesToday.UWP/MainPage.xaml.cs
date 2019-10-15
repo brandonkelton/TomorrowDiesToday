@@ -20,7 +20,6 @@ namespace TomorrowDiesToday.UWP
         public MainPage()
         {
             this.InitializeComponent();
-
             LoadApplication(new TomorrowDiesToday.App());
         }
     }

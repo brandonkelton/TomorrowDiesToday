@@ -1,14 +1,14 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 
 namespace TomorrowDiesToday.Models
 {
     public class GameModel : IModel
     {
-        public bool IsValid()
-        {
-            return false;
-        }
+        public string GameId { get; set; }
 
-        public DateTime Timestamp { get; private set; }
+        public PlayerModel MyPlayer { get; set; }
+
+        public List<PlayerModel> OtherPlayers { get; set; }
     }
 }
