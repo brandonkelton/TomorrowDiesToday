@@ -36,6 +36,19 @@ namespace TomorrowDiesToday.Services
             return squadStats;
         }
 
+        public Dictionary<string, int> CalculateTileStats(int alerts, string tileName, Dictionary<string, Dictionary<string, int>> tileData)
+        {
+            Dictionary<string, int> tileStats = tileData[tileName];
+
+            tileStats["Combat"] *= alerts;
+            tileStats["Stealth"] *= alerts;
+            tileStats["Cunning"] *= alerts;
+            tileStats["Diplomacy"] *= alerts;
+
+            return tileStats;
+        }
+
+        #region Helper Methods
         public int CalculateCombat(Dictionary<string, int> squadData)
         {
             int total = 0;
@@ -277,6 +290,8 @@ namespace TomorrowDiesToday.Services
 
             return total;
         }
+
+        #endregion
     }
 }
 
