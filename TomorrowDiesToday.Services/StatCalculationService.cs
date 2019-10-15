@@ -26,6 +26,16 @@ namespace TomorrowDiesToday.Services
             return squadData;
         }
 
+        public Dictionary<string, int> CalculateSquadStats(Dictionary<string, int> squadData, Dictionary<string, int> squadStats)
+        {
+            squadStats["Combat"] = CalculateCombat(squadData);
+            squadStats["Stealth"] = CalculateStealth(squadData);
+            squadStats["Cunning"] = CalculateCunning(squadData);
+            squadStats["Diplomacy"] = CalculateDiplomacy(squadData);
+
+            return squadStats;
+        }
+
         public int CalculateCombat(Dictionary<string, int> squadData)
         {
             int total = 0;
