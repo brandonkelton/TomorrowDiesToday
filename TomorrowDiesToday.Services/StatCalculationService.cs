@@ -40,10 +40,13 @@ namespace TomorrowDiesToday.Services
         {
             Dictionary<string, int> tileStats = tileData[tileName];
 
-            tileStats["Combat"] *= alerts;
-            tileStats["Stealth"] *= alerts;
-            tileStats["Cunning"] *= alerts;
-            tileStats["Diplomacy"] *= alerts;
+            if (alerts > 0)
+            {
+                tileStats["Combat"] *= alerts;
+                tileStats["Stealth"] *= alerts;
+                tileStats["Cunning"] *= alerts;
+                tileStats["Diplomacy"] *= alerts;
+            }
 
             return tileStats;
         }
