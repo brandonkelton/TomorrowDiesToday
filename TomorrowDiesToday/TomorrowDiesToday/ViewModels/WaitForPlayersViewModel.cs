@@ -22,7 +22,6 @@ namespace TomorrowDiesToday.ViewModels
 
         public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
 
-        public ICommand CreatePlayerCommand { get; private set; }
         public ICommand RefreshPlayerListCommand { get; private set; }
         public ICommand NextStepCommand { get; private set; }
 
@@ -83,7 +82,6 @@ namespace TomorrowDiesToday.ViewModels
         private void ConfigureCommands()
         {
             //NextStepCommand = new Command(() => NextAfterGameCreated());
-            CreatePlayerCommand = new Command<string>(async playerId => await CreatePlayer(playerId));
             RefreshPlayerListCommand = new Command(() => RefreshPlayers());
         }
 
@@ -99,26 +97,6 @@ namespace TomorrowDiesToday.ViewModels
         private void RefreshPlayers()
         {
             _playerDataService.RequestUpdate(new PlayerRequest());
-        }
-
-        private async Task CreatePlayer(string playerId)
-        {
-            IsLoadingData = true;
-            PlayerExists = false;
-
-            if (!await _playerDataService.Exists(playerId))
-            {
-                await _playerDataService.Create(playerId);
-                IsLoadingData = false;
-                _gameService.PlayerId = playerId;
-                CurrentPlayer = $"You are {playerId}";
-                //IsSelectingPlayers = false;
-                //IsWaitingForPlayers = true;
-                return;
-            }
-
-            PlayerAlreadySelected = $"{playerId} Has Already Been Selected";
-            PlayerExists = true;
         }
 
         public void Dispose()
