@@ -7,7 +7,7 @@ using TomorrowDiesToday.Models;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    interface IJoinGameViewModel
+    public interface IJoinGameViewModel
     {
         ICommand JoinGameCommand { get; }
         ICommand NextStepCommand { get; }
