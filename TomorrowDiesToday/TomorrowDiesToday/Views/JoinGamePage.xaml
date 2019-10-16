@@ -5,6 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.JoinGamePage">
+    <ContentPage.BindingContext>
+        <Binding Path="StartPageViewModel" Source="{StaticResource ViewModelLocator}"/>
+    </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Grid.Row="2" Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="Center">
             <Grid>
