@@ -9,13 +9,14 @@ using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
+using TomorrowDiesToday.Views;
 using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
     public class StartPageViewModel : BaseViewModel, IStartPageViewModel /*, IDisposable */
     {
-        public INavigation Navigation { private get; set; }
+        public INavigation Navigation { get; set; }
         public ICommand CreateGameCommand { get; private set; }
         public ICommand JoinGameCommand { get; private set; }
 
