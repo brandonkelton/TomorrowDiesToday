@@ -13,7 +13,7 @@ using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    class JoinGameViewModel : BaseViewModel, IJoinGameViewModel
+    public class JoinGameViewModel : BaseViewModel, IJoinGameViewModel
     {
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
@@ -51,6 +51,39 @@ namespace TomorrowDiesToday.ViewModels
         {
             get => _isLoadingData;
             set => SetProperty(ref _isLoadingData, value);
+        }
+
+        public JoinGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService)
+        {
+            _gameService = gameService;
+            _gameDataService = gameDataService;
+
+            //IsWaitingForSelection = true;
+            //ConfigureCommands();
+            //SubscribeToUpdates();
+        }
+
+        private void ConfigureCommands()
+        {
+            //CreateGameCommand = new Command(async () => await CreateGame());
+            //JoinGameCommand = new Command(async () => await JoinGame());
+            //NextStepCommand = new Command(() => NextAfterGameCreated());
+        }
+
+        private async Task JoinGame()
+        {
+            if (await _gameDataService.Exists(GameId))
+            {
+                InvalidGameId = false;
+                GameJoined = true;
+                //IsJoiningGame = false;
+                //IsCreatingOrJoiningGame = false;
+                //IsSelectingPlayers = true;
+                return;
+            }
+
+            GameJoined = false;
+            InvalidGameId = true;
         }
     }
 }
