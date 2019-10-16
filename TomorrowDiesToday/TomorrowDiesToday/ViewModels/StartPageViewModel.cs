@@ -13,8 +13,11 @@ using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class StartPageViewModel : BaseViewModel, IStartPageViewModel, IDisposable
+    public class StartPageViewModel : BaseViewModel, IStartPageViewModel /*, IDisposable */
     {
+
+
+        /*
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
@@ -268,5 +271,6 @@ namespace TomorrowDiesToday.ViewModels
         {
             if (_playerListSubscription != null) _playerListSubscription.Dispose();
         }
+        */
     }
 }
