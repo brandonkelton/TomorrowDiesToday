@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.JoinGamePage">
     <ContentPage.BindingContext>
-        <Binding Path="StartPageViewModel" Source="{StaticResource ViewModelLocator}"/>
+        <Binding Path="JoinPageViewModel" Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Grid.Row="2" Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="Center">
