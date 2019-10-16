@@ -15,7 +15,36 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class StartPageViewModel : BaseViewModel, IStartPageViewModel /*, IDisposable */
     {
+        public INavigation Navigation { private get; set; }
+        public ICommand CreateGameCommand { get; private set; }
+        public ICommand JoinGameCommand { get; private set; }
 
+        public StartPageViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
+        {
+            //_gameService = gameService;
+            //_gameDataService = gameDataService;
+            //_playerDataService = playerDataService;
+
+            //IsWaitingForSelection = true;
+            ConfigureCommands();
+            //SubscribeToUpdates();
+        }
+
+        private void ConfigureCommands()
+        {
+            CreateGameCommand = new Command(async () => await CreateGame());
+            JoinGameCommand = new Command(async () => await JoinGame());
+        }
+
+        private async Task CreateGame()
+        {
+            await Navigation.PushAsync(new CreateGamePage());
+        }
+
+        private async Task JoinGame()
+        {
+            await Navigation.PushAsync(new JoinGamePage());
+        }
 
         /*
         private IGameService _gameService;
