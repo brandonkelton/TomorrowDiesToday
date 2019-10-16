@@ -46,7 +46,7 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _gameCreated, value);
         }
 
-        public CreateGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
+        public CreateGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService)
         {
             _gameService = gameService;
             _gameDataService = gameDataService;
