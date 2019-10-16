@@ -9,6 +9,17 @@
         <Binding Path="StartPageViewModel" Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
+        
+    </ContentPage.Content>
+</ContentPage>
+
+
+
+<!--
+    <ContentPage.Content>
+    -->
+        
+        <!--
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
@@ -22,17 +33,25 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
+        -->
+                        
                         <!--<RowDefinition Height="100"/>
                     <RowDefinition Height="40"/>-->
+        
+        <!--
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
                     <Button Grid.Row="0" Text="Create Game" Command="{Binding CreateGameCommand}"/>
                     <Button Grid.Row="1" Text="Join Game" Command="{Binding SetIsJoiningGameCommand}"/>
+        -->   
+    
                     <!--<Editor Grid.Row="2" Text="{Binding Text}"/>
                 <Button Grid.Row="3" Text="Encrypt" Command="{Binding EncryptCommand}"/>-->
                     <!--<Button Grid.Row="2" Text="Configure" Command="{Binding ConfigureTableCommand}"/>-->
+        
+        <!--
                 </Grid>
                 <Grid IsVisible="{Binding IsCreatingOrJoiningGame}">
                     <Grid.RowDefinitions>
@@ -100,5 +119,9 @@
                 </Grid>
             </StackLayout>
         </Grid>
+        -->
+
+    <!--
     </ContentPage.Content>
 </ContentPage>
+    -->
