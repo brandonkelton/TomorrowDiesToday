@@ -48,6 +48,7 @@ namespace TomorrowDiesToday
             _builder.RegisterType<StartPageViewModel>().As<IStartPageViewModel>().SingleInstance();
             _builder.RegisterType<CreateGameViewModel>().As<ICreateGameViewModel>().SingleInstance();
             _builder.RegisterType<JoinGameViewModel>().As<IJoinGameViewModel>().SingleInstance();
+            _builder.RegisterType<SelectCharacterViewModel>().As<ISelectCharacterViewModel>().SingleInstance();
         }
 
         private static void RegisterAndConfigureDB()
