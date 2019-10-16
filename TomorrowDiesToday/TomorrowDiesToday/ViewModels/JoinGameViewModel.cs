@@ -17,12 +17,9 @@ namespace TomorrowDiesToday.ViewModels
     {
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
-        //public ICommand CreateGameCommand { get; private set; }
         public ICommand SetIsJoiningGameCommand { get; private set; }
         public ICommand JoinGameCommand { get; private set; }
         public ICommand NextStepCommand { get; private set; }
-        //public ICommand CreatePlayerCommand { get; private set; }
-        //public ICommand RefreshPlayerListCommand { get; private set; }
 
         private string _gameId;
         public string GameId
@@ -33,13 +30,6 @@ namespace TomorrowDiesToday.ViewModels
                 SetProperty(ref _gameId, value);
                 _gameService.GameId = value;
             }
-        }
-
-        private bool _isJoiningGame;
-        public bool IsJoiningGame
-        {
-            get => _isJoiningGame;
-            set => SetProperty(ref _isJoiningGame, value);
         }
 
         private bool _gameJoined;

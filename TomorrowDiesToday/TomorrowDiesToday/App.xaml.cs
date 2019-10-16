@@ -14,7 +14,7 @@ namespace TomorrowDiesToday
         {
             InitializeComponent();
             IoC.Initialize();
-            MainPage = new CreateGamePage();
+            MainPage = new JoinGamePage();
         }
 
         protected override void OnStart()
