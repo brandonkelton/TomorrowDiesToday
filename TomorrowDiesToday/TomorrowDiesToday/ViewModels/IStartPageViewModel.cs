@@ -9,6 +9,8 @@ namespace TomorrowDiesToday.ViewModels
 {
     public interface IStartPageViewModel
     {
+        ICommand CreateGameCommand { get; }
+        ICommand JoinGameCommand { get; }
 
         /*
         ObservableCollection<PlayerModel> Players { get; }
