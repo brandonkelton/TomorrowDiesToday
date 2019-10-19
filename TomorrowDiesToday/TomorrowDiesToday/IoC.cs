@@ -10,7 +10,6 @@ using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Services.Game;
-using TomorrowDiesToday.Services.Navigation;
 using TomorrowDiesToday.ViewModels;
 using Xamarin.Forms.Internals;
 
@@ -41,7 +40,6 @@ namespace TomorrowDiesToday
             _builder.RegisterType<GameService>().As<IGameService>().SingleInstance();
             _builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
             _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
-            _builder.RegisterType<NavigationService>().As<INavigationService>().SingleInstance();
         }
 
         private static void RegisterViewModels()
