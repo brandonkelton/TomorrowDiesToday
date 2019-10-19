@@ -13,5 +13,20 @@ namespace TomorrowDiesToday.ViewModels
     public class MainPageViewModel : BaseViewModel, IMainPageViewModel
     {
         public string Text => "This is a test";
+
+        double x, y;
+        void OnPanUpdated(object sender, PanUpdatedEventArgs e)
+        {
+            // Handle the pan
+            switch (e.StatusType)
+            {
+                case GestureStatus.Running:
+                    break;
+                case GestureStatus.Completed:
+                    y = bottomSheet.TranslationY;
+                    break;
+            }
+
+        }
     }
 }
