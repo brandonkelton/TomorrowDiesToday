@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TomorrowDiesToday.Models
+namespace TomorrowDiesToday.Services.Navigation.Models
 {
     public interface IViewModelLifecycle
     {

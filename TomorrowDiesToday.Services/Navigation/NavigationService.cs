@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
-using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Services.Navigation.Models;
 using System.Threading.Tasks;
 using System.Linq;
 

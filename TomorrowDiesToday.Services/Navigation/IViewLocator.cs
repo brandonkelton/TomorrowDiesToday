@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Services.Navigation.Models;
 using Xamarin.Forms;
 
 namespace TomorrowDiesToday.Services.Navigation
