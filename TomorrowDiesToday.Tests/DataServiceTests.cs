@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Autofac;
@@ -10,68 +11,40 @@ using Xunit;
 using TomorrowDiesToday.Services.Game;
 using System.Linq;
 using System.Threading.Tasks;
+using Moq;
+using TomorrowDiesToday.Services.Database.DTOs;
 
 namespace TomorrowDiesToday.Tests
 {
     public class DataServiceTests
     {
-        private static ContainerBuilder _builder = new ContainerBuilder();
         public static IContainer Container;
-        private static bool _initialized = false;
+
+        private Mock<IDBClient> _mockClient = new Mock<IDBClient>();
+        private Mock<IDynamoDBContext> _mockContext = new Mock<IDynamoDBContext>();
+        private Mock<IGameService> _mockGameService = new Mock<IGameService>();
+        private Mock<IDataService<GameModel, GameRequest>> _mockGameDataService = new Mock<IDataService<GameModel, GameRequest>>();
+        private Mock<IDataService<PlayerModel, PlayerRequest>> _mockPlayerDataService = new Mock<IDataService<PlayerModel, PlayerRequest>>();
         private static Random _random = new Random();
         private const string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        
 
         public DataServiceTests()
         {
-            if (!_initialized)
-            {
-                // RegisterAndConfigureDB();
-                RegisterAndConfigureDBLocal();
-                RegisterServices();
-                Container = _builder.Build();
-                _initialized = true;
-            }
-        }
-
-        /// <summary>
-        /// Use this instead of the local DB functionality if you don't want to test against an actual DB.
-        /// However, the current mocks throw an error as none of the methods are implemented, so some sort of very
-        /// basic implementation should be set up for all methods... as there are quite a few, so maybe use local for now.  ;)
-        /// </summary>
-        private void RegisterAndConfigureDB()
-        {
-            _builder.RegisterType<MockAmazonDynamoDB>().As<IAmazonDynamoDB>().SingleInstance();
-            _builder.RegisterType<MockDynamoDBContext>().As<IDynamoDBContext>().SingleInstance();
-        }
-
-        /// <summary>
-        /// Use this instead of the regular mock configuration if you want to really test against your local DB
-        /// </summary>
-        private void RegisterAndConfigureDBLocal()
-        {
-            var config = new AmazonDynamoDBConfig
-            {
-                // Replace localhost with server IP to connect with DynamoDB-local on remote server
-                ServiceURL = "http://localhost:8000/"
-            };
-
-            // Client ID is set in DynamoDB-local shell, http://localhost:8000/shell
-            var client = new AmazonDynamoDBClient("TomorrowDiesToday", "fakeSecretKey", config);
-            _builder.Register(c => client).As<IAmazonDynamoDB>().SingleInstance();
-            _builder.Register(c => new DynamoDBContext(client)).As<IDynamoDBContext>().SingleInstance();
-        }
-
-        private void RegisterServices()
-        {
-            _builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
-            _builder.RegisterType<GameService>().As<IGameService>().SingleInstance();
-            _builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
-            _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DynamoClient>().As<IDBClient>().InstancePerLifetimeScope();
+            builder.RegisterType<GameService>().As<IGameService>().InstancePerLifetimeScope();
+            builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().InstancePerLifetimeScope();
+            builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().InstancePerLifetimeScope();
+            builder.RegisterInstance(_mockClient.Object).As<IDBClient>().SingleInstance();
+            builder.RegisterInstance(_mockContext.Object).As<IDynamoDBContext>().SingleInstance();
+            builder.RegisterInstance(_mockGameService.Object).As<IGameService>().SingleInstance();
+            builder.RegisterInstance(_mockGameDataService.Object).As<IDataService<GameModel, GameRequest>>().SingleInstance();
+            builder.RegisterInstance(_mockPlayerDataService.Object).As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
+            Container = builder.Build();
         }
 
         [Fact]
-        public async Task ConfigureTables()
+        public async Task GameConfigureTable()
         {
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
             await gameDataService.ConfigureTable();
@@ -79,14 +52,101 @@ namespace TomorrowDiesToday.Tests
         }
 
         [Fact]
-        public async Task CreateGame()
+        public async Task GameCreate()
         {
 
             var gameService = Container.Resolve<IGameService>();
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
+            await gameDataService.ConfigureTable();
             var gameId = gameService.GenerateGameId();
             await gameDataService.Create(gameId);
             Assert.True(true);
+        }
+
+        [Fact]
+        public async Task GameExistsIsTrue()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async Task GameExistsIsFalse()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async Task GameUpdate()
+        {
+            var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
+
+            var gameModel = new GameModel
+            {
+                GameId = "Test",
+                MyPlayer = new PlayerModel { PlayerId = "Test" },
+                OtherPlayers = new List<PlayerModel>()
+            };
+
+            await gameDataService.Update(gameModel);
+            Assert.True(true);
+        }
+
+        [Fact]
+        public async Task GameRequestUpdate()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async Task PlayerConfigureTable()
+        {
+            var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
+            await playerDataService.ConfigureTable();
+            Assert.True(true);
+        }
+
+        [Fact]
+        public async Task PlayerCreate()
+        {
+            var gameService = Container.Resolve<IGameService>();
+            var playerDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
+            var gameId = gameService.GenerateGameId();
+            var playerId = "Test";
+            await playerDataService.Create(playerId);
+            Assert.True(true);
+        }
+
+        [Fact]
+        public async Task PlayerExistsIsTrue()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async Task PlayerExistsIsFalse()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async Task PlayerUpdate()
+        {
+            var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
+
+            var playerModel = new PlayerModel
+            {
+                PlayerId = "Test",
+                Squads = new List<SquadModel>()
+            };
+
+            await playerDataService.Update(playerModel);
+            Assert.True(true);
+        }
+
+        [Fact]
+        public async Task PlayerRequestUpdate()
+        {
+            throw new NotImplementedException();
         }
     }
 }
