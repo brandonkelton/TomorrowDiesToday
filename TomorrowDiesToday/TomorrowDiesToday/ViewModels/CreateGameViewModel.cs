@@ -10,10 +10,11 @@ using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
+using Autofac;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel
+    public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel, IViewModelOnInit
     {
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
@@ -48,7 +49,7 @@ namespace TomorrowDiesToday.ViewModels
 
         public CreateGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService)
         {
-            _gameService = gameService;
+            _gameService = IoC.Container.Resolve<GameService>();
             _gameDataService = gameDataService;
             var createGameTask = CreateGame();
         }
@@ -69,6 +70,11 @@ namespace TomorrowDiesToday.ViewModels
                 }
             }
             IsLoadingData = false;
+        }
+
+        public async Task OnInit()
+        {
+            await CreateGame();
         }
     }
 }

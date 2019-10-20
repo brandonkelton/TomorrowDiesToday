@@ -12,6 +12,8 @@ using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Navigation;
 using TomorrowDiesToday.ViewModels;
+using TomorrowDiesToday.Views;
+using TomorrowDiesToday.Views.Interfaces;
 using Xamarin.Forms.Internals;
 
 namespace TomorrowDiesToday
@@ -31,6 +33,7 @@ namespace TomorrowDiesToday
             RegisterServices();
             RegisterAndConfigureDB();
             RegisterViewModels();
+            RegisterViews();
 
             Container = _builder.Build();
         }
@@ -42,16 +45,29 @@ namespace TomorrowDiesToday
             _builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
             _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
             _builder.RegisterType<NavigationService>().As<INavigationService>().SingleInstance();
+            _builder.RegisterType<ViewLocator>().As<IViewLocator>().SingleInstance();
+            
         }
 
         private static void RegisterViewModels()
         {
+            _builder.RegisterType<CreateGameViewModel>().OnActivated(async args =>
+            {
+                await args.Instance.OnInit();
+            }).As<ICreateGameViewModel>().SingleInstance();
+
             _builder.RegisterType<MainPageViewModel>().As<IMainPageViewModel>().SingleInstance();
             _builder.RegisterType<StartPageViewModel>().As<IStartPageViewModel>().SingleInstance();
             _builder.RegisterType<CreateGameViewModel>().As<ICreateGameViewModel>().SingleInstance();
             _builder.RegisterType<JoinGameViewModel>().As<IJoinGameViewModel>().SingleInstance();
             _builder.RegisterType<SelectCharacterViewModel>().As<ISelectCharacterViewModel>().SingleInstance();
             _builder.RegisterType<WaitForPlayersViewModel>().As<IWaitForPlayersViewModel>().SingleInstance();
+        }
+
+        private static void RegisterViews()
+        {
+            _builder.RegisterType<MainPage>().SingleInstance();
+            _builder.RegisterType<StartPage>().SingleInstance();
         }
 
         private static void RegisterAndConfigureDB()

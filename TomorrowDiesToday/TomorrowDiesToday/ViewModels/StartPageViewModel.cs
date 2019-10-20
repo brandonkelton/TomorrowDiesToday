@@ -10,18 +10,23 @@ using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Views;
+using TomorrowDiesToday.Services.Navigation.Models;
 using Xamarin.Forms;
+using Autofac;
+using TomorrowDiesToday.Navigation;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class StartPageViewModel : BaseViewModel, IStartPageViewModel /*, IDisposable */
+    public class StartPageViewModel : ViewModelBase, IStartPageViewModel /*, IDisposable */
     {
         public INavigation Navigation { get; set; }
+        private INavigationService _navigationService;
         public ICommand CreateGameCommand { get; private set; }
         public ICommand JoinGameCommand { get; private set; }
 
-        public StartPageViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
+        public StartPageViewModel()
         {
+            _navigationService = IoC.Container.Resolve<INavigationService>();
             //_gameService = gameService;
             //_gameDataService = gameDataService;
             //_playerDataService = playerDataService;
@@ -39,12 +44,12 @@ namespace TomorrowDiesToday.ViewModels
 
         private async Task CreateGame()
         {
-            await Navigation.PushAsync(new CreateGamePage());
+            await _navigationService.NavigateTo<StartPage>();
         }
 
         private async Task JoinGame()
         {
-            await Navigation.PushAsync(new JoinGamePage());
+            //await Navigation.PushAsync(new JoinGamePage());
         }
 
         /*

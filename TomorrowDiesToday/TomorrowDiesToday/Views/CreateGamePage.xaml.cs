@@ -10,7 +10,7 @@ using Xamarin.Forms.Xaml;
 namespace TomorrowDiesToday.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CreateGamePage : ContentPage
+    public partial class CreateGamePage : ContentPage, ICreateGamePage
     {
         public CreateGamePage()
         {

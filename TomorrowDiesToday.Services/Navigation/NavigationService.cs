@@ -6,29 +6,30 @@ using Xamarin.Forms.Internals;
 using TomorrowDiesToday.Services.Navigation.Models;
 using System.Threading.Tasks;
 using System.Linq;
+using TomorrowDiesToday.Models.Interfaces.Views;
 
 namespace TomorrowDiesToday.Services.Navigation
 {
     public class NavigationService : INavigationService
     {
-        private readonly IHaveMainPage _presentationRoot;
+        private readonly IMainPage _presentationRoot;
         private readonly IViewLocator _viewLocator;
 
-        public NavigationService(IHaveMainPage presentationRoot, IViewLocator viewLocator)
+        public NavigationService(IMainPage presentationRoot, IViewLocator viewLocator)
         {
             _presentationRoot = presentationRoot;
             _viewLocator = viewLocator;
         }
 
-        private Xamarin.Forms.INavigation Navigator => _presentationRoot.MainPage.Navigation;
+        private Xamarin.Forms.INavigation Navigator => _presentationRoot;
 
         public void PresentAsMainPage(ViewModelBase viewModel)
         {
             var page = _viewLocator.CreateAndBindPageFor(viewModel);
 
-            IEnumerable<ViewModelBase> viewModelsToDismiss = FindViewModelsToDismiss(_presentationRoot.MainPage);
+            IEnumerable<ViewModelBase> viewModelsToDismiss = FindViewModelsToDismiss(_presentationRoot);
 
-            if (_presentationRoot.MainPage is NavigationPage navPage)
+            if (_presentationRoot is NavigationPage navPage)
             {
                 // If we're replacing a navigation page, unsub from events
                 navPage.PopRequested -= NavPagePopRequested;

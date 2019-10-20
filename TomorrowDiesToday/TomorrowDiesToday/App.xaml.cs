@@ -5,16 +5,24 @@ using TomorrowDiesToday.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
+using TomorrowDiesToday.ViewModels;
+using TomorrowDiesToday.Services.Navigation;
 
 namespace TomorrowDiesToday
 {
-    public partial class App : Application
+    public partial class App : Application, IHaveMainPage
     {
         public App()
         {
             InitializeComponent();
             IoC.Initialize();
-            MainPage = new JoinGamePage();
+            MainPage = IoC.Container.Resolve<INavigationPage>();
+            //MainPage = new JoinGamePage();
+            var navigator = new NavigationService(this, new ViewLocator());
+
+            var rootViewModel = new StartPageViewModel();
+
+            navigator.PresentAsNavigatableMainPage(rootViewModel);
         }
 
         protected override void OnStart()
