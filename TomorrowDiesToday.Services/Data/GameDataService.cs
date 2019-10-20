@@ -12,10 +12,11 @@ namespace TomorrowDiesToday.Services.Data
 {
     public class GameDataService : IDataService<GameModel, GameRequest>
     {
+        public IObservable<GameModel> DataReceived => _update;
+        public IObservable<List<GameModel>> DataListReceived => _updateList;
 
         private readonly ReplaySubject<GameModel> _update = new ReplaySubject<GameModel>(1);
         private readonly ReplaySubject<List<GameModel>> _updateList = new ReplaySubject<List<GameModel>>(1);
-
         private IDBClient _client;
         private IGameService _game;
 
@@ -29,9 +30,6 @@ namespace TomorrowDiesToday.Services.Data
         {
             await _client.InitializeGameTable();
         }
-
-        public IObservable<GameModel> DataReceived => _update;
-        public IObservable<List<GameModel>> DataListReceived => _updateList;
 
         public async Task Create(string id)
         {
@@ -57,7 +55,7 @@ namespace TomorrowDiesToday.Services.Data
             }
         }
 
-        public PlayerDTO PlayerToDTO(PlayerModel playerModel)
+        private PlayerDTO PlayerToDTO(PlayerModel playerModel)
         {
             var squadDTOs = new List<SquadDTO>();
             foreach (SquadModel squadModel in playerModel.Squads)
@@ -76,6 +74,7 @@ namespace TomorrowDiesToday.Services.Data
                 PlayerId = playerModel.PlayerId,
                 Squads = squadDTOs
             };
+
             return playerDTO;
         }
     }
