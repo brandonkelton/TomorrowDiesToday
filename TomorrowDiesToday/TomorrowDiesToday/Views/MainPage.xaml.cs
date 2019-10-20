@@ -16,27 +16,26 @@ namespace TomorrowDiesToday.Views
         public MainPage()
         {
             InitializeComponent();
-            OnPlayerClicked();
             
         }
-        double x, y;
-        Boolean open = false;
+        Boolean closed = true;
         
         void OnPanUpdated(object sender, PanUpdatedEventArgs e) 
         {
             switch (e.StatusType)
             {
                 case GestureStatus.Running:
-                    var translateY = Math.Max(Math.Min(0, y + e.TotalY), -Math.Abs((Height * .25) - Height));
+                    var translateY = Math.Max(-Math.Abs(Height * .5), Math.Min(bottomSheet.TranslationY + e.TotalY, 0));
                     bottomSheet.TranslateTo(bottomSheet.X, translateY, 30);
                     break;
                 case GestureStatus.Completed:
-                    y = bottomSheet.TranslationY;
-
-                    var finalTranslation = Math.Max(Math.Min(0, -1000), -Math.Abs(getClosestLockState(e.TotalY + y)));
-
-
-
+                    //y = bottomSheet.TranslationY;
+                    var finalTranslation = Math.Max(Math.Min(0, -1000), -Math.Abs(Height * .5));
+                    if (bottomSheet.TranslationY + e.TotalY > -Math.Abs(Height * .5)/2)
+                    {
+                        finalTranslation = Math.Max(Math.Min(0, -1000), -Math.Abs(0));
+                    }
+                    
                     if (e.TotalY < 0)
                     {
                         bottomSheet.TranslateTo(bottomSheet.X, finalTranslation, 250, Easing.SpringIn);
@@ -45,71 +44,68 @@ namespace TomorrowDiesToday.Views
                     {
                         bottomSheet.TranslateTo(bottomSheet.X, finalTranslation, 250, Easing.SpringOut);
                     }
-                    y = bottomSheet.TranslationY;
-
                     break;
 
-            }
-             double getClosestLockState(double TranslationY)
-            {
-                var lockStates = new double[] { 0, .5, .85 };
-                var distance = Math.Abs(TranslationY);
-                var currentProportion = distance / Height;
-
-                var smallestDistance = 10000.0;
-                var closestIndex = 0;
-                for (var i = 0; i < lockStates.Length; i++)
-                {
-                    var state = lockStates[i];
-                    var absoluteDistance = Math.Abs(state - currentProportion);
-                    if (absoluteDistance < smallestDistance)
-                    {
-                        smallestDistance = absoluteDistance;
-                        closestIndex = i;
-                    }
-                }
-
-                var selectedLockState = lockStates[closestIndex];
-                var TranslateToLockState = selectedLockState * Height;
-
-                return TranslateToLockState;
-            }
-            
-            
+            }      
         }
+        void SwipeBottom(object sender, SwipedEventArgs e)
+        {
+            var finalTranslation = 0.0;
+            switch (e.Direction)
+            {
+                case SwipeDirection.Up:
+                    finalTranslation = Math.Max(Math.Min(0, -1000), -Math.Abs(Height * .5));
+                    bottomSheet.TranslateTo(bottomSheet.X, finalTranslation, 250, Easing.SpringOut);
+                    break;
+                case SwipeDirection.Down:
+                    finalTranslation = Math.Max(Math.Min(0, -1000), -Math.Abs(0));
+                    bottomSheet.TranslateTo(bottomSheet.X, finalTranslation, 250, Easing.SpringOut);
+                    break;
+            }
+        }
+
         void OnPlayerClicked(object sender, EventArgs e)
         {
             
-            if (open)
+            if (closed)
             {
                 sideSheet.TranslateTo(Width * .75, sideSheet.Y, 100);
 
-                open = false;
+                closed = false;
             }
             else
             {
-                sideSheet.TranslateTo(Width * .75, sideSheet.Y);
-                sideSheet.IsVisible = true;
                 sideSheet.TranslateTo(0, sideSheet.Y, 100);
-                open = true;
+                closed = true;
             }
         }
-        void OnPlayerClicked()
+
+        void OnPanUpdatedSide(object sender, PanUpdatedEventArgs e)
         {
-
-            if (open)
+            switch (e.StatusType)
             {
-                sideSheet.TranslateTo(Width * .75, sideSheet.Y, 100);
+                case GestureStatus.Running:
+                    var translateX = Math.Min(Width * .75, Math.Max(sideSheet.TranslationX + e.TotalX, 0));
+                    sideSheet.TranslateTo( translateX, sideSheet.Y, 30);
+                    break;
+                case GestureStatus.Completed:
+                    if(sideSheet.TranslationX > (Width * .75) / 2)
+                    {
+                        sideSheet.TranslateTo(Width * .75, sideSheet.Y, 100);
 
-                open = false;
-            }
-            else
-            {
-                sideSheet.TranslateTo(Width * .75, sideSheet.Y);
-                sideSheet.IsVisible = true;
-                sideSheet.TranslateTo(0, sideSheet.Y, 100);
-                open = true;
+                        closed = false;
+                    }
+                    else
+                    {
+                        sideSheet.TranslateTo(0, sideSheet.Y, 100);
+                        closed = true;
+                    }
+                    break;
+                  
+
             }
         }
+
+
     }
 }

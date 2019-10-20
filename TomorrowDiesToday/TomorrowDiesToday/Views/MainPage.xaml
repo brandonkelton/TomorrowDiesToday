@@ -29,7 +29,9 @@
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
             
             <Frame.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Up,Down" Swiped="SwipeBottom"/>
                 <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+                
             </Frame.GestureRecognizers>
 
             <StackLayout Spacing="5">
@@ -37,14 +39,25 @@
 
             </StackLayout>
         </Frame>
+        <BoxView x:Name="swiper" 
+            RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0,Constant=0}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.05,Constant=0}"
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+            <BoxView.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Right" Swiped="OnPlayerClicked"/>
+            </BoxView.GestureRecognizers>
+        </BoxView>
+                 
 
         
         <Frame x:Name="sideSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#666666"
          RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=-.76,Constant=0}"
          RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.75,Constant=0}"
          RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-          
-         
+        <Frame.GestureRecognizers>
+            <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
+        </Frame.GestureRecognizers>
+
         </Frame>
 
     </RelativeLayout>
