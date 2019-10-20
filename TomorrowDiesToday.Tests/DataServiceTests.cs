@@ -7,20 +7,31 @@ using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Models;
 using Xunit;
+using TomorrowDiesToday.Services.Game;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace TomorrowDiesToday.Tests
 {
     public class DataServiceTests
     {
-        public static IContainer Container { get; private set; }
-        private static readonly ContainerBuilder _builder = new ContainerBuilder();
+        private static ContainerBuilder _builder = new ContainerBuilder();
+        public static IContainer Container;
+        private static bool _initialized = false;
+        private static Random _random = new Random();
+        private const string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        
 
         public DataServiceTests()
         {
-            // RegisterAndConfigureDB();
-            RegisterAndConfigureDBLocal();
-            RegisterServices();
-            Container = _builder.Build();
+            if (!_initialized)
+            {
+                // RegisterAndConfigureDB();
+                RegisterAndConfigureDBLocal();
+                RegisterServices();
+                Container = _builder.Build();
+                _initialized = true;
+            }
         }
 
         /// <summary>
@@ -54,16 +65,28 @@ namespace TomorrowDiesToday.Tests
         private void RegisterServices()
         {
             _builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
+            _builder.RegisterType<GameService>().As<IGameService>().SingleInstance();
             _builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
             _builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
         }
 
         [Fact]
-        public void Test1()
+        public async Task ConfigureTables()
         {
-            var db = Container.Resolve<IDBClient>();
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
+            await gameDataService.ConfigureTable();
+            Assert.True(true);
+        }
+
+        [Fact]
+        public async Task CreateGame()
+        {
+
+            var gameService = Container.Resolve<IGameService>();
+            var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
+            var gameId = gameService.GenerateGameId();
+            await gameDataService.Create(gameId);
+            Assert.True(true);
         }
     }
 }
