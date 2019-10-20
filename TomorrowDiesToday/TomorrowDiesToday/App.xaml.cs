@@ -31,5 +31,11 @@ namespace TomorrowDiesToday
         {
             // Handle when your app resumes
         }
+
+        protected override void CleanUp()
+        {
+            base.CleanUp();
+            IoC.Destroy();
+        }
     }
 }
