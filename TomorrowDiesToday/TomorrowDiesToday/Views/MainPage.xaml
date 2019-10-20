@@ -9,7 +9,7 @@
              BackgroundColor="Black">
     
     <ContentPage.ToolbarItems>
-        <ToolbarItem Name="AddMenuItem" Order="Primary" Text="Players"  CommandParameter=""/>
+        <ToolbarItem Name="addPlayer" Order="Primary" Text="Players"  Clicked="OnPlayerClicked"/>
     </ContentPage.ToolbarItems>
     
     <ContentPage.BindingContext>
@@ -21,12 +21,12 @@
         <StackLayout Padding="10,20,0,0">
             <Label FontSize="30" TextColor="Red" Text="{Binding Text}"/>
         </StackLayout>
-
+        
+        
         <Frame x:Name="bottomSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#4b4c4c" 
             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=.6,Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
-            RelativeLayout.HeightConstraint="{ConstraintExpression
-            Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
             
             <Frame.GestureRecognizers>
                 <PanGestureRecognizer PanUpdated="OnPanUpdated" />
@@ -37,7 +37,15 @@
 
             </StackLayout>
         </Frame>
+
         
+        <Frame x:Name="sideSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#666666"
+         RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=-.76,Constant=0}"
+         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.75,Constant=0}"
+         RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+          
+         
+        </Frame>
 
     </RelativeLayout>
     

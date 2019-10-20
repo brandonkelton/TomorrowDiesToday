@@ -16,9 +16,12 @@ namespace TomorrowDiesToday.Views
         public MainPage()
         {
             InitializeComponent();
+            OnPlayerClicked();
             
         }
         double x, y;
+        Boolean open = false;
+        
         void OnPanUpdated(object sender, PanUpdatedEventArgs e) 
         {
             switch (e.StatusType)
@@ -50,12 +53,9 @@ namespace TomorrowDiesToday.Views
              double getClosestLockState(double TranslationY)
             {
                 var lockStates = new double[] { 0, .5, .85 };
-
-                //get the current proportion of the sheet in relation to the screen
                 var distance = Math.Abs(TranslationY);
                 var currentProportion = distance / Height;
 
-                //calculate which lockstate it's the closest to
                 var smallestDistance = 10000.0;
                 var closestIndex = 0;
                 for (var i = 0; i < lockStates.Length; i++)
@@ -74,7 +74,42 @@ namespace TomorrowDiesToday.Views
 
                 return TranslateToLockState;
             }
+            
+            
+        }
+        void OnPlayerClicked(object sender, EventArgs e)
+        {
+            
+            if (open)
+            {
+                sideSheet.TranslateTo(Width * .75, sideSheet.Y, 100);
 
+                open = false;
+            }
+            else
+            {
+                sideSheet.TranslateTo(Width * .75, sideSheet.Y);
+                sideSheet.IsVisible = true;
+                sideSheet.TranslateTo(0, sideSheet.Y, 100);
+                open = true;
+            }
+        }
+        void OnPlayerClicked()
+        {
+
+            if (open)
+            {
+                sideSheet.TranslateTo(Width * .75, sideSheet.Y, 100);
+
+                open = false;
+            }
+            else
+            {
+                sideSheet.TranslateTo(Width * .75, sideSheet.Y);
+                sideSheet.IsVisible = true;
+                sideSheet.TranslateTo(0, sideSheet.Y, 100);
+                open = true;
+            }
         }
     }
 }
