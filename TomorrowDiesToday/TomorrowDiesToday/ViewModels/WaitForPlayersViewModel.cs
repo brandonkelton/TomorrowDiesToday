@@ -9,12 +9,15 @@ using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
+using TomorrowDiesToday.Navigation;
+using TomorrowDiesToday.Views;
 using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
     public class WaitForPlayersViewModel : BaseViewModel, IWaitForPlayersViewModel, IDisposable
     {
+        private INavigationService _navigationService;
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
@@ -68,8 +71,9 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _playerAlreadySelected, value);
         }
 
-        public WaitForPlayersViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
+        public WaitForPlayersViewModel(INavigationService navigationService, IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
         {
+            _navigationService = navigationService;
             _gameService = gameService;
             _gameDataService = gameDataService;
             _playerDataService = playerDataService;
@@ -81,8 +85,13 @@ namespace TomorrowDiesToday.ViewModels
 
         private void ConfigureCommands()
         {
-            //NextStepCommand = new Command(() => NextAfterGameCreated());
+            NextStepCommand = new Command(() => StartGame());
             RefreshPlayerListCommand = new Command(() => RefreshPlayers());
+        }
+
+        private void StartGame()
+        {
+            _navigationService.NavigateTo<MainPage>();
         }
 
         private void SubscribeToUpdates()
