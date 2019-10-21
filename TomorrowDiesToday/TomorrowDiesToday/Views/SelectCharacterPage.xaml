@@ -21,22 +21,60 @@
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Text="Who would you like to be?"/>
-                <Label Grid.Row="1" TextColor="Red" FontAttributes="Bold" IsVisible="{Binding PlayerExists}" Text="{Binding PlayerAlreadySelected}"/>
-                <Button Grid.Row="2" Text="Archibald Kluge" Command="{Binding CreatePlayerCommand}" CommandParameter="Archibald Kluge"/>
-                <Button Grid.Row="3" Text="Axle Robbins" Command="{Binding CreatePlayerCommand}" CommandParameter="Axle Robbins"/>
-                <Button Grid.Row="4" Text="Azura Badeau" Command="{Binding CreatePlayerCommand}" CommandParameter="Azura Badeau"/>
-                <Button Grid.Row="5" Text="Boris Myasneek" Command="{Binding CreatePlayerCommand}" CommandParameter="Boris Myasneek"/>
-                <Button Grid.Row="6" Text="Cassandra O'Shea" Command="{Binding CreatePlayerCommand}" CommandParameter="Cassandra O'Shea"/>
-                <Button Grid.Row="7" Text="Emerson Barlow" Command="{Binding CreatePlayerCommand}" CommandParameter="Emerson Barlow"/>
-                <Button Grid.Row="8" Text="Jin Feng" Command="{Binding CreatePlayerCommand}" CommandParameter="Jin Feng"/>
-                <Button Grid.Row="8" Text="The Node" Command="{Binding CreatePlayerCommand}" CommandParameter="The Node"/>
-                <Button Grid.Row="8" Text="Ugo Dottore" Command="{Binding CreatePlayerCommand}" CommandParameter="Ugo Dottore"/>
-                <Button Grid.Row="8" Text="General Goodman" Command="{Binding CreatePlayerCommand}" CommandParameter="General Goodman"/>
+                <Label Grid.Row="0" 
+                       Text="Who would you like to be?"/>
+                <Label Grid.Row="1" 
+                       TextColor="Red" 
+                       FontAttributes="Bold" 
+                       IsVisible="{Binding PlayerExists}" 
+                       Text="{Binding PlayerAlreadySelected}"/>
+                <Button Grid.Row="2" 
+                        Text="Archibald Kluge" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="Archibald Kluge"/>
+                <Button Grid.Row="3" 
+                        Text="Axle Robbins" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="Axle Robbins"/>
+                <Button Grid.Row="4" 
+                        Text="Azura Badeau" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="Azura Badeau"/>
+                <Button Grid.Row="5" 
+                        Text="Boris Myasneek" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="Boris Myasneek"/>
+                <Button Grid.Row="6" 
+                        Text="Cassandra O'Shea" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="Cassandra O'Shea"/>
+                <Button Grid.Row="7" 
+                        Text="Emerson Barlow" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="Emerson Barlow"/>
+                <Button Grid.Row="8" 
+                        Text="Jin Feng" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="Jin Feng"/>
+                <Button Grid.Row="9" 
+                        Text="The Node" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="The Node"/>
+                <Button Grid.Row="10" 
+                        Text="Ugo Dottore" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="Ugo Dottore"/>
+                <Button Grid.Row="11" 
+                        Text="General Goodman" 
+                        Command="{Binding CreatePlayerCommand}" 
+                        CommandParameter="General Goodman"/>
             </Grid>
         </StackLayout>
     </ContentPage.Content>
