@@ -4,22 +4,29 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Autofac;
+using TomorrowDiesToday.Templates;
+using TomorrowDiesToday.Views;
 
 namespace TomorrowDiesToday.Navigation
 {
-    public class NavigationService : INavigationService
+    public class NavigationService : INavigationService, IOnInitAsync
     {
-        private INavigation Navigation { get; set; }
+        private NavigationPage _navigationPage { get; set; }
 
-        public NavigationService(INavigation navgationPage)
+        public NavigationService(NavigationPage navigationPage)
         {
-            Navigation = navgationPage;
+            _navigationPage = navigationPage;
+        }
+
+        public async Task OnInitAsync()
+        {
+            await NavigateTo<StartPage>();
         }
 
         public async Task NavigateTo<T>() where T : Page
         {
-            var view = IoC.Container.Resolve<T>();
-            await Navigation.PushAsync(view);
+            var page = IoC.Container.Resolve<T>();
+            await _navigationPage.PushAsync(page);
         }
     }
 }

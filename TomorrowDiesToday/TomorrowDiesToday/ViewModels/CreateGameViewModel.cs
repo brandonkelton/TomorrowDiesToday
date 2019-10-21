@@ -10,10 +10,11 @@ using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
+using TomorrowDiesToday.Templates;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel
+    public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel, IOnInitAsync
     {
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
@@ -50,7 +51,11 @@ namespace TomorrowDiesToday.ViewModels
         {
             _gameService = gameService;
             _gameDataService = gameDataService;
-            var createGameTask = CreateGame();
+        }
+
+        public async Task OnInitAsync()
+        {
+            await CreateGame();
         }
 
         private async Task CreateGame()

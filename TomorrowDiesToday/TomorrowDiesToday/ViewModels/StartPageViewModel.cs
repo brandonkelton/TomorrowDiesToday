@@ -5,18 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TomorrowDiesToday.Models;
-using TomorrowDiesToday.Services.Game;
-using TomorrowDiesToday.Services.Data;
-using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Views;
 using Xamarin.Forms;
 using TomorrowDiesToday.Navigation;
-using Autofac;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class StartPageViewModel : BaseViewModel, IStartPageViewModel /*, IDisposable */
+    public class StartPageViewModel : BaseViewModel, IStartPageViewModel
     {
         private INavigationService _navigationService;
         public ICommand CreateGameCommand { get; private set; }

@@ -17,6 +17,7 @@ using TomorrowDiesToday.ViewModels;
 using TomorrowDiesToday.Views;
 using TomorrowDiesToday.Navigation;
 using Xamarin.Forms.Internals;
+using Xamarin.Forms;
 
 namespace TomorrowDiesToday
 {
@@ -86,8 +87,9 @@ namespace TomorrowDiesToday
 
         private static void RegisterViews(ContainerBuilder builder)
         {
-            builder.RegisterType<MainPage>().SingleInstance();
+            builder.RegisterType<TDTNavigationPage>().As<NavigationPage>().SingleInstance();
             builder.RegisterType<StartPage>().SingleInstance();
+            builder.RegisterType<MainPage>().SingleInstance();
             builder.RegisterType<CreateGamePage>().SingleInstance();
             builder.RegisterType<JoinGamePage>().SingleInstance();
             builder.RegisterType<SelectCharacterPage>().SingleInstance();
