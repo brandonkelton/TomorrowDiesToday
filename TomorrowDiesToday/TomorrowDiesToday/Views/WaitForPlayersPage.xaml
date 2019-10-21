@@ -6,10 +6,14 @@
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.WaitForPlayersPage">
     <ContentPage.BindingContext>
-        <Binding Path="WaitForPlayersViewModel" Source="{StaticResource ViewModelLocator}"/>
+        <Binding Path="WaitForPlayersViewModel" 
+                 Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout Grid.Row="2" Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="Center">
+        <StackLayout Grid.Row="2" 
+                     Orientation="Vertical" 
+                     VerticalOptions="Center" 
+                     HorizontalOptions="Center">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
@@ -19,13 +23,19 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="400"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" FontSize="24" Text="{Binding CurrentPlayer}"/>
-                <Button Grid.Row="1" Text="Refresh List" Command="{Binding RefreshPlayerListCommand}"/>
-                <ListView Grid.Row="2" ItemsSource="{Binding Players}">
+                <Label Grid.Row="0" 
+                       FontSize="24" 
+                       Text="{Binding CurrentPlayer}"/>
+                <Button Grid.Row="1" 
+                        Text="Refresh List" 
+                        Command="{Binding RefreshPlayerListCommand}"/>
+                <ListView Grid.Row="2" 
+                          ItemsSource="{Binding Players}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <Label FontSize="20" Text="{Binding PlayerId}"/>
+                                <Label FontSize="20" 
+                                       Text="{Binding PlayerId}"/>
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
