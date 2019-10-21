@@ -63,7 +63,7 @@ namespace TomorrowDiesToday.ViewModels
             _gameDataService = gameDataService;
 
             //IsWaitingForSelection = true;
-            //ConfigureCommands();
+            ConfigureCommands();
             //SubscribeToUpdates();
         }
 
