@@ -6,10 +6,14 @@
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.JoinGamePage">
     <ContentPage.BindingContext>
-        <Binding Path="JoinPageViewModel" Source="{StaticResource ViewModelLocator}"/>
+        <Binding Path="JoinPageViewModel" 
+                 Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout Grid.Row="2" Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="Center">
+        <StackLayout Grid.Row="2" 
+                     Orientation="Vertical" 
+                     VerticalOptions="Center" 
+                     HorizontalOptions="Center">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
@@ -18,8 +22,14 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"/>
                 </Grid.ColumnDefinitions>
-                <Entry Grid.Row="0" IsVisible="{Binding IsJoiningGame}" Text="{Binding GameId}" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
-                <Button Grid.Row="1" IsVisible="{Binding IsJoiningGame}" Text="Next" Command="{Binding JoinGameCommand}"/>
+                <Entry Grid.Row="0" 
+                       Text="{Binding GameId}" 
+                       FontSize="25" 
+                       FontAttributes="Bold" 
+                       HorizontalTextAlignment="Center"/>
+                <Button Grid.Row="1" 
+                        Text="Next" 
+                        Command="{Binding JoinGameCommand}"/>
             </Grid>
         </StackLayout>
     </ContentPage.Content>
