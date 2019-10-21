@@ -33,6 +33,7 @@ namespace TomorrowDiesToday
             RegisterServices(builder);
             RegisterAndConfigureDB(builder);
             RegisterViewModels(builder);
+            RegisterViews(builder);
             
             Container = builder.Build();
 
