@@ -13,5 +13,6 @@ namespace TomorrowDiesToday.ViewModels
     public class MainPageViewModel : BaseViewModel, IMainPageViewModel
     {
         public string Text => "This is a test";
+
     }
 }
