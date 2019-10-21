@@ -9,13 +9,26 @@ namespace TomorrowDiesToday.Services.Database
 {
     public interface IDBClient
     {
-        event EventHandler<List<Dictionary<string, AttributeValue>>> SquadResponseReceived;
-        event EventHandler<List<Dictionary<string, AttributeValue>>> SquadsResponseReceived;
+        Task<bool> GameExists(string gameId);
 
-        Task RequestSquads(string gameId, string playerId);
+        Task<bool> PlayerExists(string gameId, string playerId);
 
-        Task RequestSquad(SquadRequestDTO squadDTO);
+        Task CreateGame(string gameId);
 
-        Task SendSquad(SquadUpdateDTO squadDTO);
+        Task CreatePlayer(string gameId, string playerId);
+
+        Task DeleteGame(string gameId, string playerId);
+
+        Task<PlayerDTO> RequestPlayer(string gameId, string playerId);
+
+        Task<List<PlayerDTO>> RequestPlayerList(string gameId);
+
+        Task Update(PlayerDTO player);
+
+        //Temporary
+        Task InitializeGameTable();
+
+        //Temporary
+        Task InitializePlayerTable();
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Data.Models
 {
-    public class SquadRequest : IDataRequest
+    public class GameRequest : IDataRequest
     {
     }
 }

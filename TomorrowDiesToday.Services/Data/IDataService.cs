@@ -9,10 +9,18 @@ namespace TomorrowDiesToday.Services.Data
 {
     public interface IDataService<T, U> where T : IModel where U : IDataRequest
     {
-        void Send(T model);
+        Task<bool> Exists(string id);
 
-        IObservable<T> Update { get; }
+        Task Create(string id);
 
-        void RequestUpdate(U request);
+        Task Update(T model);
+
+        IObservable<T> DataReceived { get; }
+
+        IObservable<List<T>> DataListReceived { get; }
+
+        Task RequestUpdate(U request);
+
+        Task ConfigureTable();
     }
 }
