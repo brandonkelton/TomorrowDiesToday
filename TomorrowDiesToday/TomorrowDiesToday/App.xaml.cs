@@ -16,6 +16,7 @@ namespace TomorrowDiesToday
             IoC.Initialize();
             //MainPage = new NavigationPage(new MainPage());
             MainPage = IoC.Container.Resolve<StartPage>();
+            //MainPage = new StartPage();
         }
 
         protected override void OnStart()
