@@ -9,6 +9,8 @@ using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
+using TomorrowDiesToday.Navigation;
+using TomorrowDiesToday.Views;
 using Xamarin.Forms;
 using TomorrowDiesToday.Templates;
 
@@ -16,6 +18,7 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel, IOnInitAsync
     {
+        private INavigationService _navigationService;
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
 
@@ -47,10 +50,22 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _gameCreated, value);
         }
 
-        public CreateGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService)
+        public CreateGameViewModel(INavigationService navigationService, IGameService gameService, IDataService<GameModel, GameRequest> gameDataService)
         {
+            _navigationService = navigationService;
             _gameService = gameService;
             _gameDataService = gameDataService;
+            ConfigureCommands();
+        }
+
+        private void ConfigureCommands()
+        {
+            NextStepCommand = new Command(async () => await NextStep());
+        }
+
+        private async Task NextStep()
+        {
+            await _navigationService.NavigateTo<SelectCharacterPage>();
         }
 
         public async Task OnInitAsync()
