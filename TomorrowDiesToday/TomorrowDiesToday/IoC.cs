@@ -14,6 +14,7 @@ using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Templates;
 using TomorrowDiesToday.ViewModels;
+using TomorrowDiesToday.Views;
 using Xamarin.Forms.Internals;
 
 namespace TomorrowDiesToday
@@ -74,6 +75,20 @@ namespace TomorrowDiesToday
         {
             builder.RegisterType<MainPageViewModel>().As<IMainPageViewModel>().SingleInstance();
             builder.RegisterType<StartPageViewModel>().As<IStartPageViewModel>().SingleInstance();
+            builder.RegisterType<CreateGameViewModel>().As<IStartPageViewModel>().SingleInstance();
+            builder.RegisterType<JoinGameViewModel>().As<IStartPageViewModel>().SingleInstance();
+            builder.RegisterType<SelectCharacterViewModel>().As<IStartPageViewModel>().SingleInstance();
+            builder.RegisterType<WaitForPlayersViewModel>().As<IStartPageViewModel>().SingleInstance();
+        }
+
+        private static void RegisterViews(ContainerBuilder builder)
+        {
+            builder.RegisterType<MainPage>().SingleInstance();
+            builder.RegisterType<StartPage>().SingleInstance();
+            builder.RegisterType<CreateGamePage>().SingleInstance();
+            builder.RegisterType<JoinGamePage>().SingleInstance();
+            builder.RegisterType<SelectCharacterPage>().SingleInstance();
+            builder.RegisterType<WaitForPlayersPage>().SingleInstance();
         }
 
         private static void RegisterAndConfigureDB(ContainerBuilder builder)
