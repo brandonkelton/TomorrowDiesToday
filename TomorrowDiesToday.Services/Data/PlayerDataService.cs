@@ -12,6 +12,9 @@ namespace TomorrowDiesToday.Services.Data
 {
     public class PlayerDataService : IDataService<PlayerModel, PlayerRequest>
     {
+        public IObservable<PlayerModel> DataReceived => _update;
+        public IObservable<List<PlayerModel>> DataListReceived => _updateList;
+
         private readonly ReplaySubject<PlayerModel> _update = new ReplaySubject<PlayerModel>(1);
         private readonly ReplaySubject<List<PlayerModel>> _updateList = new ReplaySubject<List<PlayerModel>>(1);
         private IDBClient _client;
@@ -28,9 +31,6 @@ namespace TomorrowDiesToday.Services.Data
             await _client.InitializePlayerTable();
         }
 
-        public IObservable<PlayerModel> DataReceived => _update;
-        public IObservable<List<PlayerModel>> DataListReceived => _updateList;
-
         public async Task Create(string id)
         {
             var existingPlayer = await Exists(id);
@@ -40,6 +40,7 @@ namespace TomorrowDiesToday.Services.Data
                 // ex:  PlayerExistsException(playerId)
                 throw new Exception("Player already exists!");
             }
+
             await _client.CreatePlayer(_game.GameId, id);
         }
 
@@ -50,25 +51,10 @@ namespace TomorrowDiesToday.Services.Data
 
         public async Task RequestUpdate(PlayerRequest request)
         {
-            if (request.Id != null)
+            if (request.PlayerId != null)
             {
-                var playerDTO = await _client.RequestPlayer(_game.GameId, request.Id);
-                var squadModels = new List<Squad>();
-                foreach (SquadDTO squadDTO in playerDTO.Squads)
-                {
-                    var model = new Squad
-                    {
-                        Id = squadDTO.Id,
-                        Count = squadDTO.Count
-                    };
-                    squadModels.Add(model);
-                }
-
-                var playerModel = new PlayerModel
-                {
-                    PlayerId = playerDTO.PlayerId,
-                    Squads = squadModels
-                };
+                var playerDTO = await _client.RequestPlayer(_game.GameId, request.PlayerId);
+                var playerModel = PlayerToModel(playerDTO);
 
                 _update.OnNext(playerModel);
             }
@@ -76,51 +62,66 @@ namespace TomorrowDiesToday.Services.Data
             {
                 var playerDTOs = await _client.RequestPlayerList(_game.GameId);
                 var playerModels = new List<PlayerModel>();
-                foreach(PlayerDTO playerDTO in playerDTOs)
+                foreach (PlayerDTO playerDTO in playerDTOs)
                 {
-                    var squadModels = new List<Squad>();
-                    foreach (SquadDTO dto in playerDTO.Squads)
-                    {
-                        var model = new Squad
-                        {
-                            Id = dto.Id,
-                            Count = dto.Count
-                        };
-                        squadModels.Add(model);
-                    }
-
-                    var playerModel = new PlayerModel
-                    {
-                        PlayerId = playerDTO.PlayerId,
-                        Squads = squadModels
-                    };
-                    playerModels.Add(playerModel);
+                    playerModels.Add(PlayerToModel(playerDTO));
                 }
-                
+
                 _updateList.OnNext(playerModels);
             }
         }
 
-        public async Task Update(PlayerModel model)
+        public async Task Update(PlayerModel playerModel)
+        {
+            var playerDTO = PlayerToDTO(playerModel);
+
+            await _client.Update(playerDTO);
+        }
+
+        private PlayerModel PlayerToModel(PlayerDTO playerDTO)
+        {
+            var squadModels = new List<SquadModel>();
+            foreach (SquadDTO squadDTO in playerDTO.Squads)
+            {
+                var squadModel = new SquadModel
+                {
+                    SquadId = squadDTO.SquadId,
+                    Data = squadDTO.Data,
+                    Stats = squadDTO.Stats
+                };
+                squadModels.Add(squadModel);
+            }
+
+            var playerModel = new PlayerModel
+            {
+                PlayerId = playerDTO.PlayerId,
+                Squads = squadModels
+            };
+
+            return playerModel;
+        }
+
+        private PlayerDTO PlayerToDTO(PlayerModel playerModel)
         {
             var squadDTOs = new List<SquadDTO>();
-            foreach(Squad squad in model.Squads)
+            foreach (SquadModel squadModel in playerModel.Squads)
             {
                 var squadDTO = new SquadDTO
                 {
-                    Id = squad.Id,
-                    Count = squad.Count
+                    SquadId = squadModel.SquadId,
+                    Data = squadModel.Data,
+                    Stats = squadModel.Stats
                 };
                 squadDTOs.Add(squadDTO);
             }
-            var player = new PlayerDTO
+            var playerDTO = new PlayerDTO
             {
                 GameId = _game.GameId,
-                PlayerId = model.PlayerId,
+                PlayerId = playerModel.PlayerId,
                 Squads = squadDTOs
             };
 
-            await _client.Update(player);
+            return playerDTO;
         }
     }
 }
