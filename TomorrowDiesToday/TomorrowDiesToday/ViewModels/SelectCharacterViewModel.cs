@@ -74,13 +74,8 @@ namespace TomorrowDiesToday.ViewModels
 
         private void ConfigureCommands()
         {
-            NextStepCommand = new Command(async () => await NextStep());
+            //NextStepCommand = new Command(async () => await NextStep());
             CreatePlayerCommand = new Command<string>(async playerId => await CreatePlayer(playerId));
-        }
-
-        private async Task NextStep()
-        {
-            _navigationService.NavigateTo<WaitForPlayersPage>();
         }
 
         private void SubscribeToUpdates()
@@ -110,7 +105,8 @@ namespace TomorrowDiesToday.ViewModels
                 //CurrentPlayer = $"You are {playerId}";
                 //IsSelectingPlayers = false;
                 //IsWaitingForPlayers = true;
-                return;
+                //return;
+                await _navigationService.NavigateTo<WaitForPlayersPage>();
             }
 
             PlayerAlreadySelected = $"{playerId} Has Already Been Selected";
