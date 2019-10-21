@@ -14,7 +14,10 @@ using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Templates;
 using TomorrowDiesToday.ViewModels;
+using TomorrowDiesToday.Views;
+using TomorrowDiesToday.Navigation;
 using Xamarin.Forms.Internals;
+using Xamarin.Forms;
 
 namespace TomorrowDiesToday
 {
@@ -32,6 +35,7 @@ namespace TomorrowDiesToday
             RegisterServices(builder);
             RegisterAndConfigureDB(builder);
             RegisterViewModels(builder);
+            RegisterViews(builder);
             
             Container = builder.Build();
 
@@ -68,12 +72,28 @@ namespace TomorrowDiesToday
             builder.RegisterType<GameService>().As<IGameService>().SingleInstance();
             builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
             builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
+            builder.RegisterType<NavigationService>().As<INavigationService>().SingleInstance();
         }
 
         private static void RegisterViewModels(ContainerBuilder builder)
         {
             builder.RegisterType<MainPageViewModel>().As<IMainPageViewModel>().SingleInstance();
             builder.RegisterType<StartPageViewModel>().As<IStartPageViewModel>().SingleInstance();
+            builder.RegisterType<CreateGameViewModel>().As<ICreateGameViewModel>().SingleInstance();
+            builder.RegisterType<JoinGameViewModel>().As<IJoinGameViewModel>().SingleInstance();
+            builder.RegisterType<SelectCharacterViewModel>().As<ISelectCharacterViewModel>().SingleInstance();
+            builder.RegisterType<WaitForPlayersViewModel>().As<IWaitForPlayersViewModel>().SingleInstance();
+        }
+
+        private static void RegisterViews(ContainerBuilder builder)
+        {
+            builder.RegisterType<TDTNavigationPage>().As<NavigationPage>().SingleInstance();
+            builder.RegisterType<StartPage>().SingleInstance();
+            builder.RegisterType<MainPage>().SingleInstance();
+            builder.RegisterType<CreateGamePage>().SingleInstance();
+            builder.RegisterType<JoinGamePage>().SingleInstance();
+            builder.RegisterType<SelectCharacterPage>().SingleInstance();
+            builder.RegisterType<WaitForPlayersPage>().SingleInstance();
         }
 
         private static void RegisterAndConfigureDB(ContainerBuilder builder)

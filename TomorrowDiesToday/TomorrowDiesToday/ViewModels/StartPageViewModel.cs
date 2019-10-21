@@ -5,16 +5,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TomorrowDiesToday.Models;
-using TomorrowDiesToday.Services.Game;
-using TomorrowDiesToday.Services.Data;
-using TomorrowDiesToday.Services.Data.Models;
+using TomorrowDiesToday.Views;
 using Xamarin.Forms;
+using TomorrowDiesToday.Navigation;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class StartPageViewModel : BaseViewModel, IStartPageViewModel, IDisposable
+    public class StartPageViewModel : BaseViewModel, IStartPageViewModel
     {
+        private INavigationService _navigationService;
+        public ICommand CreateGameCommand { get; private set; }
+        public ICommand JoinGameCommand { get; private set; }
+
+        public StartPageViewModel(INavigationService navigationService)
+        {
+            _navigationService = navigationService;
+            ConfigureCommands();
+        }
+
+        private void ConfigureCommands()
+        {
+            CreateGameCommand = new Command(async () => await CreateGame());
+            JoinGameCommand = new Command(async () => await JoinGame());
+        }
+
+        private async Task CreateGame()
+        {
+            await _navigationService.NavigateTo<CreateGamePage>();
+        }
+
+        private async Task JoinGame()
+        {
+            await _navigationService.NavigateTo<JoinGamePage>();
+        }
+
+        /*
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
@@ -268,5 +293,6 @@ namespace TomorrowDiesToday.ViewModels
         {
             if (_playerListSubscription != null) _playerListSubscription.Dispose();
         }
+        */
     }
 }

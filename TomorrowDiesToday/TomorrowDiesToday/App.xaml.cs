@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using System;
+using TomorrowDiesToday.Navigation;
 using TomorrowDiesToday.Services;
 using TomorrowDiesToday.Views;
 using Xamarin.Forms;
@@ -14,7 +15,10 @@ namespace TomorrowDiesToday
         {
             InitializeComponent();
             IoC.Initialize();
-            MainPage = new NavigationPage(new MainPage());
+            MainPage = IoC.Container.Resolve<NavigationPage>();
+            
+            // Hack to activate nav service - I need to work this out
+            IoC.Container.Resolve<INavigationService>();
         }
 
         protected override void OnStart()

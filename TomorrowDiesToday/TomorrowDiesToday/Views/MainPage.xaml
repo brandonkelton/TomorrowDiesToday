@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:TomorrowDiesToday.Views"
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.MainPage"
              Title="Testing Dies Today"
@@ -16,12 +17,7 @@
         <Binding Path="MainPageViewModel" Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
 
-    <RelativeLayout>
-
-        <StackLayout Padding="10,20,0,0">
-            <Label FontSize="30" TextColor="Red" Text="{Binding Text}"/>
-        </StackLayout>
-        
+    <RelativeLayout>        
         
         <Frame x:Name="bottomSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#4b4c4c" 
             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=.6,Constant=0}"
@@ -36,7 +32,6 @@
 
             <StackLayout Spacing="5">
                 <BoxView HeightRequest="5" CornerRadius="2" WidthRequest="50" BackgroundColor="Gray" HorizontalOptions="Center"/>
-
             </StackLayout>
         </Frame>
         <BoxView x:Name="swiper" 
@@ -51,12 +46,12 @@
 
         
         <Frame x:Name="sideSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#666666"
-         RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=-.76,Constant=0}"
-         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.75,Constant=0}"
-         RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-        <Frame.GestureRecognizers>
-            <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
-        </Frame.GestureRecognizers>
+             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=-.76,Constant=0}"
+             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.75,Constant=0}"
+             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+            <Frame.GestureRecognizers>
+                <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
+            </Frame.GestureRecognizers>
 
         </Frame>
 
