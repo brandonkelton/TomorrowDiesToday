@@ -9,12 +9,15 @@ using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
+using TomorrowDiesToday.Navigation;
+using TomorrowDiesToday.Views;
 using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
     public class JoinGameViewModel : BaseViewModel, IJoinGameViewModel
     {
+        private INavigationService _navigationService;
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
         public ICommand SetIsJoiningGameCommand { get; private set; }
@@ -53,8 +56,9 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _isLoadingData, value);
         }
 
-        public JoinGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService)
+        public JoinGameViewModel(INavigationService navigationService, IGameService gameService, IDataService<GameModel, GameRequest> gameDataService)
         {
+            _navigationService = navigationService;
             _gameService = gameService;
             _gameDataService = gameDataService;
 
@@ -66,7 +70,7 @@ namespace TomorrowDiesToday.ViewModels
         private void ConfigureCommands()
         {
             //CreateGameCommand = new Command(async () => await CreateGame());
-            //JoinGameCommand = new Command(async () => await JoinGame());
+            JoinGameCommand = new Command(async () => await JoinGame());
             //NextStepCommand = new Command(() => NextAfterGameCreated());
         }
 
@@ -79,7 +83,8 @@ namespace TomorrowDiesToday.ViewModels
                 //IsJoiningGame = false;
                 //IsCreatingOrJoiningGame = false;
                 //IsSelectingPlayers = true;
-                return;
+                //return;
+                await _navigationService.NavigateTo<SelectCharacterPage>();
             }
 
             GameJoined = false;
