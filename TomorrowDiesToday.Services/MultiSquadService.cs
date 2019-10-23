@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services
 {
-    class SquadStatTotalService
+    class MultiSquadService
     {
         public Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)
         {
