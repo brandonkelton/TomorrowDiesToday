@@ -7,12 +7,13 @@ namespace TomorrowDiesToday.Services
     class SquadManagementService
     {
 
-        public Dictionary<string, int> CalculateSquadStats(Dictionary<string, int> squadData, Dictionary<string, int> squadStats)
+        public Dictionary<string, int> CalculateSquadStats(Dictionary<string, int> squadData)
         {
-            squadStats["Combat"] = CalculateCombat(squadData);
-            squadStats["Stealth"] = CalculateStealth(squadData);
-            squadStats["Cunning"] = CalculateCunning(squadData);
-            squadStats["Diplomacy"] = CalculateDiplomacy(squadData);
+            Dictionary<string, int> squadStats;
+            squadStats.Add("Combat", CalculateCombat(squadData));
+            squadStats.Add("Stealth", CalculateStealth(squadData));
+            squadStats.Add("Cunning", CalculateCunning(squadData));
+            squadStats.Add("Diplomacy", CalculateDiplomacy(squadData));
 
             return squadStats;
         }
