@@ -6,6 +6,7 @@ namespace TomorrowDiesToday.Services
 {
     class TileManagementService
     {
+        #region Lookup Dictionaries
         private Dictionary<string, Dictionary<string, int>> missionDictionary = new Dictionary<string, string> //thisDictionary <TileName, TileStats>
             {
                 //Resource Missions
@@ -66,6 +67,7 @@ namespace TomorrowDiesToday.Services
                 { "Ivory Poaching", "3,2,2,0" },
                 { "Murder Inc", "2,4,1,0"}
             };
+        #endregion
 
         public Dictionary<string, int> tileLookup(string tileName, Boolean flipped, int alerts) //returns Dictionary of matching name
         {
