@@ -7,7 +7,7 @@ namespace TomorrowDiesToday.Models
     class Tile : ITile
     {
         #region Class Properties
-        public bool isToggled { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool isFlipped { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public int alertTokens { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public string imageLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Dictionary<string, int> tileStats { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -29,19 +29,19 @@ namespace TomorrowDiesToday.Models
         #endregion
 
         #region Helper Methods
-        public bool FlipToggle(bool isToggled)
+        public bool Flip(bool isFlipped)
         {
-            if (isToggled)
+            if (isFlipped)
             {
-                isToggled = false;
+                isFlipped = false;
             }
 
             else
             {
-                isToggled = true;
+                isFlipped = true;
             }
 
-            return isToggled;
+            return isFlipped;
         }
         
         public int IncrementCounter(int counter)

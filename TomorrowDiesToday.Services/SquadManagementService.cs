@@ -18,7 +18,7 @@ namespace TomorrowDiesToday.Services
         }
 
         #region Helper Methods
-        public int CalculateCombat(Dictionary<string, int> squadData)
+        private int CalculateCombat(Dictionary<string, int> squadData)
         {
             int total = 0;
             int facedHenchmen = squadData["Faced Henchmen"];
@@ -72,7 +72,7 @@ namespace TomorrowDiesToday.Services
             return total;
         }
 
-        public int CalculateStealth(Dictionary<string, int> squadData)
+        private int CalculateStealth(Dictionary<string, int> squadData)
         {
             int total = 0;
             int facedHenchmen = squadData["Faced Henchmen"];
@@ -130,7 +130,7 @@ namespace TomorrowDiesToday.Services
             return total;
         }
 
-        public int CalculateCunning(Dictionary<string, int> squadData)
+        private int CalculateCunning(Dictionary<string, int> squadData)
         {
             int total = 0;
             int facedHenchmen = squadData["Faced Henchmen"];
@@ -202,7 +202,7 @@ namespace TomorrowDiesToday.Services
 
             return total;
         }
-        public int CalculateDiplomacy(Dictionary<string, int> squadData)
+        private int CalculateDiplomacy(Dictionary<string, int> squadData)
         {
             int total = 0;
             int facedHenchmen = squadData["Faced Henchmen"];
