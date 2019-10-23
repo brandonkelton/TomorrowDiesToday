@@ -88,6 +88,7 @@ namespace TomorrowDiesToday
         private static void RegisterViews(ContainerBuilder builder)
         {
             builder.RegisterType<TDTNavigationPage>().As<NavigationPage>().SingleInstance();
+
             builder.RegisterType<StartPage>().SingleInstance();
             builder.RegisterType<MainPage>().SingleInstance();
             builder.RegisterType<CreateGamePage>().SingleInstance();

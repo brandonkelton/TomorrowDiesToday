@@ -9,13 +9,11 @@ namespace TomorrowDiesToday.ViewModels
 {
     public interface ISelectCharacterViewModel
     {
-        ObservableCollection<PlayerModel> Players { get; }
+        ICommand SelectPlayerCommand { get; }
 
-        ICommand NextStepCommand { get; }
-        ICommand CreatePlayerCommand { get; }
-
-        string GameId { get; set; }
-        bool IsLoadingData { get; set; }
-        bool PlayerExists { get; set; }
+        string GameId { get; }
+        bool IsLoadingData { get; }
+        bool PlayerExists { get; }
+        string PlayerAlreadySelected { get; }
     }
 }

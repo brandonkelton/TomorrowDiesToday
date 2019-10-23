@@ -10,6 +10,8 @@ using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
+using TomorrowDiesToday.Navigation;
+using TomorrowDiesToday.Views;
 
 namespace TomorrowDiesToday.ViewModels
 {
@@ -17,9 +19,18 @@ namespace TomorrowDiesToday.ViewModels
     {
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
-        public ICommand SetIsJoiningGameCommand { get; private set; }
+        private INavigationService _navService;
+
         public ICommand JoinGameCommand { get; private set; }
-        public ICommand NextStepCommand { get; private set; }
+
+        public JoinGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, INavigationService navService)
+        {
+            _gameService = gameService;
+            _gameDataService = gameDataService;
+            _navService = navService;
+
+            JoinGameCommand = new Command(async () => await JoinGame());
+        }
 
         private string _gameId;
         public string GameId
@@ -27,63 +38,39 @@ namespace TomorrowDiesToday.ViewModels
             get => _gameId;
             set
             {
+                InvalidGameId = false;
                 SetProperty(ref _gameId, value);
                 _gameService.GameId = value;
             }
-        }
-
-        private bool _gameJoined;
-        public bool GameJoined
-        {
-            get => _gameJoined;
-            set => SetProperty(ref _gameJoined, value);
         }
 
         private bool _invalidGameId;
         public bool InvalidGameId
         {
             get => _invalidGameId;
-            set => SetProperty(ref _invalidGameId, value);
+            private set => SetProperty(ref _invalidGameId, value);
         }
 
         private bool _isLoadingData;
         public bool IsLoadingData
         {
             get => _isLoadingData;
-            set => SetProperty(ref _isLoadingData, value);
-        }
-
-        public JoinGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService)
-        {
-            _gameService = gameService;
-            _gameDataService = gameDataService;
-
-            //IsWaitingForSelection = true;
-            //ConfigureCommands();
-            //SubscribeToUpdates();
-        }
-
-        private void ConfigureCommands()
-        {
-            //CreateGameCommand = new Command(async () => await CreateGame());
-            //JoinGameCommand = new Command(async () => await JoinGame());
-            //NextStepCommand = new Command(() => NextAfterGameCreated());
+            private set => SetProperty(ref _isLoadingData, value);
         }
 
         private async Task JoinGame()
         {
-            if (await _gameDataService.Exists(GameId))
+            IsLoadingData = true;
+            var gameExists = await _gameDataService.Exists(GameId);
+            IsLoadingData = false;
+
+            if (!gameExists)
             {
-                InvalidGameId = false;
-                GameJoined = true;
-                //IsJoiningGame = false;
-                //IsCreatingOrJoiningGame = false;
-                //IsSelectingPlayers = true;
+                InvalidGameId = true;
                 return;
             }
 
-            GameJoined = false;
-            InvalidGameId = true;
+            await _navService.NavigateTo<SelectCharacterPage>();
         }
     }
 }

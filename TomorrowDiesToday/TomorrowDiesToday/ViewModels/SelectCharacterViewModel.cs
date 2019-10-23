@@ -10,102 +10,72 @@ using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
+using TomorrowDiesToday.Navigation;
+using TomorrowDiesToday.Views;
 
 namespace TomorrowDiesToday.ViewModels
 {
     public class SelectCharacterViewModel : BaseViewModel, ISelectCharacterViewModel
     {
         private IGameService _gameService;
-        private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
-        private IDisposable _playerListSubscription = null;
+        private INavigationService _navService;
 
-        public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
+        public ICommand SelectPlayerCommand { get; private set; }
 
-        public ICommand NextStepCommand { get; private set; }
-        public ICommand CreatePlayerCommand { get; private set; }
-
-        private string _gameId;
-        public string GameId
+        public SelectCharacterViewModel(IGameService gameService, IDataService<PlayerModel, PlayerRequest> playerDataService, INavigationService navService)
         {
-            get => _gameId;
-            set
-            {
-                SetProperty(ref _gameId, value);
-                _gameService.GameId = value;
-            }
+            _gameService = gameService;
+            _playerDataService = playerDataService;
+            _navService = navService;
+
+            SelectPlayerCommand = new Command<string>(async playerId => await SelectPlayer(playerId));
         }
+
+        public string GameId => _gameService.GameId;
 
         private bool _playerExists;
         public bool PlayerExists
         {
             get => _playerExists;
-            set => SetProperty(ref _playerExists, value);
+            private set => SetProperty(ref _playerExists, value);
         }
 
         private bool _isLoadingData;
         public bool IsLoadingData
         {
             get => _isLoadingData;
-            set => SetProperty(ref _isLoadingData, value);
+            private set => SetProperty(ref _isLoadingData, value);
         }
 
         private string _playerAlreadySelected;
         public string PlayerAlreadySelected
         {
             get => _playerAlreadySelected;
-            set => SetProperty(ref _playerAlreadySelected, value);
+            private set => SetProperty(ref _playerAlreadySelected, value);
         }
 
-        public SelectCharacterViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
+        private async Task SelectPlayer(string playerId)
         {
-            _gameService = gameService;
-            _gameDataService = gameDataService;
-            _playerDataService = playerDataService;
-
-            //IsWaitingForSelection = true;
-            ConfigureCommands();
-            SubscribeToUpdates();
-        }
-
-        private void ConfigureCommands()
-        {
-            //NextStepCommand = new Command(() => NextAfterGameCreated());
-            CreatePlayerCommand = new Command<string>(async playerId => await CreatePlayer(playerId));
-        }
-
-        private void SubscribeToUpdates()
-        {
-            _playerListSubscription = _playerDataService.DataListReceived.Subscribe(list =>
-            {
-                Players.Clear();
-                list.ForEach(item => Players.Add(item));
-            });
-        }
-
-        private void RefreshPlayers()
-        {
-            _playerDataService.RequestUpdate(new PlayerRequest());
-        }
-
-        private async Task CreatePlayer(string playerId)
-        {
-            IsLoadingData = true;
+            PlayerAlreadySelected = String.Empty;
             PlayerExists = false;
 
-            if (!await _playerDataService.Exists(playerId))
+            IsLoadingData = true;
+            PlayerExists = await _playerDataService.Exists(playerId);
+            IsLoadingData = false;
+
+            if (PlayerExists)
             {
-                await _playerDataService.Create(playerId);
-                IsLoadingData = false;
-                _gameService.PlayerId = playerId;
-                //CurrentPlayer = $"You are {playerId}";
-                //IsSelectingPlayers = false;
-                //IsWaitingForPlayers = true;
+                PlayerAlreadySelected = $"{playerId} Has Already Been Selected";
                 return;
             }
 
-            PlayerAlreadySelected = $"{playerId} Has Already Been Selected";
-            PlayerExists = true;
+            IsLoadingData = true;
+            await _playerDataService.Create(playerId);
+            IsLoadingData = false;
+            _gameService.PlayerId = playerId;
+
+            await _navService.NavigateTo<MainPage>();
         }
     }
 }

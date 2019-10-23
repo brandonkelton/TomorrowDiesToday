@@ -10,11 +10,9 @@ namespace TomorrowDiesToday.ViewModels
     public interface IJoinGameViewModel
     {
         ICommand JoinGameCommand { get; }
-        ICommand NextStepCommand { get; }
 
         string GameId { get; set; }
-        bool IsLoadingData { get; set; }
-        bool GameJoined { get; set; }
-        bool InvalidGameId { get; set; }
+        bool IsLoadingData { get; }
+        bool InvalidGameId { get; }
     }
 }
