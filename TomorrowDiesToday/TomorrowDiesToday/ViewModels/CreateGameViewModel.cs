@@ -11,6 +11,8 @@ using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
 using TomorrowDiesToday.Templates;
+using TomorrowDiesToday.Navigation;
+using TomorrowDiesToday.Views;
 
 namespace TomorrowDiesToday.ViewModels
 {
@@ -18,25 +20,38 @@ namespace TomorrowDiesToday.ViewModels
     {
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
+        private INavigationService _navService;
 
-        public ICommand CreateGameCommand { get; private set; }
         public ICommand NextStepCommand { get; private set; }
+
+        public CreateGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, INavigationService navService)
+        {
+            _gameService = gameService;
+            _gameDataService = gameDataService;
+            _navService = navService;
+
+            NextStepCommand = new Command(async () => await GoToCharacterPage());
+        }
+
+        public async Task OnInitAsync()
+        {
+            await CreateGame();
+        }
 
         private bool _isLoadingData;
         public bool IsLoadingData
         {
             get => _isLoadingData;
-            set => SetProperty(ref _isLoadingData, value);
+            private set => SetProperty(ref _isLoadingData, value);
         }
 
-        private string _gameId;
         public string GameId
         {
-            get => _gameId;
-            set
+            get => _gameService.GameId;
+            private set
             {
-                SetProperty(ref _gameId, value);
                 _gameService.GameId = value;
+                OnPropertyChanged(nameof(GameId));
             }
         }
 
@@ -44,18 +59,7 @@ namespace TomorrowDiesToday.ViewModels
         public bool GameCreated
         {
             get => _gameCreated;
-            set => SetProperty(ref _gameCreated, value);
-        }
-
-        public CreateGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService)
-        {
-            _gameService = gameService;
-            _gameDataService = gameDataService;
-        }
-
-        public async Task OnInitAsync()
-        {
-            await CreateGame();
+            private set => SetProperty(ref _gameCreated, value);
         }
 
         private async Task CreateGame()
@@ -64,16 +68,22 @@ namespace TomorrowDiesToday.ViewModels
 
             while (!GameCreated)
             {
-                var gameId = _gameService.GenerateGameId();
-                _gameService.GameId = gameId;
-                if (!await _gameDataService.Exists(gameId))
+                GameId = _gameService.GenerateGameId();
+                var gameExists = await _gameDataService.Exists(GameId);
+                
+                if (!gameExists)
                 {
-                    await _gameDataService.Create(gameId);
-                    GameId = gameId;
+                    await _gameDataService.Create(GameId);
                     GameCreated = true;
                 }
             }
+
             IsLoadingData = false;
+        }
+
+        private async Task GoToCharacterPage()
+        {
+            await _navService.NavigateTo<SelectCharacterPage>();
         }
     }
 }
