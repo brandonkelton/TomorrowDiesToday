@@ -9,7 +9,7 @@ namespace TomorrowDiesToday.Services
         public const int NUMBER_OF_FACED_HENCHMAN = 9;
         public const int DATA_STRIP_LENGTH = 13; 
 
-        public Boolean ValidateSquad(Dictionary<string, Dictionary<string, int>> squadData) {
+        public Boolean ValidateSquad(Dictionary<string, int> squadData) {
 
             int unitTotal = squadData["Thief"] + squadData["Hacker"] + squadData["Soldier"] 
                 + squadData["Assassin"] + squadData["Fixer"] + squadData["Scientist"];
