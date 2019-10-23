@@ -4,10 +4,9 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services
 {
-    class TileLookupService
+    class TileManagementService
     {
-        {
-        Dictionary<string, Dictionary<string, int>> missionDictionary = new Dictionary<string, string> //thisDictionary <TileName, TileStats>
+        private Dictionary<string, Dictionary<string, int>> missionDictionary = new Dictionary<string, string> //thisDictionary <TileName, TileStats>
             {
                 //Resource Missions
                 { "Blood Diamond Harvest", "3,2,1,0" },
@@ -46,7 +45,7 @@ namespace TomorrowDiesToday.Services
                 { "Interpol HQ", "1,2,2,1"}
             };
 
-        Dictionary<string, Dictionary<string, int>> flipMissionDictionary = new Dictionary<string, string> //resourceLookupDictionary <TileName, TileStats>
+        private Dictionary<string, Dictionary<string, int>> flipMissionDictionary = new Dictionary<string, string> //resourceLookupDictionary <TileName, TileStats>
             {
                 { "Blood Diamond Harvest", "3,2,2,0" },
                 { "Skin Trade", "1,1,2,3" },
@@ -69,8 +68,8 @@ namespace TomorrowDiesToday.Services
             };
 
 
-    //parses the status strings into a dictionary
-    public Dictionary<string, int> ParseToDictionary(string dataStrip)
+        //parses the status strings into a dictionary
+        public Dictionary<string, int> ParseToDictionary(string dataStrip)
         {
             string[] keyArray = new string[] { "Combat", "Stealth", "Cunning", "Diplomacy" };
             string[] stringArray = dataStrip.Split(',');
@@ -89,8 +88,8 @@ namespace TomorrowDiesToday.Services
         }
 
 
-    public Dictionary<string, int> tileIndex(string tileName, Boolean flipped) //returns Dictionary of matching name
-    {
+        public Dictionary<string, int> tileIndex(string tileName, Boolean flipped) //returns Dictionary of matching name
+        {
             if (flipped == true)
             {
                 Dictionary<string, int> tileIndex = flipMissionDictionary[tileName];
@@ -105,6 +104,23 @@ namespace TomorrowDiesToday.Services
                 System.ArgumentException argEx = new System.ArgumentException("Index is out of range", "index", ex);
                 throw argEx;
             }
-        return tileIndex;
+            return tileIndex;
+        }
+
+        public Dictionary<string, int> CalculateTileStats(int alerts, string tileName, Dictionary<string, Dictionary<string, int>> tileData)
+        {
+            Dictionary<string, int> tileStats = tileData[tileName];
+
+            if (alerts > 0)
+            {
+                tileStats["Combat"] *= alerts;
+                tileStats["Stealth"] *= alerts;
+                tileStats["Cunning"] *= alerts;
+                tileStats["Diplomacy"] *= alerts;
+            }
+
+            return tileStats;
+        }
+
     }
 }
