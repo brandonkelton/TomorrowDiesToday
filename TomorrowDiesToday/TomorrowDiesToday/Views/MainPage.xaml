@@ -31,6 +31,35 @@
 
             <StackLayout Spacing="5">
                 <BoxView HeightRequest="5" CornerRadius="2" WidthRequest="50" BackgroundColor="Gray" HorizontalOptions="Center"/>
+                <StackLayout Orientation="Horizontal">
+                    <Button x:Name="Squad1"
+                        Text="Squad 1"
+                        BackgroundColor="#ffffff"
+                        BorderRadius="10"
+                        BorderWidth="2"
+                        BorderColor="#000000"
+                        HorizontalOptions="FillAndExpand"
+                        Pressed="Squad1Button_Pressed"
+                        Clicked="Squad1Button_Clicked"/>
+                    <Button x:Name="Squad2"
+                        Text="Squad 2"
+                        BackgroundColor="#ffffff"
+                        BorderRadius="10"
+                        BorderWidth="2"
+                        BorderColor="#000000"
+                        HorizontalOptions="FillAndExpand"
+                        Pressed="Squad2Button_Pressed"
+                        Clicked="Squad2Button_Clicked"/>
+                    <Button x:Name="Squad3"
+                        Text="Squad 3"
+                        BackgroundColor="#ffffff"
+                        BorderRadius="10"
+                        BorderWidth="2"
+                        BorderColor="#000000"
+                        HorizontalOptions="FillAndExpand"
+                        Pressed="Squad3Button_Pressed"
+                        Clicked="Squad3Button_Clicked"/>
+                </StackLayout>
             </StackLayout>
         </Frame>
         <BoxView x:Name="swiper" 

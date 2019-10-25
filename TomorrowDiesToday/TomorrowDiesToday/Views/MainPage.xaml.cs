@@ -86,10 +86,10 @@ namespace TomorrowDiesToday.Views
             {
                 case GestureStatus.Running:
                     var translateX = Math.Min(Width * .75, Math.Max(sideSheet.TranslationX + e.TotalX, 0));
-                    sideSheet.TranslateTo( translateX, sideSheet.Y, 30);
+                    sideSheet.TranslateTo(translateX, sideSheet.Y, 30);
                     break;
                 case GestureStatus.Completed:
-                    if(sideSheet.TranslationX > (Width * .75) / 2)
+                    if (sideSheet.TranslationX > (Width * .75) / 2)
                     {
                         sideSheet.TranslateTo(Width * .75, sideSheet.Y, 100);
 
@@ -101,11 +101,47 @@ namespace TomorrowDiesToday.Views
                         closed = true;
                     }
                     break;
-                  
 
             }
         }
+        private void Squad1Button_Pressed(object sender, EventArgs e)
+        {
+            Squad1.BackgroundColor = Color.FromHex("444444");
+            Squad2.BackgroundColor = Color.FromHex("ffffff");
+            Squad3.BackgroundColor = Color.FromHex("ffffff");
+        }
 
+        private void Squad1Button_Clicked(object sender, EventArgs e)
+        {
+            Squad1.BackgroundColor = Color.FromHex("444444");
+            Squad2.BackgroundColor = Color.FromHex("ffffff");
+            Squad3.BackgroundColor = Color.FromHex("ffffff");
+        }
+        private void Squad2Button_Pressed(object sender, EventArgs e)
+        {
+            Squad1.BackgroundColor = Color.FromHex("ffffff");
+            Squad2.BackgroundColor = Color.FromHex("444444");
+            Squad3.BackgroundColor = Color.FromHex("ffffff");
+        }
 
+        private void Squad2Button_Clicked(object sender, EventArgs e)
+        {
+            Squad1.BackgroundColor = Color.FromHex("ffffff");
+            Squad2.BackgroundColor = Color.FromHex("444444");
+            Squad3.BackgroundColor = Color.FromHex("ffffff");
+        }
+        private void Squad3Button_Pressed(object sender, EventArgs e)
+        {
+            Squad1.BackgroundColor = Color.FromHex("ffffff");
+            Squad2.BackgroundColor = Color.FromHex("ffffff");
+            Squad3.BackgroundColor = Color.FromHex("444444");
+        }
+
+        private void Squad3Button_Clicked(object sender, EventArgs e)
+        {
+            Squad1.BackgroundColor = Color.FromHex("ffffff");
+            Squad2.BackgroundColor = Color.FromHex("ffffff");
+            Squad3.BackgroundColor = Color.FromHex("444444");
+        }
     }
 }
