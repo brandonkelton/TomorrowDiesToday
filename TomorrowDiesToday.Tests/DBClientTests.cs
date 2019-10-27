@@ -56,5 +56,47 @@ namespace TomorrowDiesToday.Tests
 
             Assert.False(result);
         }
+
+        [Fact]
+        public async Task PlayerExistsIsTrue()
+        {
+            var checkingGameId = "1234";
+            var returnedGameId = "1234";
+            var checkingPlayerId = "TestPlayer";
+            var returnedPlayerId = "TestPlayer";
+            PlayerDTO returnedPlayerDTO = new PlayerDTO { GameId = returnedGameId, PlayerId = returnedPlayerId };
+
+            _mockContext.Setup(c => c.LoadAsync<PlayerDTO>(checkingGameId, checkingPlayerId, default)).Returns(Task.FromResult(returnedPlayerDTO));
+
+            var client = Container.Resolve<IDBClient>();
+            var result = await client.PlayerExists(checkingGameId, checkingPlayerId);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task PlayerExistsIsFalse()
+        {
+            var checkingGameId = "1234";
+            var checkingPlayerId = "TestPlayer";
+            PlayerDTO returnedPlayerDTO = null;
+
+            _mockContext.Setup(c => c.LoadAsync<PlayerDTO>(checkingGameId, checkingPlayerId, default)).Returns(Task.FromResult(returnedPlayerDTO));
+
+            var client = Container.Resolve<IDBClient>();
+            var result = await client.PlayerExists(checkingGameId, checkingPlayerId);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task RequestPlayerListReturnsList()
+        {
+            var checkingGameId = "1234";
+            var mockResults = new Mock<MockAsyncSearch<PlayerDTO>>();
+            mockResults.Setup(c => c.GetRemainingAsync()).Returns(checkingPlayerList);
+            _mockContext.SetReturnsDefault<AsyncSearch<PlayerDTO>>(mockResults);
+            _mockContext.Setup(c => c.QueryAsync<PlayerDTO>(checkingGameId, default)).Returns(() => mockResults.Object);
+        }
     }
 }
