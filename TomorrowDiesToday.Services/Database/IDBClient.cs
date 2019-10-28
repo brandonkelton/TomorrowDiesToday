@@ -19,11 +19,15 @@ namespace TomorrowDiesToday.Services.Database
 
         Task DeleteGame(string gameId, string playerId);
 
+        Task<GameDTO> RequestGame(string gameId);
+
         Task<PlayerDTO> RequestPlayer(string gameId, string playerId);
 
         Task<List<PlayerDTO>> RequestPlayerList(string gameId);
 
-        Task Update(PlayerDTO player);
+        Task UpdateGame(GameDTO game);
+
+        Task UpdatePlayer(PlayerDTO player);
 
         //Temporary
         Task InitializeGameTable();
