@@ -7,10 +7,12 @@ using TomorrowDiesToday.Models;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public interface IStartPageViewModel
+    public interface IJoinGameViewModel
     {
-        ICommand CreateGameCommand { get; }
         ICommand JoinGameCommand { get; }
-    }   
-}       
-        
+
+        string GameId { get; set; }
+        bool IsLoadingData { get; }
+        bool InvalidGameId { get; }
+    }
+}

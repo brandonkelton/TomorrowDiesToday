@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="TomorrowDiesToday.Views.CreateGamePage">
+    <ContentPage.BindingContext>
+        <Binding Path="CreateGameViewModel" 
+                 Source="{StaticResource ViewModelLocator}"/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Grid.Row="2" 
+                     Orientation="Vertical" 
+                     VerticalOptions="Center" 
+                     HorizontalOptions="Center">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" 
+                       Text="Provide the following code to your team:"/>
+                <Label Grid.Row="1" 
+                       Text="{Binding GameId}" 
+                       FontSize="35" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="CenterAndExpand"/>
+                <Button Grid.Row="2" 
+                        Text="Next" 
+                        Command="{Binding NextStepCommand}"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
