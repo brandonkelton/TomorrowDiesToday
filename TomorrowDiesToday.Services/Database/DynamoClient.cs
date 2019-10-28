@@ -67,17 +67,23 @@ namespace TomorrowDiesToday.Services.Database
             }
         }
 
-        public async Task<List<PlayerDTO>> RequestPlayerList(string gameId)
+        public async Task<GameDTO> RequestGame(string gameId)
         {
-            var search = _context.QueryAsync<PlayerDTO>(gameId);
-            var results = await search.GetRemainingAsync();
-            return results;
+            var gameDTO = await _context.LoadAsync<GameDTO>(gameId);
+            return gameDTO;
         }
 
         public async Task<PlayerDTO> RequestPlayer(string gameId, string playerId)
         {
             var player = await _context.LoadAsync<PlayerDTO>(gameId, playerId);
             return player;
+        }
+
+        public async Task<List<PlayerDTO>> RequestPlayerList(string gameId)
+        {
+            var search = _context.QueryAsync<PlayerDTO>(gameId);
+            var results = await search.GetRemainingAsync();
+            return results;
         }
 
         public async Task InitializeGameTable()
@@ -160,9 +166,14 @@ namespace TomorrowDiesToday.Services.Database
             }
         }
 
-        public async Task Update(PlayerDTO player)
+        public async Task UpdateGame(GameDTO gameDTO)
         {
-            await _context.SaveAsync(player);
+            await _context.SaveAsync(gameDTO);
+        }
+
+        public async Task UpdatePlayer(PlayerDTO playerDTO)
+        {
+            await _context.SaveAsync(playerDTO);
         }
 
         //public async Task DeleteTable()
