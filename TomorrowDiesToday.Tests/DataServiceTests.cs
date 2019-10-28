@@ -44,19 +44,16 @@ namespace TomorrowDiesToday.Tests
         {
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
             await gameDataService.ConfigureTable();
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
         public async Task GameCreate()
         {
-
-            var gameService = Container.Resolve<IGameService>();
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            await gameDataService.ConfigureTable();
-            var gameId = gameService.GenerateGameId();
+            var gameId = "TestGame";
             await gameDataService.Create(gameId);
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
@@ -90,7 +87,7 @@ namespace TomorrowDiesToday.Tests
                 OtherPlayers = new List<PlayerModel>()
             };
             await gameDataService.Update(gameModel);
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
@@ -104,18 +101,17 @@ namespace TomorrowDiesToday.Tests
         {
             var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
             await playerDataService.ConfigureTable();
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
         public async Task PlayerCreate()
         {
-            var gameService = Container.Resolve<IGameService>();
             var playerDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            gameService.GenerateGameId();
+            _mockGameService.Setup(x => x.GameId).Returns("TestGame");
             var playerId = "TestPlayer";
             await playerDataService.Create(playerId);
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
@@ -140,7 +136,7 @@ namespace TomorrowDiesToday.Tests
                 Squads = new List<SquadModel>()
             };
             await playerDataService.Update(playerModel);
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
