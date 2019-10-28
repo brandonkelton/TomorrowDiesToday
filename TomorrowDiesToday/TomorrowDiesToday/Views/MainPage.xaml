@@ -62,6 +62,7 @@
                 </StackLayout>
             </StackLayout>
         </Frame>
+        
         <BoxView x:Name="swiper" 
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0,Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.05,Constant=0}"
@@ -71,8 +72,6 @@
             </BoxView.GestureRecognizers>
         </BoxView>
                  
-
-        
         <Frame x:Name="sideSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#666666"
              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=-.76,Constant=0}"
              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.75,Constant=0}"
@@ -80,6 +79,19 @@
             <Frame.GestureRecognizers>
                 <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
             </Frame.GestureRecognizers>
+
+            <StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <CheckBox />
+                    <CheckBox />
+                    <CheckBox />
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <CheckBox />
+                    <CheckBox />
+                    <CheckBox />
+                </StackLayout>
+            </StackLayout>
 
         </Frame>
 
