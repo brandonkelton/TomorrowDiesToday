@@ -27,35 +27,5 @@ namespace TomorrowDiesToday.Models
         }
 
         #endregion
-
-        #region Helper Methods
-        public bool Flip(bool isFlipped)
-        {
-            if (isFlipped)
-            {
-                isFlipped = false;
-            }
-
-            else
-            {
-                isFlipped = true;
-            }
-
-            return isFlipped;
-        }
-        
-        public int IncrementCounter(int counter)
-        {
-            counter++;
-            return counter;
-        }
-
-        public int DecrementCounter(int counter)
-        {
-            counter--;
-            return counter;
-        }
-
-        #endregion
     }
 }

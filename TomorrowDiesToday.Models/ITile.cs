@@ -12,8 +12,8 @@ namespace TomorrowDiesToday.Models
         Dictionary<string, int> tileStats { get; set; }
 
         bool FlipToggle(bool isToggled);
-        int IncrementCounter(int counter);
-        int DecrementCounter(int counter);
+        int IncrementCounter();
+        int DecrementCounter();
 
     }
 }
