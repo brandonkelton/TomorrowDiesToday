@@ -34,7 +34,10 @@
         <!-- Custom styles -->
         <Style x:Key="PageStyle" TargetType="ContentPage">
             <Setter Property="BackgroundColor" Value="Black" />
-        </Style>        
+        </Style>
+        <Style TargetType="NavigationPage">
+            <Setter Property="BarBackgroundColor" Value="Black"/>
+        </Style>
         <Style x:Key="ListViewLabel" TargetType="Label">
             <Setter Property="TextColor" Value="Red" />
         </Style>

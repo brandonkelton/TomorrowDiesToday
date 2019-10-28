@@ -12,5 +12,6 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class MainPageViewModel : BaseViewModel, IMainPageViewModel
     {
+        public string Title => "Tomorrow Dies Today (Prototype)";
     }
 }

@@ -5,8 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.MainPage"
-             Title="Testing Dies Today"
-             BackgroundColor="Black">
+             Style="{StaticResource PageStyle}"
+             Title="{Binding Title}">
     
     <ContentPage.ToolbarItems>
         <ToolbarItem Name="addPlayer" Order="Primary" Text="Players"  Clicked="OnPlayerClicked"/>
