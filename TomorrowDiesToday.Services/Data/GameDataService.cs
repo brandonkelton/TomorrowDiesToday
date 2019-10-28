@@ -36,9 +36,9 @@ namespace TomorrowDiesToday.Services.Data
             await _client.CreateGame(id);
         }
 
-        public async Task<bool> Exists(string id)
+        public async Task<bool> Exists(string gameId)
         {
-            return await _client.GameExists(_game.GameId);
+            return await _client.GameExists(gameId);
         }
 
         public async Task RequestUpdate(GameRequest request)
