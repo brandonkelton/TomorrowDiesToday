@@ -10,5 +10,7 @@ namespace TomorrowDiesToday.Models
         public PlayerModel MyPlayer { get; set; }
 
         public List<PlayerModel> OtherPlayers { get; set; }
+
+        public List<TileModel> Tiles { get; set; }
     }
 }
