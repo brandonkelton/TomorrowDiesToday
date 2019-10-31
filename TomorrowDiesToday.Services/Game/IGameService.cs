@@ -9,10 +9,6 @@ namespace TomorrowDiesToday.Services.Game
         string GameId { get; set; }
         string PlayerId { get; set; }
 
-        Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads);
-
-        Dictionary<string, int> CalculateSquadStats(Dictionary<string, int> squadData);
-
         string GenerateGameId();
 
         bool SuccessCheck(Dictionary<string, int> tileStats, Dictionary<string, int> squadStats);
