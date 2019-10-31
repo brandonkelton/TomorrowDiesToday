@@ -12,24 +12,18 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class GameService : IGameService
     {
-        public string GameId
+        public GameModel ThisGame
         {
-            get { return _game.GameId; }
-            set { _game.GameId = value; }
-        }
-        public string PlayerId
-        {
-            get { return _game.MyPlayer.PlayerId; }
-            set { _game.MyPlayer.PlayerId = value; }
+            get { return _game; }
+            set { _game = value; }
         }
 
-        public IObservable<string> ValidationError => _validationError;
-
+        public IObservable<string> ValidationMessage => _validationMessage;
         public IObservable<Dictionary<string, PlayerModel>> OtherPlayers => _otherPlayers;
         public IObservable<PlayerModel> ThisPlayer => _thisPlayer;
         public IObservable<Dictionary<string, TileModel>> Tiles => _tiles;
 
-        private readonly ReplaySubject<string> _validationError = new ReplaySubject<string>(1);
+        private readonly ReplaySubject<string> _validationMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayers
             = new ReplaySubject<Dictionary<string, PlayerModel>>(1); // { PlayerId => PlayerModel }
         private readonly ReplaySubject<PlayerModel> _thisPlayer
@@ -105,10 +99,22 @@ namespace TomorrowDiesToday.Services.Game
         };
         private static Random _random = new Random();
 
+        // PlayerDataService and GameDataService observables to subscribe to
+        private IDisposable _playerUpdateSubscription = null;
+        private IDisposable _playerUpdateDictSubscription = null;
+        private IDisposable _tilesUpdateSubscription = null;
+
         public GameService(IDataService<GameModel, GameRequest> gameData, IDataService<PlayerModel, PlayerRequest> playerData)
         {
             _gameDataService = gameData;
             _playerDataService = playerData;
+
+            SubscribeToUpdates();
+        }
+
+        public void FlipTile(TileModel tileModel)
+        {
+            throw new NotImplementedException();
         }
 
         public string GenerateGameId()
@@ -118,10 +124,38 @@ namespace TomorrowDiesToday.Services.Game
               .Select(s => s[_random.Next(s.Length)]).Take(6).ToArray());
         }
 
-        public async Task UpdateSquad(PlayerModel playerModel)
+        public async Task RequestPlayerUpdate(PlayerModel playerModel)
         {
-            var playerDTO = PlayerToDTO(playerModel);
-            await _client.UpdatePlayer(playerDTO);
+            PlayerRequest playerRequest = new PlayerRequest { PlayerId = playerModel.PlayerId };
+            await _playerDataService.RequestUpdate(playerRequest);
+        }
+
+        public async Task RequestPlayersUpdate()
+        {
+            PlayerRequest playerRequest = new PlayerRequest();
+            await _playerDataService.RequestUpdate(playerRequest);
+        }
+
+        public async Task RequestTilesUpdate()
+        {
+            PlayerRequest playerRequest = new PlayerRequest();
+            await _playerDataService.RequestUpdate(playerRequest);
+        }
+
+        public async Task SendThisPlayer()
+        {
+            await _playerDataService.Update(_game.ThisPlayer);
+        }
+
+        public async Task SendTiles()
+        {
+            await _gameDataService.Update(_game);
+        }
+
+        public void UpdateSquad(SquadModel squadModel)
+        {
+            _game.ThisPlayer.Squads[squadModel.SquadId] = squadModel;
+            _thisPlayer.OnNext(_game.ThisPlayer);
         }
 
         private Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)
@@ -434,6 +468,22 @@ namespace TomorrowDiesToday.Services.Game
             return tileStatus;
         }
 
+        private void SubscribeToUpdates()
+        {
+            _playerUpdateSubscription = _playerDataService.DataReceived.Subscribe(playerModel =>
+            {
+                UpdateOtherPlayer(playerModel);
+            });
+            _playerUpdateSubscription = _playerDataService.DataDictReceived.Subscribe(playerModels =>
+            {
+                UpdateOtherPlayers(playerModels);
+            });
+            _tilesUpdateSubscription = _gameDataService.DataReceived.Subscribe(gameModel =>
+            {
+                UpdateTiles(gameModel.Tiles);
+            });
+        }
+
         private bool SuccessCheck(Dictionary<string, int> tileStats, Dictionary<string, int> squadStats)
         {
             int combatResult = squadStats["Combat"] - tileStats["Combat"];
@@ -480,6 +530,27 @@ namespace TomorrowDiesToday.Services.Game
             return tileDictionary;
         }
 
+        private void UpdateOtherPlayer(PlayerModel playerModel)
+        {
+            _game.OtherPlayers[playerModel.PlayerId] = playerModel;
+            _otherPlayers.OnNext(_game.OtherPlayers);
+        }
+
+        private void UpdateOtherPlayers(Dictionary<string, PlayerModel> playerModels)
+        {
+            throw new NotFiniteNumberException();
+        }
+
+        private void UpdateThisPlayer(PlayerModel playerModel)
+        {
+            throw new NotFiniteNumberException();
+        }
+
+        private void UpdateTiles(Dictionary<string, TileModel> tileModels)
+        {
+            throw new NotFiniteNumberException();
+        }
+
         private bool ValidateSquad(Dictionary<string, int> squadData)
         {
             int unitTotal = squadData["Thief"] + squadData["Hacker"] + squadData["Soldier"]
@@ -510,7 +581,7 @@ namespace TomorrowDiesToday.Services.Game
             }
             if (validationError != "")
             {
-                _validationError.OnNext(validationError);
+                _validationMessage.OnNext(validationError);
                 return false;
             }
             else
