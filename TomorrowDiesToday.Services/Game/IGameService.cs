@@ -10,7 +10,5 @@ namespace TomorrowDiesToday.Services.Game
         string PlayerId { get; set; }
 
         string GenerateGameId();
-
-        bool SuccessCheck(Dictionary<string, int> tileStats, Dictionary<string, int> squadStats);
     }
 }

@@ -12,11 +12,6 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class GameService : IGameService
     {
-        public IObservable<string> ValidationError => _validationError;
-        public IObservable<List<PlayerModel>> OtherPlayers => _otherPlayers;
-        public IObservable<PlayerModel> ThisPlayer => _thisPlayer;
-        public IObservable<List<TileModel>> Tiles => _tiles;
-
         public string GameId
         {
             get { return _game.GameId; }
@@ -28,14 +23,23 @@ namespace TomorrowDiesToday.Services.Game
             set { _game.MyPlayer.PlayerId = value; }
         }
 
+        public IObservable<string> ValidationError => _validationError;
+
+        public IObservable<Dictionary<string, PlayerModel>> OtherPlayers => _otherPlayers;
+        public IObservable<PlayerModel> ThisPlayer => _thisPlayer;
+        public IObservable<Dictionary<string, TileModel>> Tiles => _tiles;
+
+        private readonly ReplaySubject<string> _validationError = new ReplaySubject<string>(1);
+        private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayers
+            = new ReplaySubject<Dictionary<string, PlayerModel>>(1); // { PlayerId => PlayerModel }
+        private readonly ReplaySubject<PlayerModel> _thisPlayer
+            = new ReplaySubject<PlayerModel>(1); 
+        private readonly ReplaySubject<Dictionary<string, TileModel>> _tiles
+            = new ReplaySubject<Dictionary<string, TileModel>>(1); // { TileId => TileModel }
+
         private const int MAX_SQUAD_SIZE = 6;
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
-
-        private readonly ReplaySubject<string> _validationError = new ReplaySubject<string>(1);
-        private readonly ReplaySubject<List<PlayerModel>> _otherPlayers = new ReplaySubject<List<PlayerModel>>(1);
-        private readonly ReplaySubject<PlayerModel> _thisPlayer = new ReplaySubject<PlayerModel>(1);
-        private readonly ReplaySubject<List<TileModel>> _tiles = new ReplaySubject<List<TileModel>>(1);
 
         private GameModel _game = new GameModel();
         private IDataService<GameModel, GameRequest> _gameDataService;
@@ -114,28 +118,11 @@ namespace TomorrowDiesToday.Services.Game
               .Select(s => s[_random.Next(s.Length)]).Take(6).ToArray());
         }
 
-        public bool SuccessCheck(Dictionary<string, int> tileStats, Dictionary<string, int> squadStats)
+        public async Task UpdateSquad(PlayerModel playerModel)
         {
-            int combatResult = squadStats["Combat"] - tileStats["Combat"];
-            int stealthResult = squadStats["Stealth"] - tileStats["Stealth"];
-            int cunningResult = squadStats["Cunning"] - tileStats["Cunning"];
-            int diplomacyResult = squadStats["Diplomacy"] - tileStats["Diplomacy"];
-
-            if (combatResult >= 0 && stealthResult >= 0 && cunningResult >= 0 && diplomacyResult >= 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            var playerDTO = PlayerToDTO(playerModel);
+            await _client.UpdatePlayer(playerDTO);
         }
-
-        //public async Task UpdatePlayer(PlayerModel playerModel)
-        //{
-        //    var playerDTO = PlayerToDTO(playerModel);
-        //    await _client.UpdatePlayer(playerDTO);
-        //}
 
         private Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)
         {
@@ -445,6 +432,23 @@ namespace TomorrowDiesToday.Services.Game
             }
 
             return tileStatus;
+        }
+
+        private bool SuccessCheck(Dictionary<string, int> tileStats, Dictionary<string, int> squadStats)
+        {
+            int combatResult = squadStats["Combat"] - tileStats["Combat"];
+            int stealthResult = squadStats["Stealth"] - tileStats["Stealth"];
+            int cunningResult = squadStats["Cunning"] - tileStats["Cunning"];
+            int diplomacyResult = squadStats["Diplomacy"] - tileStats["Diplomacy"];
+
+            if (combatResult >= 0 && stealthResult >= 0 && cunningResult >= 0 && diplomacyResult >= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private Dictionary<string, int> TileLookup(string tileName, Boolean flipped, int alerts) //returns Dictionary of matching name
