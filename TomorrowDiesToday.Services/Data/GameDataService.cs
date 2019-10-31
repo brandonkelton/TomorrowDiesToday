@@ -60,8 +60,10 @@ namespace TomorrowDiesToday.Services.Data
         private GameDTO GameToDTO(GameModel gameModel)
         {
             var tileDTOs = new List<TileDTO>();
-            foreach (TileModel tileModel in gameModel.Tiles)
+            foreach (KeyValuePair<string, TileModel> tile in gameModel.Tiles)
             {
+                string tileId = tile.Key;
+                TileModel tileModel = tile.Value;
                 var tileDTO = new TileDTO
                 {
                     TileId = tileModel.TileId
@@ -78,14 +80,14 @@ namespace TomorrowDiesToday.Services.Data
 
         private GameModel GameToModel(GameDTO gameDTO)
         {
-            var tileModels = new List<TileModel>();
+            var tileModels = new Dictionary<string, TileModel>();
             foreach (TileDTO tileDTO in gameDTO.Tiles)
             {
                 var tileModel = new TileModel
                 {
                     TileId = tileDTO.TileId
                 };
-                tileModels.Add(tileModel);
+                tileModels.Add(tileModel.TileId, tileModel);
             }
             var gameModel = new GameModel
             {
