@@ -21,6 +21,7 @@ namespace TomorrowDiesToday.Tests
         public static IContainer Container;
 
         private Mock<IDBClient> _mockClient = new Mock<IDBClient>();
+        private Mock<IDynamoDBContext> _mockContext = new Mock<IDynamoDBContext>();
         private Mock<IGameService> _mockGameService = new Mock<IGameService>();
         private Mock<IDataService<GameModel, GameRequest>> _mockGameDataService = new Mock<IDataService<GameModel, GameRequest>>();
         private Mock<IDataService<PlayerModel, PlayerRequest>> _mockPlayerDataService = new Mock<IDataService<PlayerModel, PlayerRequest>>();
@@ -28,14 +29,10 @@ namespace TomorrowDiesToday.Tests
         public DataServiceTests()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<DynamoClient>().As<IDBClient>().InstancePerLifetimeScope();
-            builder.RegisterType<GameService>().As<IGameService>().InstancePerLifetimeScope();
             builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().InstancePerLifetimeScope();
             builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().InstancePerLifetimeScope();
             builder.RegisterInstance(_mockClient.Object).As<IDBClient>().SingleInstance();
             builder.RegisterInstance(_mockGameService.Object).As<IGameService>().SingleInstance();
-            builder.RegisterInstance(_mockGameDataService.Object).As<IDataService<GameModel, GameRequest>>().SingleInstance();
-            builder.RegisterInstance(_mockPlayerDataService.Object).As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
             Container = builder.Build();
         }
 
