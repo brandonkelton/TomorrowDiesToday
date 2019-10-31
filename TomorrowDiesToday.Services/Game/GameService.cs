@@ -18,12 +18,12 @@ namespace TomorrowDiesToday.Services.Game
             set { _game = value; }
         }
 
-        public IObservable<string> ValidationMessage => _validationMessage;
+        public IObservable<string> ErrorMessage => _errorMessage;
         public IObservable<Dictionary<string, PlayerModel>> OtherPlayers => _otherPlayers;
         public IObservable<PlayerModel> ThisPlayer => _thisPlayer;
         public IObservable<Dictionary<string, TileModel>> Tiles => _tiles;
 
-        private readonly ReplaySubject<string> _validationMessage = new ReplaySubject<string>(1);
+        private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayers
             = new ReplaySubject<Dictionary<string, PlayerModel>>(1); // { PlayerId => PlayerModel }
         private readonly ReplaySubject<PlayerModel> _thisPlayer
@@ -35,7 +35,7 @@ namespace TomorrowDiesToday.Services.Game
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
 
-        private GameModel _game = new GameModel();
+        private GameModel _game;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
         private Dictionary<string, string> _missions = new Dictionary<string, string>
@@ -104,6 +104,38 @@ namespace TomorrowDiesToday.Services.Game
         private IDisposable _playerUpdateDictSubscription = null;
         private IDisposable _tilesUpdateSubscription = null;
 
+        public async Task ChoosePlayer(string playerId)
+        {
+            if (! await _playerDataService.Exists(playerId))
+            {
+                await _playerDataService.Create(playerId);
+
+                PlayerModel playerModel = new PlayerModel
+                {
+                    PlayerId = playerId,
+                    Squads = new Dictionary<string, SquadModel>()
+                };
+
+                UpdateThisPlayer(playerModel);
+            }
+            else
+            {
+                _errorMessage.OnNext("Choose again!");
+            }
+        }
+
+        public async Task CreateGame()
+        {
+            bool gameExists = true;
+            string gameId = "";
+            while (gameExists)
+            {
+                gameId = GenerateGameId();
+                gameExists = await _gameDataService.Exists(gameId);
+            }
+            _game.GameId = gameId;
+        }
+
         public GameService(IDataService<GameModel, GameRequest> gameData, IDataService<PlayerModel, PlayerRequest> playerData)
         {
             _gameDataService = gameData;
@@ -114,14 +146,28 @@ namespace TomorrowDiesToday.Services.Game
 
         public void FlipTile(TileModel tileModel)
         {
-            throw new NotImplementedException();
+            _game.Tiles[tileModel.TileId].IsFlipped = !_game.Tiles[tileModel.TileId].IsFlipped;
+            UpdateTiles(_game.Tiles);
         }
 
         public string GenerateGameId()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            return new string(Enumerable.Repeat(chars, chars.Length)
+            string gameId = new string(Enumerable.Repeat(chars, chars.Length)
               .Select(s => s[_random.Next(s.Length)]).Take(6).ToArray());
+            return gameId;
+        }
+
+        public async Task JoinGame(string gameId)
+        {
+            if (await _gameDataService.Exists(gameId))
+            {
+                _game.GameId = gameId;
+            }
+            else
+            {
+                _errorMessage.OnNext("Game doesn't exist!");
+            }
         }
 
         public async Task RequestPlayerUpdate(PlayerModel playerModel)
@@ -538,17 +584,20 @@ namespace TomorrowDiesToday.Services.Game
 
         private void UpdateOtherPlayers(Dictionary<string, PlayerModel> playerModels)
         {
-            throw new NotFiniteNumberException();
+            _game.OtherPlayers = playerModels;
+            _otherPlayers.OnNext(_game.OtherPlayers);
         }
 
         private void UpdateThisPlayer(PlayerModel playerModel)
         {
-            throw new NotFiniteNumberException();
+            _game.ThisPlayer = playerModel;
+            _thisPlayer.OnNext(_game.ThisPlayer);
         }
 
         private void UpdateTiles(Dictionary<string, TileModel> tileModels)
         {
-            throw new NotFiniteNumberException();
+            _game.Tiles = tileModels;
+            _tiles.OnNext(_game.Tiles);
         }
 
         private bool ValidateSquad(Dictionary<string, int> squadData)
@@ -581,7 +630,7 @@ namespace TomorrowDiesToday.Services.Game
             }
             if (validationError != "")
             {
-                _validationMessage.OnNext(validationError);
+                _errorMessage.OnNext(validationError);
                 return false;
             }
             else
