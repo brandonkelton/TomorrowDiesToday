@@ -10,13 +10,22 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class GameService : IGameService
     {
-        public string GameId { get; set; }
-        public string PlayerId { get; set; }
+        public string GameId
+        {
+            get { return _game.GameId; }
+            set { _game.GameId = value; }
+        }
+        public string PlayerId
+        {
+            get { return _game.MyPlayer.PlayerId; }
+            set { _game.MyPlayer.PlayerId = value; }
+        }
 
         private const int MAX_SQUAD_SIZE = 6;
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
 
+        private GameModel _game = new GameModel();
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
         private Dictionary<string, string> _missions = new Dictionary<string, string>
