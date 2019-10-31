@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Text;
+using System.Threading.Tasks;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
@@ -10,6 +12,14 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class GameService : IGameService
     {
+
+        public IObservable<string> ValidationError => _validationError;
+        public IObservable<List<PlayerModel>> OtherPlayers => _otherPlayers;
+        public IObservable<PlayerModel> ThisPlayer => _thisPlayer;
+        public IObservable<List<TileModel>> Tiles => _tiles;
+
+
+
         public string GameId
         {
             get { return _game.GameId; }
@@ -24,6 +34,11 @@ namespace TomorrowDiesToday.Services.Game
         private const int MAX_SQUAD_SIZE = 6;
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
+
+        private readonly ReplaySubject<string> _validationError = new ReplaySubject<string>(1);
+        private readonly ReplaySubject<List<PlayerModel>> _otherPlayers = new ReplaySubject<List<PlayerModel>>(1);
+        private readonly ReplaySubject<PlayerModel> _thisPlayer = new ReplaySubject<PlayerModel>(1);
+        private readonly ReplaySubject<List<TileModel>> _tiles = new ReplaySubject<List<TileModel>>(1);
 
         private GameModel _game = new GameModel();
         private IDataService<GameModel, GameRequest> _gameDataService;
@@ -119,37 +134,79 @@ namespace TomorrowDiesToday.Services.Game
             }
         }
 
+        public Dictionary<string, int> TileLookup(string tileName, Boolean flipped, int alerts) //returns Dictionary of matching name
+        {
+            Dictionary<string, int> tileDictionary;
+            string dataStrip;
+
+            if (flipped == true)
+            {
+                dataStrip = _flipMissions[tileName];
+
+            }
+            else if (flipped == false)
+            {
+                dataStrip = _missions[tileName];
+            }
+            else
+            {
+                //throw some exception
+                System.ArgumentException argEx = new System.ArgumentException("Index is out of range", "index");
+                throw argEx;
+            }
+
+            tileDictionary = ParseToDictionary(dataStrip);
+            if (alerts > 0)
+            {
+                HandleTileAlerts(alerts, tileDictionary);
+            }
+
+            return tileDictionary;
+        }
+
+        //public async Task UpdatePlayer(PlayerModel playerModel)
+        //{
+        //    var playerDTO = PlayerToDTO(playerModel);
+        //    await _client.UpdatePlayer(playerDTO);
+        //}
+
         public bool ValidateSquad(Dictionary<string, int> squadData)
         {
             int unitTotal = squadData["Thief"] + squadData["Hacker"] + squadData["Soldier"]
                 + squadData["Assassin"] + squadData["Fixer"] + squadData["Scientist"];
             int ugoTotal = squadData["Ugo Combat"] + squadData["Ugo Stealth"] + squadData["Ugo Cunning"] + squadData["Ugo Diplomacy"];
 
-            if (squadData.Count != DATA_STRIP_LENGTH)
-            {
-                return false;
-            }
+            string validationError = "";
+
             if (unitTotal > MAX_SQUAD_SIZE || unitTotal < 0)
             {
-                return false;
+                validationError += "Invalid squad size\n";
             }
             if (squadData["Faced Henchman"] > NUMBER_OF_FACED_HENCHMAN || squadData["Faced Henchman"] < 0)
             {
-                return false;
+                validationError += "Invalid number of named \n";
             }
             if (squadData["Hypnotic Spray"] > 1 || squadData["Hypnotic Spray"] < 0)
             {
-                return false;
+                validationError += "\n";
             }
             if (squadData["Explosive Rounds"] > 1 || squadData["Explosive Rounds"] < 0)
             {
-                return false;
+                validationError += "\n";
             }
             if (ugoTotal > MAX_SQUAD_SIZE || ugoTotal < 0)
             {
+                validationError += "\n";
+            }
+            if (validationError != "")
+            {
+                _validationError.OnNext(validationError);
                 return false;
             }
-            return true;
+            else
+            {
+                return false;
+            }
         }
 
         private Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)
