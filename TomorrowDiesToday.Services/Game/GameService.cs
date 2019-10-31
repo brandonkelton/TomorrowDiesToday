@@ -12,13 +12,10 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class GameService : IGameService
     {
-
         public IObservable<string> ValidationError => _validationError;
         public IObservable<List<PlayerModel>> OtherPlayers => _otherPlayers;
         public IObservable<PlayerModel> ThisPlayer => _thisPlayer;
         public IObservable<List<TileModel>> Tiles => _tiles;
-
-
 
         public string GameId
         {
@@ -134,80 +131,11 @@ namespace TomorrowDiesToday.Services.Game
             }
         }
 
-        public Dictionary<string, int> TileLookup(string tileName, Boolean flipped, int alerts) //returns Dictionary of matching name
-        {
-            Dictionary<string, int> tileDictionary;
-            string dataStrip;
-
-            if (flipped == true)
-            {
-                dataStrip = _flipMissions[tileName];
-
-            }
-            else if (flipped == false)
-            {
-                dataStrip = _missions[tileName];
-            }
-            else
-            {
-                //throw some exception
-                System.ArgumentException argEx = new System.ArgumentException("Index is out of range", "index");
-                throw argEx;
-            }
-
-            tileDictionary = ParseToDictionary(dataStrip);
-            if (alerts > 0)
-            {
-                HandleTileAlerts(alerts, tileDictionary);
-            }
-
-            return tileDictionary;
-        }
-
         //public async Task UpdatePlayer(PlayerModel playerModel)
         //{
         //    var playerDTO = PlayerToDTO(playerModel);
         //    await _client.UpdatePlayer(playerDTO);
         //}
-
-        public bool ValidateSquad(Dictionary<string, int> squadData)
-        {
-            int unitTotal = squadData["Thief"] + squadData["Hacker"] + squadData["Soldier"]
-                + squadData["Assassin"] + squadData["Fixer"] + squadData["Scientist"];
-            int ugoTotal = squadData["Ugo Combat"] + squadData["Ugo Stealth"] + squadData["Ugo Cunning"] + squadData["Ugo Diplomacy"];
-
-            string validationError = "";
-
-            if (unitTotal > MAX_SQUAD_SIZE || unitTotal < 0)
-            {
-                validationError += "Invalid squad size\n";
-            }
-            if (squadData["Faced Henchman"] > NUMBER_OF_FACED_HENCHMAN || squadData["Faced Henchman"] < 0)
-            {
-                validationError += "Invalid number of named \n";
-            }
-            if (squadData["Hypnotic Spray"] > 1 || squadData["Hypnotic Spray"] < 0)
-            {
-                validationError += "\n";
-            }
-            if (squadData["Explosive Rounds"] > 1 || squadData["Explosive Rounds"] < 0)
-            {
-                validationError += "\n";
-            }
-            if (ugoTotal > MAX_SQUAD_SIZE || ugoTotal < 0)
-            {
-                validationError += "\n";
-            }
-            if (validationError != "")
-            {
-                _validationError.OnNext(validationError);
-                return false;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
         private Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)
         {
@@ -546,6 +474,45 @@ namespace TomorrowDiesToday.Services.Game
             }
 
             return tileDictionary;
+        }
+
+        private bool ValidateSquad(Dictionary<string, int> squadData)
+        {
+            int unitTotal = squadData["Thief"] + squadData["Hacker"] + squadData["Soldier"]
+                + squadData["Assassin"] + squadData["Fixer"] + squadData["Scientist"];
+            int ugoTotal = squadData["Ugo Combat"] + squadData["Ugo Stealth"] + squadData["Ugo Cunning"] + squadData["Ugo Diplomacy"];
+
+            string validationError = "";
+
+            if (unitTotal > MAX_SQUAD_SIZE || unitTotal < 0)
+            {
+                validationError += "Invalid squad size\n";
+            }
+            if (squadData["Faced Henchman"] > NUMBER_OF_FACED_HENCHMAN || squadData["Faced Henchman"] < 0)
+            {
+                validationError += "Invalid number of named henchmen\n";
+            }
+            if (squadData["Hypnotic Spray"] > 1 || squadData["Hypnotic Spray"] < 0)
+            {
+                throw new NotImplementedException();
+            }
+            if (squadData["Explosive Rounds"] > 1 || squadData["Explosive Rounds"] < 0)
+            {
+                validationError += "\n";
+            }
+            if (ugoTotal > MAX_SQUAD_SIZE || ugoTotal < 0)
+            {
+                validationError += "\n";
+            }
+            if (validationError != "")
+            {
+                _validationError.OnNext(validationError);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

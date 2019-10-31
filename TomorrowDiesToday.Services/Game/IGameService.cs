@@ -12,9 +12,5 @@ namespace TomorrowDiesToday.Services.Game
         string GenerateGameId();
 
         bool SuccessCheck(Dictionary<string, int> tileStats, Dictionary<string, int> squadStats);
-
-        Dictionary<string, int> TileLookup(string tileName, Boolean flipped, int alerts);
-
-        bool ValidateSquad(Dictionary<string, int> squadData);
     }
 }
