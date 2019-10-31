@@ -119,35 +119,6 @@ namespace TomorrowDiesToday.Services.Game
             }
         }
 
-        public Dictionary<string, int> TileLookup(string tileName, Boolean flipped, int alerts) //returns Dictionary of matching name
-        {
-            Dictionary<string, int> tileDictionary;
-            string dataStrip;
-
-            if (flipped == true)
-            {
-                dataStrip = _flipMissions[tileName];
-            }
-            else if (flipped == false)
-            {
-                dataStrip = _missions[tileName];
-            }
-            else
-            {
-                //throw some exception
-                System.ArgumentException argEx = new System.ArgumentException("Index is out of range", "index");
-                throw argEx;
-            }
-
-            tileDictionary = ParseToDictionary(dataStrip);
-            if (alerts > 0)
-            {
-                HandleTileAlerts(alerts, tileDictionary);
-            }
-
-            return tileDictionary;
-        }
-
         public bool ValidateSquad(Dictionary<string, int> squadData)
         {
             int unitTotal = squadData["Thief"] + squadData["Hacker"] + squadData["Soldier"]
@@ -489,6 +460,35 @@ namespace TomorrowDiesToday.Services.Game
             }
 
             return tileStatus;
+        }
+
+        private Dictionary<string, int> TileLookup(string tileName, Boolean flipped, int alerts) //returns Dictionary of matching name
+        {
+            Dictionary<string, int> tileDictionary;
+            string dataStrip;
+
+            if (flipped == true)
+            {
+                dataStrip = _flipMissions[tileName];
+            }
+            else if (flipped == false)
+            {
+                dataStrip = _missions[tileName];
+            }
+            else
+            {
+                //throw some exception
+                System.ArgumentException argEx = new System.ArgumentException("Index is out of range", "index");
+                throw argEx;
+            }
+
+            tileDictionary = ParseToDictionary(dataStrip);
+            if (alerts > 0)
+            {
+                HandleTileAlerts(alerts, tileDictionary);
+            }
+
+            return tileDictionary;
         }
     }
 }
