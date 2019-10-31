@@ -13,10 +13,10 @@ namespace TomorrowDiesToday.Services.Data
     public class PlayerDataService : IDataService<PlayerModel, PlayerRequest>
     {
         public IObservable<PlayerModel> DataReceived => _update;
-        public IObservable<List<PlayerModel>> DataListReceived => _updateList;
+        public IObservable<Dictionary<string, PlayerModel>> DataDictReceived => _updateDict;
 
         private readonly ReplaySubject<PlayerModel> _update = new ReplaySubject<PlayerModel>(1);
-        private readonly ReplaySubject<List<PlayerModel>> _updateList = new ReplaySubject<List<PlayerModel>>(1);
+        private readonly ReplaySubject<Dictionary<string, PlayerModel>> _updateDict = new ReplaySubject<Dictionary<string, PlayerModel>>(1);
         private IDBClient _client;
         private IGameService _game;
 
@@ -61,12 +61,12 @@ namespace TomorrowDiesToday.Services.Data
             else
             {
                 var playerDTOs = await _client.RequestPlayerList(_game.GameId);
-                var playerModels = new List<PlayerModel>();
+                var playerModels = new Dictionary<string, PlayerModel>();
                 foreach (PlayerDTO playerDTO in playerDTOs)
                 {
-                    playerModels.Add(PlayerToModel(playerDTO));
+                    playerModels.Add(playerDTO.PlayerId, PlayerToModel(playerDTO));
                 }
-                _updateList.OnNext(playerModels);
+                _updateDict.OnNext(playerModels);
             }
         }
 
