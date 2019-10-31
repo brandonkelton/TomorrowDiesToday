@@ -79,11 +79,13 @@ namespace TomorrowDiesToday.Services.Data
         private PlayerDTO PlayerToDTO(PlayerModel playerModel)
         {
             var squadDTOs = new List<SquadDTO>();
-            foreach (SquadModel squadModel in playerModel.Squads)
+            foreach (KeyValuePair<string, SquadModel> squad in playerModel.Squads)
             {
+                string squadId = squad.Key;
+                SquadModel squadModel = squad.Value;
                 var squadDTO = new SquadDTO
                 {
-                    SquadId = squadModel.SquadId,
+                    SquadId = squadId,
                     Data = squadModel.Data,
                     Stats = squadModel.Stats
                 };
@@ -100,7 +102,7 @@ namespace TomorrowDiesToday.Services.Data
 
         private PlayerModel PlayerToModel(PlayerDTO playerDTO)
         {
-            var squadModels = new List<SquadModel>();
+            var squadModels = new Dictionary<string, SquadModel>();
             foreach (SquadDTO squadDTO in playerDTO.Squads)
             {
                 var squadModel = new SquadModel
@@ -109,7 +111,7 @@ namespace TomorrowDiesToday.Services.Data
                     Data = squadDTO.Data,
                     Stats = squadDTO.Stats
                 };
-                squadModels.Add(squadModel);
+                squadModels.Add(squadModel.SquadId, squadModel);
             }
             var playerModel = new PlayerModel
             {
