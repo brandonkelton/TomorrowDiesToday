@@ -6,10 +6,14 @@ namespace TomorrowDiesToday.Models
 {
     public class SquadModel : IModel
     {
+        public string PlayerId { get; set; }
+
         public string SquadId { get; set; }
 
         public Dictionary<string, int> Data { get; set; }
         public Dictionary<string, int> Stats { get; set; }
+
+        public bool IsSelected { get; set; }
 
         public SquadModel()
         {
@@ -33,7 +37,8 @@ namespace TomorrowDiesToday.Models
             Stats.Add("Stealth", 0);
             Stats.Add("Cunning", 0);
             Stats.Add("Diplomacy", 0);
-        }
 
+            IsSelected = false;
+        }
     }
 }

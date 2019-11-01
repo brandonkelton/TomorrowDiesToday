@@ -35,6 +35,7 @@ namespace TomorrowDiesToday.Services.Game
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
 
+        private Dictionary<string, SquadModel> _selectedSquads = new Dictionary<string, SquadModel>();
         private GameModel _game;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
@@ -198,10 +199,34 @@ namespace TomorrowDiesToday.Services.Game
             await _gameDataService.Update(_game);
         }
 
+        public void ToggleSquad(SquadModel squadModel)
+        {
+            squadModel.IsSelected = !squadModel.IsSelected;
+
+            // Remove squad from selected squads if being deselected
+            if (!squadModel.IsSelected)
+            {
+                _selectedSquads.Remove(squadModel.SquadId);
+            }
+            else // Add squad to selected squads if being selected
+            {
+                _selectedSquads.Add(squadModel.SquadId, squadModel);
+            }
+            UpdateSquad(squadModel);
+        }
+
         public void UpdateSquad(SquadModel squadModel)
         {
-            _game.ThisPlayer.Squads[squadModel.SquadId] = squadModel;
-            _thisPlayer.OnNext(_game.ThisPlayer);
+            if (squadModel.PlayerId == _game.ThisPlayer.PlayerId)
+            {
+                _game.ThisPlayer.Squads[squadModel.SquadId] = squadModel;
+                _thisPlayer.OnNext(_game.ThisPlayer);
+            }
+            else
+            {
+                _game.OtherPlayers[squadModel.PlayerId].Squads[squadModel.SquadId] = squadModel;
+                _otherPlayers.OnNext(_game.OtherPlayers);
+            }
         }
 
         private Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)

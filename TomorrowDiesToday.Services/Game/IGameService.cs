@@ -35,6 +35,8 @@ namespace TomorrowDiesToday.Services.Game
 
         Task SendTiles();
 
+        void ToggleSquad(SquadModel squadModel);
+
         void UpdateSquad(SquadModel squadModel);
     }
 }
