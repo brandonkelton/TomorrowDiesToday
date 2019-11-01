@@ -9,7 +9,7 @@ namespace TomorrowDiesToday.DB
     {
         public override ImmutableCredentials GetCredentials()
         {
-            var credentials = new ImmutableCredentials("AKIAJFVCBNZ2YA42PAHA", "ujCsJaRq44FvOMZFl55NIfAdHeVa0DO19GHUd9Lf", null);
+            var credentials = new ImmutableCredentials("YOUR-ACCESS-KEY", "YOUR-SECRET-ACCESS-KEY", null);
             return credentials;
         }
     }
