@@ -21,12 +21,9 @@ namespace TomorrowDiesToday.Tests
         public static IContainer Container;
 
         private Mock<IDBClient> _mockClient = new Mock<IDBClient>();
-        private Mock<IDynamoDBContext> _mockContext = new Mock<IDynamoDBContext>();
         private Mock<IGameService> _mockGameService = new Mock<IGameService>();
         private Mock<IDataService<GameModel, GameRequest>> _mockGameDataService = new Mock<IDataService<GameModel, GameRequest>>();
         private Mock<IDataService<PlayerModel, PlayerRequest>> _mockPlayerDataService = new Mock<IDataService<PlayerModel, PlayerRequest>>();
-        private static Random _random = new Random();
-        private const string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
         public DataServiceTests()
         {
@@ -36,7 +33,6 @@ namespace TomorrowDiesToday.Tests
             builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().InstancePerLifetimeScope();
             builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().InstancePerLifetimeScope();
             builder.RegisterInstance(_mockClient.Object).As<IDBClient>().SingleInstance();
-            builder.RegisterInstance(_mockContext.Object).As<IDynamoDBContext>().SingleInstance();
             builder.RegisterInstance(_mockGameService.Object).As<IGameService>().SingleInstance();
             builder.RegisterInstance(_mockGameDataService.Object).As<IDataService<GameModel, GameRequest>>().SingleInstance();
             builder.RegisterInstance(_mockPlayerDataService.Object).As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
@@ -48,47 +44,50 @@ namespace TomorrowDiesToday.Tests
         {
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
             await gameDataService.ConfigureTable();
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
         public async Task GameCreate()
         {
-
-            var gameService = Container.Resolve<IGameService>();
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            await gameDataService.ConfigureTable();
-            var gameId = gameService.GenerateGameId();
+            var gameId = "TestGame";
             await gameDataService.Create(gameId);
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
         public async Task GameExistsIsTrue()
         {
-            throw new NotImplementedException();
+            var gameId = "TestGame";
+            _mockClient.Setup(c => c.GameExists(gameId)).Returns(Task.FromResult(true));
+            var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
+            var result = await gameDataService.Exists(gameId);
+            Assert.True(result);
         }
 
         [Fact]
         public async Task GameExistsIsFalse()
         {
-            throw new NotImplementedException();
+            var gameId = "TestGame";
+            _mockClient.Setup(c => c.GameExists(gameId)).Returns(Task.FromResult(false));
+            var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
+            var result = await gameDataService.Exists(gameId);
+            Assert.False(result);
         }
 
         [Fact]
         public async Task GameUpdate()
         {
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-
             var gameModel = new GameModel
             {
-                GameId = "Test",
-                MyPlayer = new PlayerModel { PlayerId = "Test" },
+                GameId = "TestGame",
+                MyPlayer = new PlayerModel { PlayerId = "TestGame" },
                 OtherPlayers = new List<PlayerModel>()
             };
-
             await gameDataService.Update(gameModel);
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
@@ -102,18 +101,17 @@ namespace TomorrowDiesToday.Tests
         {
             var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
             await playerDataService.ConfigureTable();
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
         public async Task PlayerCreate()
         {
-            var gameService = Container.Resolve<IGameService>();
             var playerDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            var gameId = gameService.GenerateGameId();
-            var playerId = "Test";
+            _mockGameService.Setup(x => x.GameId).Returns("TestGame");
+            var playerId = "TestPlayer";
             await playerDataService.Create(playerId);
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
@@ -132,15 +130,13 @@ namespace TomorrowDiesToday.Tests
         public async Task PlayerUpdate()
         {
             var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
-
             var playerModel = new PlayerModel
             {
-                PlayerId = "Test",
+                PlayerId = "TestPlayer",
                 Squads = new List<SquadModel>()
             };
-
             await playerDataService.Update(playerModel);
-            Assert.True(true);
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]

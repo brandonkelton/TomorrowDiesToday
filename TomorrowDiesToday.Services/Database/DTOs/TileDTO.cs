@@ -5,12 +5,11 @@ using System.Text;
 
 namespace TomorrowDiesToday.Services.Database.DTOs
 {
-    [DynamoDBTable("Games")]
-    public class GameDTO
+    /// <summary>
+    /// This is implemented as a List item within the Games table.
+    /// </summary>
+    public class TileDTO
     {
-        [DynamoDBHashKey]
-        public string GameId { get; set; }
-
-        public List<TileDTO> Tiles { get; set; }
+        public string TileId { get; set; }
     }
 }

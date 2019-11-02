@@ -12,6 +12,17 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class MainPageViewModel : BaseViewModel, IMainPageViewModel
     {
-        public string Title => "Tomorrow Dies Today (Prototype)";
+        public MainPageViewModel()
+        {
+            Items = new ObservableCollection<object>
+            {
+                new {Title="First"},
+                new {Title="second"},
+                new {Title="third"}
+            };
+        }
+        public ObservableCollection<object> Items { get; }
+
+
     }
 }
