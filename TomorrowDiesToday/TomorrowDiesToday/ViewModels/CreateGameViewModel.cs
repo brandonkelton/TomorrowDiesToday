@@ -18,6 +18,7 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel, IOnInitAsync
     {
+        public string Title => "Tomorrow Dies Today (Prototype)";
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private INavigationService _navService;

@@ -17,6 +17,7 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class JoinGameViewModel : BaseViewModel, IJoinGameViewModel
     {
+        public string Title => "Tomorrow Dies Today (Prototype)";
         private IGameService _gameService;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private INavigationService _navService;
