@@ -12,33 +12,56 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class GameService : IGameService
     {
+        private GameModel _game;
         public GameModel ThisGame
         {
             get { return _game; }
             set { _game = value; }
         }
 
-        public IObservable<string> ErrorMessage => _errorMessage;
-        public IObservable<Dictionary<string, PlayerModel>> OtherPlayers => _otherPlayers;
-        public IObservable<PlayerModel> ThisPlayer => _thisPlayer;
-        public IObservable<Dictionary<string, TileModel>> Tiles => _tiles;
-
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
+        public IObservable<string> ErrorMessage => _errorMessage;
+
         private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayers
             = new ReplaySubject<Dictionary<string, PlayerModel>>(1); // { PlayerId => PlayerModel }
+        public IObservable<Dictionary<string, PlayerModel>> OtherPlayers => _otherPlayers;
+
         private readonly ReplaySubject<PlayerModel> _thisPlayer
-            = new ReplaySubject<PlayerModel>(1); 
+            = new ReplaySubject<PlayerModel>(1);
+        public IObservable<PlayerModel> ThisPlayer => _thisPlayer;
+
         private readonly ReplaySubject<Dictionary<string, TileModel>> _tiles
             = new ReplaySubject<Dictionary<string, TileModel>>(1); // { TileId => TileModel }
+        public IObservable<Dictionary<string, TileModel>> Tiles => _tiles;
 
         private const int MAX_SQUAD_SIZE = 6;
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
 
-        private Dictionary<string, SquadModel> _selectedSquads = new Dictionary<string, SquadModel>();
-        private GameModel _game;
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
+
+        private Dictionary<string, string> _flipMissions = new Dictionary<string, string> //resourceLookupDictionary <TileName, TileStats>
+        {
+            { "Blood Diamond Harvest", "3,2,2,0" },
+            { "Skin Trade", "1,1,2,3" },
+            { "Social Engineering Scams", "0,1,3,1" },
+            { "Counterfeiting Operation", "0,3,2,0" },
+            { "Ponzi Schemes", "0,1,3,2" },
+            { "Political Corruption", "0,1,2,2" },
+            { "Hacker Cell", "0,3,4,0" },
+            { "Art Thievery", "0,3,3,1" },
+            { "Exotic Car GTA", "0,3,3,0" },
+            { "Smuggling Ring", "0,2,2,2" },
+            { "Arms Dealing", "1,3,1,0" },
+            { "Maritime Piracy", "3,2,2,0" },
+            { "Rig Sports Events", "0,1,2,2" },
+            { "Gambling Dens", "1,1,3,0" },
+            { "Narcotics Distribution", "1,3,2,1" },
+            { "CBRNE Dealing", "1,0,4,2" },
+            { "Ivory Poaching", "3,2,2,0" },
+            { "Murder Inc", "2,4,1,0"}
+        };
         private Dictionary<string, string> _missions = new Dictionary<string, string>
         { //<TileName, TileStats>
             //Resource Missions
@@ -77,28 +100,104 @@ namespace TomorrowDiesToday.Services.Game
             { "CIA Building", "2,2,2,2"},
             { "Interpol HQ", "1,2,2,1"}
         };
-        private Dictionary<string, string> _flipMissions = new Dictionary<string, string> //resourceLookupDictionary <TileName, TileStats>
+        Dictionary<string, Dictionary<string, int>> _playerStats = new Dictionary<string, Dictionary<string, int>>
         {
-            { "Blood Diamond Harvest", "3,2,2,0" },
-            { "Skin Trade", "1,1,2,3" },
-            { "Social Engineering Scams", "0,1,3,1" },
-            { "Counterfeiting Operation", "0,3,2,0" },
-            { "Ponzi Schemes", "0,1,3,2" },
-            { "Political Corruption", "0,1,2,2" },
-            { "Hacker Cell", "0,3,4,0" },
-            { "Art Thievery", "0,3,3,1" },
-            { "Exotic Car GTA", "0,3,3,0" },
-            { "Smuggling Ring", "0,2,2,2" },
-            { "Arms Dealing", "1,3,1,0" },
-            { "Maritime Piracy", "3,2,2,0" },
-            { "Rig Sports Events", "0,1,2,2" },
-            { "Gambling Dens", "1,1,3,0" },
-            { "Narcotics Distribution", "1,3,2,1" },
-            { "CBRNE Dealing", "1,0,4,2" },
-            { "Ivory Poaching", "3,2,2,0" },
-            { "Murder Inc", "2,4,1,0"}
+            {
+                "Archibald Kluge", new Dictionary<string, int>
+                 {
+                    {"Combat", 0 },
+                    {"Stealth", 0 },
+                    {"Cunning", 0 },
+                    {"Diplomacy", 0 }
+                 }
+            },
+            {
+                "Axle Robbins", new Dictionary<string, int>
+                 {
+                    {"Combat", 0 },
+                    {"Stealth", 0 },
+                    {"Cunning", 0 },
+                    {"Diplomacy", 0 }
+                 }
+            },
+            {
+                "Azura Badeau", new Dictionary<string, int>
+                 {
+                    {"Combat", 0 },
+                    {"Stealth", 0 },
+                    {"Cunning", 0 },
+                    {"Diplomacy", 0 }
+                 }
+            },
+            {
+                "Boris 'Myasneek'", new Dictionary<string, int>
+                 {
+                    {"Combat", 0 },
+                    {"Stealth", 0 },
+                    {"Cunning", 0 },
+                    {"Diplomacy", 0 }
+                 }
+            },
+            {
+                "Cassandra O'Shea", new Dictionary<string, int>
+                 {
+                    {"Combat", 0 },
+                    {"Stealth", 0 },
+                    {"Cunning", 0 },
+                    {"Diplomacy", 0 }
+                 }
+            },
+            {
+                "Emmerson Barlow", new Dictionary<string, int>
+                 {
+                    {"Combat", 0 },
+                    {"Stealth", 0 },
+                    {"Cunning", 0 },
+                    {"Diplomacy", 0 }
+                 }
+            },
+            {
+                "Jin Feng", new Dictionary<string, int>
+                 {
+                    {"Combat", 0 },
+                    {"Stealth", 0 },
+                    {"Cunning", 0 },
+                    {"Diplomacy", 0 }
+                 }
+            },
+            {
+                "The Node", new Dictionary<string, int>
+                 {
+                    {"Combat", 0 },
+                    {"Stealth", 0 },
+                    {"Cunning", 0 },
+                    {"Diplomacy", 0 }
+                 }
+            },
+            {
+                "Ugo Dottore", new Dictionary<string, int>
+                 {
+                    {"Combat", 0 },
+                    {"Stealth", 0 },
+                    {"Cunning", 0 },
+                    {"Diplomacy", 0 }
+                 }
+            },
+        };
+        private Dictionary<int, string> _playerLookupTable = new Dictionary<int, string>
+        {
+            { 1,  "Archibald Kluge" },
+            { 2,  "Axle Robbins" },
+            { 3,  "Azura Badeau" },
+            { 4,  "Boris 'Myasneek'" },
+            { 5,  "Cassandra O'Shea" },
+            { 6,  "Emmerson Barlow" },
+            { 7,  "Jin Feng" },
+            { 8,  "The Node" },
+            { 9,  "Ugo Dottore" },
         };
         private static Random _random = new Random();
+        private Dictionary<string, SquadModel> _selectedSquads = new Dictionary<string, SquadModel>();
 
         // PlayerDataService and GameDataService observables to subscribe to
         private IDisposable _playerUpdateSubscription = null;
@@ -110,13 +209,7 @@ namespace TomorrowDiesToday.Services.Game
             if (! await _playerDataService.Exists(playerId))
             {
                 await _playerDataService.Create(playerId);
-
-                PlayerModel playerModel = new PlayerModel
-                {
-                    PlayerId = playerId,
-                    Squads = new Dictionary<string, SquadModel>()
-                };
-
+                PlayerModel playerModel = GeneratePlayer(playerId);
                 UpdateThisPlayer(playerModel);
             }
             else
@@ -143,20 +236,6 @@ namespace TomorrowDiesToday.Services.Game
             _playerDataService = playerData;
 
             SubscribeToUpdates();
-        }
-
-        public void FlipTile(TileModel tileModel)
-        {
-            _game.Tiles[tileModel.TileId].IsFlipped = !_game.Tiles[tileModel.TileId].IsFlipped;
-            UpdateTiles(_game.Tiles);
-        }
-
-        public string GenerateGameId()
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            string gameId = new string(Enumerable.Repeat(chars, chars.Length)
-              .Select(s => s[_random.Next(s.Length)]).Take(6).ToArray());
-            return gameId;
         }
 
         public async Task JoinGame(string gameId)
@@ -212,21 +291,36 @@ namespace TomorrowDiesToday.Services.Game
             {
                 _selectedSquads.Add(squadModel.SquadId, squadModel);
             }
-            UpdateSquad(squadModel);
-        }
-
-        public void UpdateSquad(SquadModel squadModel)
-        {
             if (squadModel.PlayerId == _game.ThisPlayer.PlayerId)
             {
-                _game.ThisPlayer.Squads[squadModel.SquadId] = squadModel;
-                _thisPlayer.OnNext(_game.ThisPlayer);
+                UpdateSquad(squadModel);
             }
             else
             {
                 _game.OtherPlayers[squadModel.PlayerId].Squads[squadModel.SquadId] = squadModel;
-                _otherPlayers.OnNext(_game.OtherPlayers);
+                UpdateOtherPlayer(_game.OtherPlayers[squadModel.PlayerId]);
             }
+        }
+
+        public void ToggleTile(TileModel tileModel)
+        {
+            _game.Tiles[tileModel.TileId].IsFlipped = !_game.Tiles[tileModel.TileId].IsFlipped;
+            UpdateTiles(_game.Tiles);
+        }
+
+        public void UpdateSquad(SquadModel squadModel)
+        {
+            if (ValidateSquad(squadModel.Data))
+            {
+                _game.ThisPlayer.Squads[squadModel.SquadId] = squadModel;
+                _thisPlayer.OnNext(_game.ThisPlayer);
+            }
+        }
+
+        public void UpdateTile(TileModel tileModel)
+        {
+            _game.Tiles[tileModel.TileId] = tileModel;
+            _tiles.OnNext(_game.Tiles);
         }
 
         private Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)
@@ -256,36 +350,36 @@ namespace TomorrowDiesToday.Services.Game
         private int CalculateCombat(Dictionary<string, int> squadData)
         {
             int total = 0;
-            int facedHenchmen = squadData["Faced Henchmen"];
+            int namedHenchmen = squadData["Named Henchmen"];
             int soldiers = squadData["Soldier"];
             int assassins = squadData["Assassin"];
 
             total += (soldiers * 2);
             total += assassins;
 
-            switch (facedHenchmen)
+            switch (namedHenchmen)
             {
-                //Axle Robbins
+                // Axle Robbins
                 case 2:
                     total += 1;
                     break;
 
-                //Azura Badeau
+                // Azura Badeau
                 case 3:
                     total += 2;
                     break;
 
-                //Boris "Myasneek"
+                // Boris "Myasneek"
                 case 4:
                     total += 3;
                     break;
 
-                //Emerson Barlow
+                // Emerson Barlow
                 case 6:
                     total += 1;
                     break;
 
-                //Ugo Dottore
+                // Ugo Dottore
                 case 9:
                     total += 1;
                     break;
@@ -294,7 +388,7 @@ namespace TomorrowDiesToday.Services.Game
                     break;
             }
 
-            if (facedHenchmen == 9)
+            if (namedHenchmen == 9)
             {
                 total += squadData["Ugo Combat"];
             }
@@ -321,66 +415,66 @@ namespace TomorrowDiesToday.Services.Game
 
         private int CalculateStealth(Dictionary<string, int> squadData)
         {
-            int total = 0;
-            int facedHenchmen = squadData["Faced Henchmen"];
+            int totalStealth = 0;
+            int namedHenchmen = squadData["Named Henchmen"];
             int soldiers = squadData["Soldier"];
             int assassins = squadData["Assassin"];
             int thieves = squadData["Thief"];
             int hackers = squadData["Hacker"];
 
-            total += soldiers;
-            total += (assassins * 2);
-            total += (thieves * 2);
-            total += hackers;
+            totalStealth += soldiers;
+            totalStealth += (assassins * 2);
+            totalStealth += (thieves * 2);
+            totalStealth += hackers;
 
-            switch (facedHenchmen)
+            switch (namedHenchmen)
             {
-                //Archibald Kluge
+                // Archibald Kluge
                 case 1:
-                    total += 1;
+                    totalStealth += 1;
                     break;
 
-                //Azura Badeau
+                // Azura Badeau
                 case 3:
-                    total += 2;
+                    totalStealth += 2;
                     break;
 
-                //Boris "Myasneek"
+                // Boris "Myasneek"
                 case 4:
-                    total += 1;
+                    totalStealth += 1;
                     break;
 
-                //Emmerson Barlow
+                // Emmerson Barlow
                 case 6:
-                    total += 3;
+                    totalStealth += 3;
                     break;
 
-                //Jin Feng
+                // Jin Feng
                 case 7:
-                    total += 3;
+                    totalStealth += 3;
                     break;
 
-                //The Node
+                // The Node
                 case 8:
-                    total += 2;
+                    totalStealth += 2;
                     break;
 
                 default:
                     break;
             }
 
-            if (facedHenchmen == 9)
+            if (namedHenchmen == 9)
             {
-                total += squadData["Ugo Stealth"];
+                totalStealth += squadData["Ugo Stealth"];
             }
 
-            return total;
+            return totalStealth;
         }
 
         private int CalculateCunning(Dictionary<string, int> squadData)
         {
             int total = 0;
-            int facedHenchmen = squadData["Faced Henchmen"];
+            int namedHenchmen = squadData["Named Henchmen"];
             int thieves = squadData["Thief"];
             int scientists = squadData["Scientist"];
             int fixers = squadData["Fixer"];
@@ -391,7 +485,7 @@ namespace TomorrowDiesToday.Services.Game
             total += fixers;
             total += (hackers * 2);
 
-            switch (facedHenchmen)
+            switch (namedHenchmen)
             {
                 //Archibald Kluge
                 case 1:
@@ -442,7 +536,7 @@ namespace TomorrowDiesToday.Services.Game
                     break;
             }
 
-            if (facedHenchmen == 9)
+            if (namedHenchmen == 9)
             {
                 total += squadData["Ugo Cunning"];
             }
@@ -452,14 +546,14 @@ namespace TomorrowDiesToday.Services.Game
         private int CalculateDiplomacy(Dictionary<string, int> squadData)
         {
             int total = 0;
-            int facedHenchmen = squadData["Faced Henchmen"];
+            int namedHenchmen = squadData["Named Henchmen"];
             int scientists = squadData["Scientist"];
             int fixers = squadData["Fixer"];
 
             total += scientists;
             total += (fixers * 2);
 
-            switch (facedHenchmen)
+            switch (namedHenchmen)
             {
                 //Archibald Kluge
                 case 1:
@@ -499,12 +593,54 @@ namespace TomorrowDiesToday.Services.Game
                 total += 2;
             }
 
-            if (facedHenchmen == 9)
+            if (namedHenchmen == 9)
             {
                 total += squadData["Ugo Diplomacy"];
             }
 
             return total;
+        }
+
+        private string GenerateGameId()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            string gameId = new string(Enumerable.Repeat(chars, chars.Length)
+              .Select(s => s[_random.Next(s.Length)]).Take(6).ToArray());
+
+            return gameId;
+        }
+
+        private PlayerModel GeneratePlayer(string playerId)
+        {
+            PlayerModel playerModel = new PlayerModel
+            {
+                PlayerId = playerId,
+                Squads = new Dictionary<string, SquadModel>
+                    {
+                        {string.Format("{0}-1", playerId), new SquadModel() },
+                        {string.Format("{0}-2", playerId), new SquadModel() },
+                        {string.Format("{0}-3", playerId), new SquadModel() },
+                        {string.Format("{0}-4", playerId), new SquadModel() },
+                        {string.Format("{0}-5", playerId), new SquadModel() },
+                        {string.Format("{0}-6", playerId), new SquadModel() },
+                    }
+            };
+
+            foreach (KeyValuePair<string, SquadModel> squad in playerModel.Squads)
+            {
+                squad.Value.PlayerId = playerId;
+                squad.Value.SquadId = squad.Key;
+            }
+
+            // Add chosen Named Henchman to squad 1
+            string squadId = string.Format("{0}-1", playerId);
+            playerModel.Squads[squadId].Data["Named Henchman"] = int.Parse(playerId);
+
+            // Calculate stats for squad 1
+            playerModel.Squads[squadId].Stats = CalculateSquadStats(playerModel.Squads[squadId].Stats);
+
+            return playerModel;
         }
 
         private Dictionary<string, int> HandleTileAlerts(int alerts, Dictionary<string, int> tileDictionary)

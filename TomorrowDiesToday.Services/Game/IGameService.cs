@@ -19,10 +19,6 @@ namespace TomorrowDiesToday.Services.Game
 
         Task CreateGame();
 
-        void FlipTile(TileModel tileModel);
-
-        string GenerateGameId();
-
         Task JoinGame(string gameId);
 
         Task RequestPlayerUpdate(PlayerModel playerModel);
@@ -37,6 +33,10 @@ namespace TomorrowDiesToday.Services.Game
 
         void ToggleSquad(SquadModel squadModel);
 
+        void ToggleTile(TileModel tileModel);
+
         void UpdateSquad(SquadModel squadModel);
+
+        void UpdateTile(TileModel tileModel);
     }
 }
