@@ -31,4 +31,12 @@
   <style name="AppCompatDialogStyle" parent="Theme.AppCompat.Light.Dialog">
     <item name="colorAccent">#FF4081</item>
   </style>
+  
+  <!-- ToolBar -->
+  <style name="ToolBarStyle" parent="Theme.AppCompat">
+      <item name="android:textColorPrimary">#FF0000</item>
+      <item name="android:textColorSecondary">#FF0000</item>
+      <item name="actionMenuTextColor">#FF0000</item>      
+  </style>
+  
 </resources>
