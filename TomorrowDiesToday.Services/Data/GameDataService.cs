@@ -31,51 +31,67 @@ namespace TomorrowDiesToday.Services.Data
             await _client.InitializeGameTable();
         }
 
-        public async Task Create(string id)
+        public async Task Create(string gameId)
         {
-            await _client.CreateGame(id);
+            await _client.CreateGame(gameId);
         }
 
-        public async Task<bool> Exists(string id)
+        public async Task<bool> Exists(string gameId)
         {
-            return await _client.GameExists(_game.GameId);
+            return await _client.GameExists(gameId);
         }
 
         public async Task RequestUpdate(GameRequest request)
         {
-            await _client.RequestPlayerList(_game.GameId);
+            var gameDTO = await _client.RequestGame(_game.GameId);
+            var gameModel = GameToModel(gameDTO);
+            _update.OnNext(gameModel);
         }
 
         public async Task Update(GameModel gameModel)
         {
-            if (gameModel.MyPlayer?.Squads != null)
+            if (gameModel.Tiles.Count > 0)
             {
-                var playerDTO = PlayerToDTO(gameModel.MyPlayer);
-                await _client.Update(playerDTO);
+                var gameDTO = GameToDTO(gameModel);
+                await _client.UpdateGame(gameDTO);
             }
         }
 
-        private PlayerDTO PlayerToDTO(PlayerModel playerModel)
+        private GameDTO GameToDTO(GameModel gameModel)
         {
-            var squadDTOs = new List<SquadDTO>();
-            foreach (SquadModel squadModel in playerModel.Squads)
+            var tileDTOs = new List<TileDTO>();
+            foreach (TileModel tileModel in gameModel.Tiles)
             {
-                var squadDTO = new SquadDTO
+                var tileDTO = new TileDTO
                 {
-                    SquadId = squadModel.SquadId,
-                    Data = squadModel.Data,
-                    Stats = squadModel.Stats
+                    TileId = tileModel.TileId
                 };
-                squadDTOs.Add(squadDTO);
+                tileDTOs.Add(tileDTO);
             }
-            var playerDTO = new PlayerDTO
+            var gameDTO = new GameDTO
             {
                 GameId = _game.GameId,
-                PlayerId = playerModel.PlayerId,
-                Squads = squadDTOs
+                Tiles = tileDTOs
             };
+            return gameDTO;
+        }
 
-            return playerDTO;
+        private GameModel GameToModel(GameDTO gameDTO)
+        {
+            var tileModels = new List<TileModel>();
+            foreach (TileDTO tileDTO in gameDTO.Tiles)
+            {
+                var tileModel = new TileModel
+                {
+                    TileId = tileDTO.TileId
+                };
+                tileModels.Add(tileModel);
+            }
+            var gameModel = new GameModel
+            {
+                Tiles = tileModels
+            };
+            return gameModel;
         }
     }
 }
