@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
+             xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.MainPage"
              Title="Testing Dies Today"
@@ -16,7 +18,35 @@
         <Binding Path="MainPageViewModel" Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
 
-    <RelativeLayout>        
+    <RelativeLayout>
+        <cards:CarouselView x:Name="tiles"
+            ItemsSource="{Binding Items}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=.55,Constant=0}">
+
+            <cards:CarouselView.ItemTemplate>
+                <DataTemplate>
+                    <ContentView>
+                        <Frame 
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    HeightRequest="300"
+                    WidthRequest="300"
+                    Padding="0" 
+                    HasShadow="false"
+                    IsClippedToBounds="true"
+                    CornerRadius="10"
+                    BackgroundColor="#4b4c4c">
+                            <StackLayout Spacing="5">
+                                <Button Text="{Binding Title}"/>
+                            </StackLayout>
+                        </Frame>
+                        
+                    </ContentView>
+                </DataTemplate>
+            </cards:CarouselView.ItemTemplate>
+
+        </cards:CarouselView>
         
         <Frame x:Name="bottomSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#4b4c4c" 
             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=.6,Constant=0}"
