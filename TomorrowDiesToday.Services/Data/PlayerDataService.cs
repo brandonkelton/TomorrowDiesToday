@@ -18,12 +18,10 @@ namespace TomorrowDiesToday.Services.Data
         private readonly ReplaySubject<PlayerModel> _update = new ReplaySubject<PlayerModel>(1);
         private readonly ReplaySubject<Dictionary<string, PlayerModel>> _updateDict = new ReplaySubject<Dictionary<string, PlayerModel>>(1);
         private IDBClient _client;
-        private IGameService _game;
 
-        public PlayerDataService(IDBClient client, IGameService game)
+        public PlayerDataService(IDBClient client)
         {
             _client = client;
-            _game = game;
         }
 
         public async Task ConfigureTable()
@@ -31,40 +29,34 @@ namespace TomorrowDiesToday.Services.Data
             await _client.InitializePlayerTable();
         }
 
-        public async Task Create(string playerId)
+        public async Task Create(PlayerRequest request)
         {
-            var existingPlayer = await Exists(playerId);
-            if(existingPlayer)
-            {
-                // TODO: create app specific exception and handle at a higher level
-                // ex:  PlayerExistsException(playerId)
-                throw new Exception("Player already exists!");
-            }
-
-            await _client.CreatePlayer(_game.GameId, playerId);
+            await _client.CreatePlayer(request.GameId, request.PlayerId);
         }
 
-        public async Task<bool> Exists(string playerId)
+        public async Task<bool> Exists(PlayerRequest request)
         {
-            return await _client.PlayerExists(_game.GameId, playerId);
+            return await _client.PlayerExists(request.GameId, request.PlayerId);
         }
 
         public async Task RequestUpdate(PlayerRequest request)
         {
             if (request.PlayerId != null)
             {
-                var playerDTO = await _client.RequestPlayer(_game.GameId, request.PlayerId);
-                var playerModel = PlayerToModel(playerDTO);
+                PlayerDTO playerDTO = await _client.RequestPlayer(request.GameId, request.PlayerId);
+                PlayerModel playerModel = PlayerToModel(playerDTO);
 
                 _update.OnNext(playerModel);
             }
             else
             {
-                var playerDTOs = await _client.RequestPlayerList(_game.GameId);
+                var playerDTOs = await _client.RequestPlayerList(request.GameId);
                 var playerModels = new Dictionary<string, PlayerModel>();
                 foreach (PlayerDTO playerDTO in playerDTOs)
                 {
-                    playerModels.Add(playerDTO.PlayerId, PlayerToModel(playerDTO));
+                    PlayerModel playerModel = PlayerToModel(playerDTO);
+                    playerModel.GameId = request.GameId;
+                    playerModels.Add(playerDTO.PlayerId, playerModel);
                 }
                 _updateDict.OnNext(playerModels);
             }
@@ -93,7 +85,7 @@ namespace TomorrowDiesToday.Services.Data
             }
             var playerDTO = new PlayerDTO
             {
-                GameId = _game.GameId,
+                GameId = playerModel.GameId,
                 PlayerId = playerModel.PlayerId,
                 Squads = squadDTOs
             };

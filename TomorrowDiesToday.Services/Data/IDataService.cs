@@ -15,9 +15,9 @@ namespace TomorrowDiesToday.Services.Data
 
         Task ConfigureTable();
 
-        Task Create(string id);
+        Task Create(U request);
 
-        Task<bool> Exists(string id);
+        Task<bool> Exists(U request);
 
         Task RequestUpdate(U request);
 

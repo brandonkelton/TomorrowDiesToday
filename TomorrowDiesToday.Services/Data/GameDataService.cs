@@ -18,12 +18,10 @@ namespace TomorrowDiesToday.Services.Data
         private readonly ReplaySubject<GameModel> _update = new ReplaySubject<GameModel>(1);
         private readonly ReplaySubject<Dictionary<string, GameModel>> _updateDict = new ReplaySubject<Dictionary<string, GameModel>>(1);
         private IDBClient _client;
-        private IGameService _game;
 
-        public GameDataService(IDBClient client, IGameService game)
+        public GameDataService(IDBClient client)
         {
             _client = client;
-            _game = game;
         }
 
         public async Task ConfigureTable()
@@ -31,19 +29,19 @@ namespace TomorrowDiesToday.Services.Data
             await _client.InitializeGameTable();
         }
 
-        public async Task Create(string gameId)
+        public async Task Create(GameRequest request)
         {
-            await _client.CreateGame(gameId);
+            await _client.CreateGame(request.GameId);
         }
 
-        public async Task<bool> Exists(string gameId)
+        public async Task<bool> Exists(GameRequest request)
         {
-            return await _client.GameExists(gameId);
+            return await _client.GameExists(request.GameId);
         }
 
         public async Task RequestUpdate(GameRequest request)
         {
-            var gameDTO = await _client.RequestGame(_game.GameId);
+            var gameDTO = await _client.RequestGame(request.GameId);
             var gameModel = GameToModel(gameDTO);
             _update.OnNext(gameModel);
         }
@@ -72,7 +70,7 @@ namespace TomorrowDiesToday.Services.Data
             }
             var gameDTO = new GameDTO
             {
-                GameId = _game.GameId,
+                GameId = gameModel.GameId,
                 Tiles = tileDTOs
             };
             return gameDTO;
