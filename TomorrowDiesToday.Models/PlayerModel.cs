@@ -9,6 +9,8 @@ namespace TomorrowDiesToday.Models
         public string GameId { get; set; }
         public string PlayerId { get; set; }
 
+        public string PlayerName { get; set; }
+
         // { SquadId => SquadModel }
         public Dictionary<string, SquadModel> Squads { get; set; } = new Dictionary<string, SquadModel>();
     }
