@@ -12,11 +12,24 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class GameService : IGameService
     {
-        private GameModel _game;
-        public GameModel ThisGame
+        private GameModel _game = new GameModel();
+
+        private Dictionary<int, string> _playerLookupTable = new Dictionary<int, string>
         {
-            get { return _game; }
-            set { _game = value; }
+            { 1,  "Archibald Kluge" },
+            { 2,  "Axle Robbins" },
+            { 3,  "Azura Badeau" },
+            { 4,  "Boris 'Myasneek'" },
+            { 5,  "Cassandra O'Shea" },
+            { 6,  "Emmerson Barlow" },
+            { 7,  "Jin Feng" },
+            { 8,  "The Node" },
+            { 9,  "Ugo Dottore" },
+        };
+        public Dictionary<int, string> PlayerLookup
+        {
+            get { return _playerLookupTable; }
+            set { _playerLookupTable = value; }
         }
 
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
@@ -25,6 +38,10 @@ namespace TomorrowDiesToday.Services.Game
         private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayers
             = new ReplaySubject<Dictionary<string, PlayerModel>>(1); // { PlayerId => PlayerModel }
         public IObservable<Dictionary<string, PlayerModel>> OtherPlayers => _otherPlayers;
+
+        private readonly ReplaySubject<GameModel> _thisGame
+            = new ReplaySubject<GameModel>(1);
+        public IObservable<GameModel> ThisGame => _thisGame;
 
         private readonly ReplaySubject<PlayerModel> _thisPlayer
             = new ReplaySubject<PlayerModel>(1);
@@ -184,18 +201,6 @@ namespace TomorrowDiesToday.Services.Game
                  }
             },
         };
-        private Dictionary<int, string> _playerLookupTable = new Dictionary<int, string>
-        {
-            { 1,  "Archibald Kluge" },
-            { 2,  "Axle Robbins" },
-            { 3,  "Azura Badeau" },
-            { 4,  "Boris 'Myasneek'" },
-            { 5,  "Cassandra O'Shea" },
-            { 6,  "Emmerson Barlow" },
-            { 7,  "Jin Feng" },
-            { 8,  "The Node" },
-            { 9,  "Ugo Dottore" },
-        };
         private static Random _random = new Random();
         private Dictionary<string, SquadModel> _selectedSquads = new Dictionary<string, SquadModel>();
 
@@ -204,17 +209,32 @@ namespace TomorrowDiesToday.Services.Game
         private IDisposable _playerUpdateDictSubscription = null;
         private IDisposable _tilesUpdateSubscription = null;
 
-        public async Task ChoosePlayer(string playerId)
+        public GameService(IDataService<GameModel, GameRequest> gameData, IDataService<PlayerModel, PlayerRequest> playerData)
         {
-            if (! await _playerDataService.Exists(playerId))
+            _gameDataService = gameData;
+            _playerDataService = playerData;
+
+            SubscribeToUpdates();
+        }
+
+        public async Task<bool> ChoosePlayer(string playerId)
+        {
+            PlayerRequest request = new PlayerRequest
             {
-                await _playerDataService.Create(playerId);
+                GameId = _game.GameId,
+                PlayerId = _game.ThisPlayer.PlayerId
+            };
+            if (! await _playerDataService.Exists(request))
+            {
+                await _playerDataService.Create(request);
                 PlayerModel playerModel = GeneratePlayer(playerId);
                 UpdateThisPlayer(playerModel);
+                return true;
             }
             else
             {
                 _errorMessage.OnNext("Choose again!");
+                return false;
             }
         }
 
@@ -225,28 +245,25 @@ namespace TomorrowDiesToday.Services.Game
             while (gameExists)
             {
                 gameId = GenerateGameId();
-                gameExists = await _gameDataService.Exists(gameId);
+                GameRequest request = new GameRequest { GameId = gameId };
+                gameExists = await _gameDataService.Exists(request);
             }
             _game.GameId = gameId;
+            _thisGame.OnNext(_game);
         }
 
-        public GameService(IDataService<GameModel, GameRequest> gameData, IDataService<PlayerModel, PlayerRequest> playerData)
+        public async Task<bool> JoinGame(string gameId)
         {
-            _gameDataService = gameData;
-            _playerDataService = playerData;
-
-            SubscribeToUpdates();
-        }
-
-        public async Task JoinGame(string gameId)
-        {
-            if (await _gameDataService.Exists(gameId))
+            GameRequest request = new GameRequest { GameId = gameId };
+            if (await _gameDataService.Exists(request))
             {
                 _game.GameId = gameId;
+                return true;
             }
             else
             {
                 _errorMessage.OnNext("Game doesn't exist!");
+                return false;
             }
         }
 
@@ -599,6 +616,13 @@ namespace TomorrowDiesToday.Services.Game
             }
 
             return total;
+        }
+
+        private void Dispose()
+        {
+            if (_playerUpdateSubscription != null) _playerUpdateSubscription.Dispose();
+            if (_playerUpdateDictSubscription != null) _playerUpdateDictSubscription.Dispose();
+            if (_tilesUpdateSubscription != null) _tilesUpdateSubscription.Dispose();
         }
 
         private string GenerateGameId()

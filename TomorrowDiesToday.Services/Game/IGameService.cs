@@ -8,18 +8,18 @@ namespace TomorrowDiesToday.Services.Game
 {
     public interface IGameService
     {
+
         IObservable<string> ErrorMessage { get; }
         IObservable<Dictionary<string, PlayerModel>> OtherPlayers { get; }
+        IObservable<GameModel> ThisGame { get; }
         IObservable<PlayerModel> ThisPlayer { get; }
         IObservable<Dictionary<string, TileModel>> Tiles { get; }
 
-        GameModel ThisGame { get; set; }
-
-        Task ChoosePlayer(string playerId);
+        Task<bool> ChoosePlayer(string playerId);
 
         Task CreateGame();
 
-        Task JoinGame(string gameId);
+        Task<bool> JoinGame(string gameId);
 
         Task RequestPlayerUpdate(PlayerModel playerModel);
 
