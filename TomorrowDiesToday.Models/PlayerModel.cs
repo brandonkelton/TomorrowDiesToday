@@ -6,6 +6,7 @@ namespace TomorrowDiesToday.Models
 {
     public class PlayerModel : IModel
     {
+        public string GameId { get; set; }
         public string PlayerId { get; set; }
 
         // { SquadId => SquadModel }
