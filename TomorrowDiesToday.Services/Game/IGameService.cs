@@ -8,6 +8,9 @@ namespace TomorrowDiesToday.Services.Game
 {
     public interface IGameService
     {
+        GameModel Game { get; set; }
+
+        Dictionary<int, string> PlayerLookup { get;  }
 
         IObservable<string> ErrorMessage { get; }
         IObservable<Dictionary<string, PlayerModel>> OtherPlayers { get; }
