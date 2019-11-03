@@ -19,15 +19,13 @@ namespace TomorrowDiesToday.ViewModels
     {
         public string Title => "Tomorrow Dies Today (Prototype)";
         private IGameService _gameService;
-        private IDataService<GameModel, GameRequest> _gameDataService;
         private INavigationService _navService;
 
         public ICommand JoinGameCommand { get; private set; }
 
-        public JoinGameViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, INavigationService navService)
+        public JoinGameViewModel(IGameService gameService, INavigationService navService)
         {
             _gameService = gameService;
-            _gameDataService = gameDataService;
             _navService = navService;
 
             JoinGameCommand = new Command(async () => await JoinGame());
@@ -37,12 +35,7 @@ namespace TomorrowDiesToday.ViewModels
         public string GameId
         {
             get => _gameId;
-            set
-            {
-                InvalidGameId = false;
-                SetProperty(ref _gameId, value);
-                _gameService.GameId = value;
-            }
+            set => SetProperty(ref _gameId, value);
         }
 
         private bool _invalidGameId;
@@ -56,20 +49,18 @@ namespace TomorrowDiesToday.ViewModels
         public bool IsLoadingData
         {
             get => _isLoadingData;
-            private set => SetProperty(ref _isLoadingData, value);
+            set => SetProperty(ref _isLoadingData, value);
         }
 
         private async Task JoinGame()
         {
-            IsLoadingData = true;
-            var gameExists = await _gameDataService.Exists(GameId);
-            IsLoadingData = false;
-
-            if (!gameExists)
+            if (! await _gameService.JoinGame(GameId))
             {
                 InvalidGameId = true;
+                IsLoadingData = false;
                 return;
             }
+            IsLoadingData = false;
 
             await _navService.NavigateTo<SelectCharacterPage>();
         }

@@ -15,25 +15,30 @@ using TomorrowDiesToday.Views;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class SelectCharacterViewModel : BaseViewModel, ISelectCharacterViewModel
+    public class SelectCharacterViewModel : BaseViewModel, ISelectCharacterViewModel, IDisposable
     {
         public string Title => "Tomorrow Dies Today (Prototype)";
         private IGameService _gameService;
-        private IDataService<PlayerModel, PlayerRequest> _playerDataService;
         private INavigationService _navService;
+        private IDisposable _gameSubscription = null;
 
         public ICommand SelectPlayerCommand { get; private set; }
 
-        public SelectCharacterViewModel(IGameService gameService, IDataService<PlayerModel, PlayerRequest> playerDataService, INavigationService navService)
+        public SelectCharacterViewModel(IGameService gameService, INavigationService navService)
         {
             _gameService = gameService;
-            _playerDataService = playerDataService;
             _navService = navService;
 
             SelectPlayerCommand = new Command<string>(async playerId => await SelectPlayer(playerId));
+            SubscribeToUpdates();
         }
 
-        public string GameId => _gameService.GameId;
+        private string _gameId;
+        public string GameId
+        {
+            get => _gameId;
+            private set => SetProperty(ref _gameId, value);
+        }
 
         private bool _playerExists;
         public bool PlayerExists
@@ -56,27 +61,33 @@ namespace TomorrowDiesToday.ViewModels
             private set => SetProperty(ref _playerAlreadySelected, value);
         }
 
+        public void Dispose()
+        {
+            if (_gameSubscription != null) _gameSubscription.Dispose();
+        }
+
         private async Task SelectPlayer(string playerId)
         {
             PlayerAlreadySelected = String.Empty;
             PlayerExists = false;
-
             IsLoadingData = true;
-            PlayerExists = await _playerDataService.Exists(playerId);
-            IsLoadingData = false;
-
-            if (PlayerExists)
+            if (! await _gameService.ChoosePlayer(playerId))
             {
                 PlayerAlreadySelected = $"{playerId} Has Already Been Selected";
+                IsLoadingData = false;
                 return;
             }
-
-            IsLoadingData = true;
-            await _playerDataService.Create(playerId);
             IsLoadingData = false;
-            _gameService.PlayerId = playerId;
 
             await _navService.NavigateTo<MainPage>();
+        }
+
+        private void SubscribeToUpdates()
+        {
+            _gameSubscription = _gameService.ThisGame.Subscribe(thisGame =>
+            {
+                _gameId = thisGame.GameId;
+            });
         }
     }
 }
