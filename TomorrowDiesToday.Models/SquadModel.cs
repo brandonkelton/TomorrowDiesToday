@@ -18,7 +18,7 @@ namespace TomorrowDiesToday.Models
         public SquadModel()
         {
             //// Initialize Data Dictionary
-
+            Data = new Dictionary<string, int>();
             Data.Add("Named Henchman", 0);
             // Named Henchmen =>
             // 1 = Archibald Kluge
@@ -30,23 +30,21 @@ namespace TomorrowDiesToday.Models
             // 7 = Jin Feng
             // 8 = The Node
             // 9 = Ugo Dottore
-
             Data.Add("Thief", 0);
             Data.Add("Hacker", 0);
             Data.Add("Soldier", 0);
             Data.Add("Assassin", 0);
             Data.Add("Fixer", 0);
             Data.Add("Scientist", 0);
-            
             Data.Add("Hypnotic Spray", 0);
             Data.Add("Explosive Rounds", 0);
-
             Data.Add("Ugo Combat", 0);
             Data.Add("Ugo Stealth", 0);
             Data.Add("Ugo Cunning", 0);
             Data.Add("Ugo Diplomacy", 0);
 
             //// Initialize Stats Dictionary
+            Stats = new Dictionary<string, int>();
             Stats.Add("Combat", 0);
             Stats.Add("Stealth", 0);
             Stats.Add("Cunning", 0);
