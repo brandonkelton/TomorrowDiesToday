@@ -275,18 +275,18 @@ namespace TomorrowDiesToday.Services.Game
         public async Task<bool> JoinGame(string gameId)
         {
             GameRequest request = new GameRequest { GameId = gameId };
-            //if (await _gameDataService.Exists(request))
-            //{
-            await _gameDataService.Exists(request);
+            if (await _gameDataService.Exists(request))
+            {
+                //await _gameDataService.Exists(request);
                 Game = new GameModel { GameId = gameId };
                 _thisGame.OnNext(Game);
                 return true;
-            //}
-            //else
-            //{
-            //    _errorMessage.OnNext("Game doesn't exist!");
-            //    return false;
-            //}
+            }
+            else
+            {
+                _errorMessage.OnNext("Game doesn't exist!");
+                return false;
+            }
         }
 
         public async Task RequestPlayerUpdate(PlayerModel playerModel)

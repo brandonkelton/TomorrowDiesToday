@@ -61,6 +61,7 @@ namespace TomorrowDiesToday.ViewModels
                 return;
             }
             IsLoadingData = false;
+            InvalidGameId = false;
 
             await _navService.NavigateTo<SelectCharacterPage>();
         }
