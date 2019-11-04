@@ -20,7 +20,7 @@ namespace TomorrowDiesToday.Services.Game
             { 1,  "Archibald Kluge" },
             { 2,  "Axle Robbins" },
             { 3,  "Azura Badeau" },
-            { 4,  "Boris 'Myasneek'" },
+            { 4,  "Boris Myasneek" },
             { 5,  "Cassandra O'Shea" },
             { 6,  "Emerson Barlow" },
             { 7,  "Jin Feng" },
@@ -277,18 +277,18 @@ namespace TomorrowDiesToday.Services.Game
         public async Task<bool> JoinGame(string gameId)
         {
             GameRequest request = new GameRequest { GameId = gameId };
-            if (await _gameDataService.Exists(request))
-            {
-                //await _gameDataService.Exists(request);
+            //if (await _gameDataService.Exists(request))
+            //{
+                await _gameDataService.Exists(request);
                 Game = new GameModel { GameId = gameId };
                 _thisGame.OnNext(Game);
                 return true;
-            }
-            else
-            {
-                _errorMessage.OnNext("Game doesn't exist!");
-                return false;
-            }
+            //}
+            //else
+            //{
+            //    _errorMessage.OnNext("Game doesn't exist!");
+            //    return false;
+            //}
         }
 
         public async Task RequestPlayerUpdate(PlayerModel playerModel)
@@ -299,7 +299,7 @@ namespace TomorrowDiesToday.Services.Game
 
         public async Task RequestPlayersUpdate()
         {
-            PlayerRequest playerRequest = new PlayerRequest();
+            PlayerRequest playerRequest = new PlayerRequest { GameId = Game.GameId };
             await _playerDataService.RequestUpdate(playerRequest);
         }
 
