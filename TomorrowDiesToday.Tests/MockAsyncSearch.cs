@@ -1,22 +1,18 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using FakeItEasy;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using TomorrowDiesToday.Services.Database.DTOs;
 
 namespace TomorrowDiesToday.Tests
 {
-    public class MockAsyncSearch<T> : AsyncSearch<T>
+    public class DummyAsyncSearchFactory : DummyFactory<AsyncSearch<PlayerDTO>>
     {
-        public MockAsyncSearch() : base()
+        protected override AsyncSearch<PlayerDTO> Create()
         {
-
-        }
-
-        public async Task<List<T>> GetRemainingAsync()
-        {
-            return await Task.FromResult(Enumerable.Empty<T>().ToList());
+            return (AsyncSearch<PlayerDTO>)System.Runtime.Serialization.FormatterServices
+                  .GetUninitializedObject(typeof(AsyncSearch<PlayerDTO>));
         }
     }
 }

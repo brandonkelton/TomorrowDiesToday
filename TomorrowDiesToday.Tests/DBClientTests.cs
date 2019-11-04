@@ -1,9 +1,14 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Autofac;
+using Autofac.Extras.FakeItEasy;
 using Autofac.Extras.Moq;
+using FakeItEasy;
 using Moq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using TomorrowDiesToday.Services.Database;
@@ -15,17 +20,20 @@ namespace TomorrowDiesToday.Tests
     public class DBClientTests
     {
         private IContainer Container;
+        private ContainerBuilder Builder = new ContainerBuilder();
 
         private Mock<IAmazonDynamoDB> _mockClient = new Mock<IAmazonDynamoDB>();
         private Mock<IDynamoDBContext> _mockContext = new Mock<IDynamoDBContext>();
 
         public DBClientTests()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<DynamoClient>().As<IDBClient>().InstancePerLifetimeScope();
-            builder.RegisterInstance(_mockClient.Object).As<IAmazonDynamoDB>().SingleInstance();
-            builder.RegisterInstance(_mockContext.Object).As<IDynamoDBContext>().SingleInstance();
-            Container = builder.Build();
+            Builder.RegisterType<DynamoClient>().As<IDBClient>().InstancePerLifetimeScope();
+            Builder.RegisterInstance(_mockClient.Object).As<IAmazonDynamoDB>().SingleInstance();
+            Builder.RegisterInstance(_mockContext.Object).As<IDynamoDBContext>().SingleInstance();
+            //Builder.RegisterInstance((AsyncSearch<PlayerDTO>)System.Runtime.Serialization.FormatterServices
+            //      .GetUninitializedObject(typeof(AsyncSearch<PlayerDTO>))).As<AsyncSearch<PlayerDTO>>().SingleInstance();
+
+            Container = Builder.Build();
         }
 
         [Fact]
@@ -90,13 +98,33 @@ namespace TomorrowDiesToday.Tests
         }
 
         [Fact]
-        public async Task RequestPlayerListReturnsList()
+        public async Task RequestPlayerListReturnsEmptyList()
         {
             var checkingGameId = "1234";
-            var mockResults = new Mock<MockAsyncSearch<PlayerDTO>>();
-            mockResults.Setup(c => c.GetRemainingAsync()).Returns(checkingPlayerList);
-            _mockContext.SetReturnsDefault<AsyncSearch<PlayerDTO>>(mockResults);
-            _mockContext.Setup(c => c.QueryAsync<PlayerDTO>(checkingGameId, default)).Returns(() => mockResults.Object);
+            var checkingPlayerList = new List<PlayerDTO>()
+            {
+                new PlayerDTO { GameId = "1234", PlayerId = "Player1" },
+                new PlayerDTO { GameId = "1234", PlayerId = "Player2" },
+                new PlayerDTO { GameId = "1234", PlayerId = "Player3" }
+            };
+
+            using (var fake = new AutoFake())
+            {
+                //var fakeSearch = fake.Provide(Container.Resolve<AsyncSearch<PlayerDTO>>());
+
+                //A.CallTo(() => fake.Resolve<AsyncSearch<PlayerDTO>>().GetRemainingAsync(default)).Returns(Task.FromResult(checkingPlayerList));
+                //var fake = Fake.
+                //var searchInstance = fake.Resolve<AsyncSearch<PlayerDTO>>();
+                // var searchInstance = Container.Resolve<AsyncSearch<PlayerDTO>>();
+                var fakeSearch = new Fake<AsyncSearch<PlayerDTO>>(x => x.)
+                A.CallTo(() => fake.Resolve<AsyncSearch<PlayerDTO>>().GetRemainingAsync(default)).Returns(Task.FromResult(checkingPlayerList));
+                A.CallTo(() => fake.Resolve<IDynamoDBContext>().QueryAsync<PlayerDTO>(checkingGameId, default)).Returns(fake.Resolve<AsyncSearch<PlayerDTO>>());
+
+                var client = fake.Resolve<IDBClient>();
+                var result = await client.RequestPlayerList(checkingGameId);
+
+                Assert.True(result.Count == checkingPlayerList.Count);
+            }
         }
     }
 }
