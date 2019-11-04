@@ -262,12 +262,14 @@ namespace TomorrowDiesToday.Services.Game
         {
             bool gameExists = true;
             string gameId = "";
+            GameRequest request = new GameRequest();
             while (gameExists)
             {
                 gameId = GenerateGameId();
-                GameRequest request = new GameRequest { GameId = gameId };
+                request = new GameRequest { GameId = gameId };
                 gameExists = await _gameDataService.Exists(request);
             }
+            await _gameDataService.Create(request);
             Game = new GameModel { GameId = gameId };
             _thisGame.OnNext(Game);
         }
