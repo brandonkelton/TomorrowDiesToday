@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Autofac;
-using TomorrowDiesToday.Templates;
+using TomorrowDiesToday.Models.Templates;
 using TomorrowDiesToday.Views;
 
 namespace TomorrowDiesToday.Navigation

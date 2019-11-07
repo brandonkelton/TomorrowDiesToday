@@ -6,5 +6,6 @@ namespace TomorrowDiesToday.ViewModels
 {
     public interface IMainPageViewModel
     {
+
     }
 }

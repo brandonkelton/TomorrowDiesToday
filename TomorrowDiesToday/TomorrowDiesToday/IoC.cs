@@ -12,7 +12,7 @@ using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Services.Game;
-using TomorrowDiesToday.Templates;
+using TomorrowDiesToday.Models.Templates;
 using TomorrowDiesToday.ViewModels;
 using TomorrowDiesToday.Views;
 using TomorrowDiesToday.Navigation;
