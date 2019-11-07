@@ -5,11 +5,12 @@ using Amazon.DynamoDBv2.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TomorrowDiesToday.Models.Templates;
 using TomorrowDiesToday.Services.Database.DTOs;
 
 namespace TomorrowDiesToday.Services.Database
 {
-    public class DynamoClient : IDBClient, IDisposable
+    public class DynamoClient : IDBClient, IOnInitAsync, IDisposable
     {
         private IAmazonDynamoDB _client;
         private IDynamoDBContext _context;
@@ -18,6 +19,14 @@ namespace TomorrowDiesToday.Services.Database
         {
             _client = client;
             _context = context;
+        }
+
+        public async Task OnInitAsync()
+        {
+            await InitializeGameTable();
+            await InitializePlayerTable();
+
+            await WaitForTableCreation();
         }
 
         public async Task<bool> GameExists(string gameId)
@@ -163,6 +172,22 @@ namespace TomorrowDiesToday.Services.Database
                 };
 
                 await _client.CreateTableAsync(request);
+            }
+        }
+
+        private async Task WaitForTableCreation()
+        {
+            bool tablesCreated = false;
+
+            while (!tablesCreated)
+            {
+                var tableNames = (await _client.ListTablesAsync()).TableNames;
+                tablesCreated = tableNames.Contains("Games") && tableNames.Contains("PlayerData");
+
+                if (!tablesCreated)
+                {
+                    await Task.Delay(1000);
+                }
             }
         }
 

@@ -10,7 +10,7 @@ using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
-using TomorrowDiesToday.Templates;
+using TomorrowDiesToday.Models.Templates;
 using TomorrowDiesToday.Navigation;
 using TomorrowDiesToday.Views;
 
@@ -18,7 +18,7 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel, IOnInitAsync, IDisposable
     {
-        public string Title => "Tomorrow Dies Today (Prototype)";
+        public string Title => "Tomorrow Dies Today";
         private IGameService _gameService;
         private INavigationService _navService;
         private IDisposable _gameSubscription = null;
