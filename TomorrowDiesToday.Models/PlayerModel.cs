@@ -12,6 +12,6 @@ namespace TomorrowDiesToday.Models
         public string PlayerName { get; set; }
 
         // { SquadId => SquadModel }
-        public Dictionary<string, SquadModel> Squads { get; set; } = new Dictionary<string, SquadModel>();
+        public List<SquadModel> Squads { get; set; } = new List<SquadModel>();
     }
 }

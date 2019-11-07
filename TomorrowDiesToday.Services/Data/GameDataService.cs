@@ -6,17 +6,16 @@ using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Services.Database.DTOs;
 using TomorrowDiesToday.Services.Data.Models;
-using TomorrowDiesToday.Services.Game;
 
 namespace TomorrowDiesToday.Services.Data
 {
     public class GameDataService : IDataService<GameModel, GameRequest>
     {
         public IObservable<GameModel> DataReceived => _update;
-        public IObservable<Dictionary<string, GameModel>> DataDictReceived => _updateDict;
+        public IObservable<List<GameModel>> DataDictReceived => _updateDict;
 
         private readonly ReplaySubject<GameModel> _update = new ReplaySubject<GameModel>(1);
-        private readonly ReplaySubject<Dictionary<string, GameModel>> _updateDict = new ReplaySubject<Dictionary<string, GameModel>>(1);
+        private readonly ReplaySubject<List<GameModel>> _updateDict = new ReplaySubject<List<GameModel>>(1);
         private IDBClient _client;
 
         public GameDataService(IDBClient client)
@@ -59,13 +58,11 @@ namespace TomorrowDiesToday.Services.Data
         private GameDTO GameToDTO(GameModel gameModel)
         {
             var tileDTOs = new List<TileDTO>();
-            foreach (KeyValuePair<string, TileModel> tile in gameModel.Tiles)
+            foreach (TileModel tile in gameModel.Tiles)
             {
-                string tileId = tile.Key;
-                TileModel tileModel = tile.Value;
                 var tileDTO = new TileDTO
                 {
-                    TileId = tileModel.TileId
+                    TileId = tile.TileId
                 };
                 tileDTOs.Add(tileDTO);
             }
@@ -79,19 +76,17 @@ namespace TomorrowDiesToday.Services.Data
 
         private GameModel GameToModel(GameDTO gameDTO)
         {
-            var tileModels = new Dictionary<string, TileModel>();
+            var gameModel = new GameModel();
+
             foreach (TileDTO tileDTO in gameDTO.Tiles)
             {
                 var tileModel = new TileModel
                 {
                     TileId = tileDTO.TileId
                 };
-                tileModels.Add(tileModel.TileId, tileModel);
+                gameModel.Tiles.Add(tileModel);
             }
-            var gameModel = new GameModel
-            {
-                Tiles = tileModels
-            };
+
             return gameModel;
         }
     }

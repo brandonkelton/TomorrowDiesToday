@@ -9,8 +9,8 @@ namespace TomorrowDiesToday.Models
 
         public PlayerModel ThisPlayer { get; set; }
 
-        public Dictionary<string, PlayerModel> OtherPlayers { get; set; }
+        public List<PlayerModel> OtherPlayers { get; set; } = new List<PlayerModel>();
 
-        public Dictionary<string, TileModel> Tiles { get; set; }
+        public List<TileModel> Tiles { get; set; } = new List<TileModel>();
     }
 }

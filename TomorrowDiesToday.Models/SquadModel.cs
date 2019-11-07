@@ -10,38 +10,28 @@ namespace TomorrowDiesToday.Models
 
         public string SquadId { get; set; }
 
-        public Dictionary<string, int> Data { get; set; }
-        public Dictionary<string, int> Stats { get; set; }
+        // Wasn't sure if you need an initial henchman of none (maybe don't create list with initial henchman?)
+        // In that case, remove None as an ArmamentType
+        public List<Armament> Armaments { get; set; } = new List<Armament>() { new Armament(ArmamentType.None) };
 
-        public bool IsSelected { get; set; }
+        public List<Stat> Stats { get; set; } = new List<Stat>();
+
+        public bool IsSelected { get; set; } = false;
 
         public SquadModel()
         {
-            //// Initialize Data Dictionary
-            Data = new Dictionary<string, int>();
-            Data.Add("Named Henchman", 0);
-            // Named Henchmen =>
-            // 1 = Archibald Kluge
-            // 2 = Axle Robbins
-            // 3 = Azura Badeau
-            // 4 = Boris "Myasneek"
-            // 5 = Cassandra O'Shea
-            // 6 = Emmerson Barlow
-            // 7 = Jin Feng
-            // 8 = The Node
-            // 9 = Ugo Dottore
-            Data.Add("Thief", 0);
-            Data.Add("Hacker", 0);
-            Data.Add("Soldier", 0);
-            Data.Add("Assassin", 0);
-            Data.Add("Fixer", 0);
-            Data.Add("Scientist", 0);
-            Data.Add("Hypnotic Spray", 0);
-            Data.Add("Explosive Rounds", 0);
-            Data.Add("Ugo Combat", 0);
-            Data.Add("Ugo Stealth", 0);
-            Data.Add("Ugo Cunning", 0);
-            Data.Add("Ugo Diplomacy", 0);
+            Armaments.Add(new Armament(ArmamentType.Thief));
+            Armaments.Add(new Armament(ArmamentType.Hacker));
+            Armaments.Add(new Armament(ArmamentType.Soldier));
+            Armaments.Add(new Armament(ArmamentType.Assassin));
+            Armaments.Add(new Armament(ArmamentType.Fixer));
+            Armaments.Add(new Armament(ArmamentType.Scientist));
+            Armaments.Add(new Armament(ArmamentType.HypnoticSpray));
+            Armaments.Add(new Armament(ArmamentType.ExplosiveRounds));
+            Armaments.Add(new Armament(ArmamentType.UgoCombat));
+            Armaments.Add(new Armament(ArmamentType.UgoStealth));
+            Armaments.Add(new Armament(ArmamentType.UgoCunning));
+            Armaments.Add(new Armament(ArmamentType.UgoDiplomacy));
 
             //// Initialize Stats Dictionary
             Stats = new Dictionary<string, int>();
@@ -49,9 +39,6 @@ namespace TomorrowDiesToday.Models
             Stats.Add("Stealth", 0);
             Stats.Add("Cunning", 0);
             Stats.Add("Diplomacy", 0);
-
-            //// Initialize as not selected
-            IsSelected = false;
         }
     }
 }
