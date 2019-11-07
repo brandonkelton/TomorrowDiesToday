@@ -13,17 +13,15 @@ namespace TomorrowDiesToday.Services.Data
     public class PlayerDataService : IDataService<PlayerModel, PlayerRequest>
     {
         public IObservable<PlayerModel> DataReceived => _update;
-        public IObservable<List<PlayerModel>> DataListReceived => _updateList;
+        public IObservable<Dictionary<string, PlayerModel>> DataDictReceived => _updateDict;
 
         private readonly ReplaySubject<PlayerModel> _update = new ReplaySubject<PlayerModel>(1);
-        private readonly ReplaySubject<List<PlayerModel>> _updateList = new ReplaySubject<List<PlayerModel>>(1);
+        private readonly ReplaySubject<Dictionary<string, PlayerModel>> _updateDict = new ReplaySubject<Dictionary<string, PlayerModel>>(1);
         private IDBClient _client;
-        private IGameService _game;
 
-        public PlayerDataService(IDBClient client, IGameService game)
+        public PlayerDataService(IDBClient client)
         {
             _client = client;
-            _game = game;
         }
 
         public async Task ConfigureTable()
@@ -31,42 +29,36 @@ namespace TomorrowDiesToday.Services.Data
             await _client.InitializePlayerTable();
         }
 
-        public async Task Create(string playerId)
+        public async Task Create(PlayerRequest request)
         {
-            var existingPlayer = await Exists(playerId);
-            if(existingPlayer)
-            {
-                // TODO: create app specific exception and handle at a higher level
-                // ex:  PlayerExistsException(playerId)
-                throw new Exception("Player already exists!");
-            }
-
-            await _client.CreatePlayer(_game.GameId, playerId);
+            await _client.CreatePlayer(request.GameId, request.PlayerId);
         }
 
-        public async Task<bool> Exists(string playerId)
+        public async Task<bool> Exists(PlayerRequest request)
         {
-            return await _client.PlayerExists(_game.GameId, playerId);
+            return await _client.PlayerExists(request.GameId, request.PlayerId);
         }
 
         public async Task RequestUpdate(PlayerRequest request)
         {
             if (request.PlayerId != null)
             {
-                var playerDTO = await _client.RequestPlayer(_game.GameId, request.PlayerId);
-                var playerModel = PlayerToModel(playerDTO);
+                PlayerDTO playerDTO = await _client.RequestPlayer(request.GameId, request.PlayerId);
+                PlayerModel playerModel = PlayerToModel(playerDTO);
 
                 _update.OnNext(playerModel);
             }
             else
             {
-                var playerDTOs = await _client.RequestPlayerList(_game.GameId);
-                var playerModels = new List<PlayerModel>();
+                var playerDTOs = await _client.RequestPlayerList(request.GameId);
+                var playerModels = new Dictionary<string, PlayerModel>();
                 foreach (PlayerDTO playerDTO in playerDTOs)
                 {
-                    playerModels.Add(PlayerToModel(playerDTO));
+                    PlayerModel playerModel = PlayerToModel(playerDTO);
+                    playerModel.GameId = request.GameId;
+                    playerModels.Add(playerDTO.PlayerId, playerModel);
                 }
-                _updateList.OnNext(playerModels);
+                _updateDict.OnNext(playerModels);
             }
         }
 
@@ -79,11 +71,13 @@ namespace TomorrowDiesToday.Services.Data
         private PlayerDTO PlayerToDTO(PlayerModel playerModel)
         {
             var squadDTOs = new List<SquadDTO>();
-            foreach (SquadModel squadModel in playerModel.Squads)
+            foreach (KeyValuePair<string, SquadModel> squad in playerModel.Squads)
             {
+                string squadId = squad.Key;
+                SquadModel squadModel = squad.Value;
                 var squadDTO = new SquadDTO
                 {
-                    SquadId = squadModel.SquadId,
+                    SquadId = squadId,
                     Data = squadModel.Data,
                     Stats = squadModel.Stats
                 };
@@ -91,7 +85,7 @@ namespace TomorrowDiesToday.Services.Data
             }
             var playerDTO = new PlayerDTO
             {
-                GameId = _game.GameId,
+                GameId = playerModel.GameId,
                 PlayerId = playerModel.PlayerId,
                 Squads = squadDTOs
             };
@@ -100,7 +94,7 @@ namespace TomorrowDiesToday.Services.Data
 
         private PlayerModel PlayerToModel(PlayerDTO playerDTO)
         {
-            var squadModels = new List<SquadModel>();
+            var squadModels = new Dictionary<string, SquadModel>();
             foreach (SquadDTO squadDTO in playerDTO.Squads)
             {
                 var squadModel = new SquadModel
@@ -109,7 +103,7 @@ namespace TomorrowDiesToday.Services.Data
                     Data = squadDTO.Data,
                     Stats = squadDTO.Stats
                 };
-                squadModels.Add(squadModel);
+                squadModels.Add(squadModel.SquadId, squadModel);
             }
             var playerModel = new PlayerModel
             {
