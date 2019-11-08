@@ -13,17 +13,15 @@ namespace TomorrowDiesToday.Services.Data
     public class GameDataService : IDataService<GameModel, GameRequest>
     {
         public IObservable<GameModel> DataReceived => _update;
-        public IObservable<List<GameModel>> DataListReceived => _updateList;
+        public IObservable<Dictionary<string, GameModel>> DataDictReceived => _updateDict;
 
         private readonly ReplaySubject<GameModel> _update = new ReplaySubject<GameModel>(1);
-        private readonly ReplaySubject<List<GameModel>> _updateList = new ReplaySubject<List<GameModel>>(1);
+        private readonly ReplaySubject<Dictionary<string, GameModel>> _updateDict = new ReplaySubject<Dictionary<string, GameModel>>(1);
         private IDBClient _client;
-        private IGameService _game;
 
-        public GameDataService(IDBClient client, IGameService game)
+        public GameDataService(IDBClient client)
         {
             _client = client;
-            _game = game;
         }
 
         public async Task ConfigureTable()
@@ -31,19 +29,20 @@ namespace TomorrowDiesToday.Services.Data
             await _client.InitializeGameTable();
         }
 
-        public async Task Create(string gameId)
+        public async Task Create(GameRequest request)
         {
-            await _client.CreateGame(gameId);
+            await _client.CreateGame(request.GameId);
         }
 
-        public async Task<bool> Exists(string gameId)
+        public async Task<bool> Exists(GameRequest request)
         {
-            return await _client.GameExists(gameId);
+            bool result = await _client.GameExists(request.GameId);
+            return result;
         }
 
         public async Task RequestUpdate(GameRequest request)
         {
-            var gameDTO = await _client.RequestGame(_game.GameId);
+            var gameDTO = await _client.RequestGame(request.GameId);
             var gameModel = GameToModel(gameDTO);
             _update.OnNext(gameModel);
         }
@@ -60,8 +59,10 @@ namespace TomorrowDiesToday.Services.Data
         private GameDTO GameToDTO(GameModel gameModel)
         {
             var tileDTOs = new List<TileDTO>();
-            foreach (TileModel tileModel in gameModel.Tiles)
+            foreach (KeyValuePair<string, TileModel> tile in gameModel.Tiles)
             {
+                string tileId = tile.Key;
+                TileModel tileModel = tile.Value;
                 var tileDTO = new TileDTO
                 {
                     TileId = tileModel.TileId
@@ -70,7 +71,7 @@ namespace TomorrowDiesToday.Services.Data
             }
             var gameDTO = new GameDTO
             {
-                GameId = _game.GameId,
+                GameId = gameModel.GameId,
                 Tiles = tileDTOs
             };
             return gameDTO;
@@ -78,14 +79,14 @@ namespace TomorrowDiesToday.Services.Data
 
         private GameModel GameToModel(GameDTO gameDTO)
         {
-            var tileModels = new List<TileModel>();
+            var tileModels = new Dictionary<string, TileModel>();
             foreach (TileDTO tileDTO in gameDTO.Tiles)
             {
                 var tileModel = new TileModel
                 {
                     TileId = tileDTO.TileId
                 };
-                tileModels.Add(tileModel);
+                tileModels.Add(tileModel.TileId, tileModel);
             }
             var gameModel = new GameModel
             {

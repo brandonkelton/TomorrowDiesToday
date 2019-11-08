@@ -7,10 +7,10 @@ namespace TomorrowDiesToday.Models
     {
         public string GameId { get; set; }
 
-        public PlayerModel MyPlayer { get; set; }
+        public PlayerModel ThisPlayer { get; set; }
 
-        public List<PlayerModel> OtherPlayers { get; set; }
+        public Dictionary<string, PlayerModel> OtherPlayers { get; set; }
 
-        public List<TileModel> Tiles { get; set; }
+        public Dictionary<string, TileModel> Tiles { get; set; }
     }
 }

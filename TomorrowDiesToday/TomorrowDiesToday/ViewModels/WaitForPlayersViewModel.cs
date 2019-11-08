@@ -10,41 +10,35 @@ using TomorrowDiesToday.Services.Game;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
+using TomorrowDiesToday.Navigation;
+using TomorrowDiesToday.Views;
 
 namespace TomorrowDiesToday.ViewModels
 {
     public class WaitForPlayersViewModel : BaseViewModel, IWaitForPlayersViewModel, IDisposable
     {
         private IGameService _gameService;
-        private IDataService<GameModel, GameRequest> _gameDataService;
-        private IDataService<PlayerModel, PlayerRequest> _playerDataService;
-        private IDisposable _playerListSubscription = null;
+        private INavigationService _navService;
+        private IDisposable _gameSubscription = null;
+        private IDisposable _playerDictSubscription = null;
 
         public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
 
         public ICommand RefreshPlayerListCommand { get; private set; }
-        public ICommand NextStepCommand { get; private set; }
+        public ICommand ContinueCommand { get; private set; }
 
         private string _gameId;
         public string GameId
         {
             get => _gameId;
-            set
-            {
-                SetProperty(ref _gameId, value);
-                _gameService.GameId = value;
-            }
+            set => SetProperty(ref _gameId, value);
         }
 
         private string _currentPlayer;
         public string CurrentPlayer
         {
             get => _currentPlayer;
-            set
-            {
-                SetProperty(ref _currentPlayer, value);
-                _gameService.PlayerId = value;
-            }
+            set => SetProperty(ref _currentPlayer, value);
         }
 
         private bool _playerExists;
@@ -68,11 +62,10 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _playerAlreadySelected, value);
         }
 
-        public WaitForPlayersViewModel(IGameService gameService, IDataService<GameModel, GameRequest> gameDataService, IDataService<PlayerModel, PlayerRequest> playerDataService)
+        public WaitForPlayersViewModel(IGameService gameService, INavigationService navService)
         {
             _gameService = gameService;
-            _gameDataService = gameDataService;
-            _playerDataService = playerDataService;
+            _navService = navService;
 
             //IsWaitingForSelection = true;
             ConfigureCommands();
@@ -83,25 +76,40 @@ namespace TomorrowDiesToday.ViewModels
         {
             //NextStepCommand = new Command(() => NextAfterGameCreated());
             RefreshPlayerListCommand = new Command(() => RefreshPlayers());
+            ContinueCommand = new Command(async () => await Continue());
         }
 
         private void SubscribeToUpdates()
         {
-            _playerListSubscription = _playerDataService.DataListReceived.Subscribe(list =>
+            _gameSubscription = _gameService.ThisGame.Subscribe(gameModel =>
+            {
+                GameId = gameModel.GameId;
+                CurrentPlayer = gameModel.ThisPlayer.PlayerName;
+            });
+            _playerDictSubscription = _gameService.OtherPlayers.Subscribe(dict =>
             {
                 Players.Clear();
-                list.ForEach(item => Players.Add(item));
+                foreach(KeyValuePair<string, PlayerModel> player in dict)
+                {
+                    Players.Add(player.Value);
+                }
             });
+        }
+
+        private async Task Continue()
+        {
+            await _navService.NavigateTo<MainPage>();
         }
 
         private void RefreshPlayers()
         {
-            _playerDataService.RequestUpdate(new PlayerRequest());
+            _gameService.RequestPlayersUpdate();
         }
 
         public void Dispose()
         {
-            if (_playerListSubscription != null) _playerListSubscription.Dispose();
+            if (_gameSubscription != null) _gameSubscription.Dispose();
+            if (_playerDictSubscription != null) _playerDictSubscription.Dispose();
         }
     }
 }
