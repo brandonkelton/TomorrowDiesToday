@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TomorrowDiesToday.Navigation;
-using TomorrowDiesToday.Templates;
+using TomorrowDiesToday.Models.Templates;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

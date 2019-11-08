@@ -13,6 +13,7 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class StartPageViewModel : BaseViewModel, IStartPageViewModel
     {
+        public string Title => "Tomorrow Dies Today (Prototype)";
         private INavigationService _navigationService;
         public ICommand CreateGameCommand { get; private set; }
         public ICommand JoinGameCommand { get; private set; }

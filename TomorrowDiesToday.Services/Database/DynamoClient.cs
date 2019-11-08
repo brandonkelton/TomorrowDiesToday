@@ -5,11 +5,12 @@ using Amazon.DynamoDBv2.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TomorrowDiesToday.Models.Templates;
 using TomorrowDiesToday.Services.Database.DTOs;
 
 namespace TomorrowDiesToday.Services.Database
 {
-    public class DynamoClient : IDBClient, IDisposable
+    public class DynamoClient : IDBClient, IOnInitAsync, IDisposable
     {
         private IAmazonDynamoDB _client;
         private IDynamoDBContext _context;
@@ -18,6 +19,14 @@ namespace TomorrowDiesToday.Services.Database
         {
             _client = client;
             _context = context;
+        }
+
+        public async Task OnInitAsync()
+        {
+            await InitializeGameTable();
+            await InitializePlayerTable();
+
+            await WaitForTableCreation();
         }
 
         public async Task<bool> GameExists(string gameId)
@@ -67,17 +76,23 @@ namespace TomorrowDiesToday.Services.Database
             }
         }
 
-        public async Task<List<PlayerDTO>> RequestPlayerList(string gameId)
+        public async Task<GameDTO> RequestGame(string gameId)
         {
-            var search = _context.QueryAsync<PlayerDTO>(gameId);
-            var results = await search.GetRemainingAsync();
-            return results;
+            var gameDTO = await _context.LoadAsync<GameDTO>(gameId);
+            return gameDTO;
         }
 
         public async Task<PlayerDTO> RequestPlayer(string gameId, string playerId)
         {
             var player = await _context.LoadAsync<PlayerDTO>(gameId, playerId);
             return player;
+        }
+
+        public async Task<List<PlayerDTO>> RequestPlayerList(string gameId)
+        {
+            var search = _context.QueryAsync<PlayerDTO>(gameId);
+            var results = await search.GetRemainingAsync();
+            return results;
         }
 
         public async Task InitializeGameTable()
@@ -160,9 +175,30 @@ namespace TomorrowDiesToday.Services.Database
             }
         }
 
-        public async Task Update(PlayerDTO player)
+        private async Task WaitForTableCreation()
         {
-            await _context.SaveAsync(player);
+            bool tablesCreated = false;
+
+            while (!tablesCreated)
+            {
+                var tableNames = (await _client.ListTablesAsync()).TableNames;
+                tablesCreated = tableNames.Contains("Games") && tableNames.Contains("PlayerData");
+
+                if (!tablesCreated)
+                {
+                    await Task.Delay(1000);
+                }
+            }
+        }
+
+        public async Task UpdateGame(GameDTO gameDTO)
+        {
+            await _context.SaveAsync(gameDTO);
+        }
+
+        public async Task UpdatePlayer(PlayerDTO playerDTO)
+        {
+            await _context.SaveAsync(playerDTO);
         }
 
         //public async Task DeleteTable()

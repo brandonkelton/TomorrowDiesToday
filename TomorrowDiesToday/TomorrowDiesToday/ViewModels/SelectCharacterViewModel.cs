@@ -17,6 +17,7 @@ namespace TomorrowDiesToday.ViewModels
 {
     public class SelectCharacterViewModel : BaseViewModel, ISelectCharacterViewModel
     {
+        public string Title => "Tomorrow Dies Today (Prototype)";
         private IGameService _gameService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
         private INavigationService _navService;

@@ -10,5 +10,7 @@ namespace TomorrowDiesToday.Services.Database.DTOs
     {
         [DynamoDBHashKey]
         public string GameId { get; set; }
+
+        public List<TileDTO> Tiles { get; set; } = new List<TileDTO>();
     }
 }
