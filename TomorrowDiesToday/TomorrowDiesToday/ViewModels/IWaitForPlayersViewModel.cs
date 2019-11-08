@@ -9,7 +9,7 @@ namespace TomorrowDiesToday.ViewModels
 {
     public interface IWaitForPlayersViewModel
     {
-        ICommand NextStepCommand { get; }
+        ICommand ContinueCommand { get; }
         ICommand RefreshPlayerListCommand { get; }
 
         string GameId { get; set; }

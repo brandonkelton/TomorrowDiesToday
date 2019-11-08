@@ -11,13 +11,13 @@ namespace TomorrowDiesToday.Services.Data
     public interface IDataService<T, U> where T : IModel where U : IDataRequest
     {
         IObservable<T> DataReceived { get; }
-        IObservable<List<T>> DataListReceived { get; }
+        IObservable<Dictionary<string, T>> DataDictReceived { get; }
 
         Task ConfigureTable();
 
-        Task Create(string id);
+        Task Create(U request);
 
-        Task<bool> Exists(string id);
+        Task<bool> Exists(U request);
 
         Task RequestUpdate(U request);
 
