@@ -51,6 +51,14 @@
             <Frame.GestureRecognizers>
                 <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
             </Frame.GestureRecognizers>
+            <ListView>
+                <ListView.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Archibald Kluge</x:String>
+                        <x:String>The Node</x:String>
+                    </x:Array>
+                </ListView.ItemsSource>
+            </ListView>
 
         </Frame>
 
