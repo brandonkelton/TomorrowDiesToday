@@ -42,10 +42,15 @@ namespace TomorrowDiesToday.Tests
         [Fact]
         public async Task Create()
         {
-            var playerDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            _mockGameService.Setup(x => x.GameId).Returns("TestGame");
+            var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
+            var gameId = "TestGame";
             var playerId = "TestPlayer";
-            await playerDataService.Create(playerId);
+            var playerRequest = new PlayerRequest
+            {
+                GameId = gameId,
+                PlayerId = playerId
+            };
+            await playerDataService.Create(playerRequest);
             Assert.True(true); // pass if no exceptions thrown
         }
 
@@ -67,8 +72,9 @@ namespace TomorrowDiesToday.Tests
             var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
             var playerModel = new PlayerModel
             {
+                GameId = "TestGame",
                 PlayerId = "TestPlayer",
-                Squads = new List<SquadModel>()
+                Squads = new Dictionary<string, SquadModel>()
             };
             await playerDataService.Update(playerModel);
             Assert.True(true); // pass if no exceptions thrown

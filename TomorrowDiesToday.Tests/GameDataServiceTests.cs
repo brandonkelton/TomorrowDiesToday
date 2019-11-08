@@ -43,8 +43,8 @@ namespace TomorrowDiesToday.Tests
         public async Task Create()
         {
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            var gameId = "TestGame";
-            await gameDataService.Create(gameId);
+            var gameRequest = new GameRequest { GameId = "TestGame" };
+            await gameDataService.Create(gameRequest);
             Assert.True(true); // pass if no exceptions thrown
         }
 
@@ -52,9 +52,10 @@ namespace TomorrowDiesToday.Tests
         public async Task ExistsIsTrue()
         {
             var gameId = "TestGame";
+            var gameRequest = new GameRequest { GameId = gameId };
             _mockClient.Setup(c => c.GameExists(gameId)).Returns(Task.FromResult(true));
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            var result = await gameDataService.Exists(gameId);
+            var result = await gameDataService.Exists(gameRequest);
             Assert.True(result);
         }
 
@@ -62,9 +63,10 @@ namespace TomorrowDiesToday.Tests
         public async Task ExistsIsFalse()
         {
             var gameId = "TestGame";
+            var gameRequest = new GameRequest { GameId = gameId };
             _mockClient.Setup(c => c.GameExists(gameId)).Returns(Task.FromResult(false));
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            var result = await gameDataService.Exists(gameId);
+            var result = await gameDataService.Exists(gameRequest);
             Assert.False(result);
         }
 
@@ -75,8 +77,8 @@ namespace TomorrowDiesToday.Tests
             var gameModel = new GameModel
             {
                 GameId = "TestGame",
-                MyPlayer = new PlayerModel { PlayerId = "TestGame" },
-                OtherPlayers = new List<PlayerModel>()
+                ThisPlayer = new PlayerModel { PlayerId = "TestGame" },
+                OtherPlayers = new Dictionary<string, PlayerModel>()
             };
             await gameDataService.Update(gameModel);
             Assert.True(true); // pass if no exceptions thrown
