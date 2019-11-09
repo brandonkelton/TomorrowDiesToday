@@ -101,13 +101,25 @@
             <Frame.GestureRecognizers>
                 <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
             </Frame.GestureRecognizers>
-            <ListView>
-                <ListView.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Archibald Kluge</x:String>
-                        <x:String>The Node</x:String>
-                    </x:Array>
-                </ListView.ItemsSource>
+            <ListView x:Name="PlayersView" ItemsSource="{Binding Players}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                <Label Text="{Binding PlayerName}"/>
+                                <ListView x:Name="SquadsView" ItemsSource="{Binding Players.Squads}">                                    
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell>
+                                                <Label Text="{Binding SquadId}"/>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>                                    
+                                </ListView>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
 
         </Frame>
