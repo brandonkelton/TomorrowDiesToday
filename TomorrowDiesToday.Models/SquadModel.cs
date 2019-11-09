@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Models
 {
@@ -34,11 +35,10 @@ namespace TomorrowDiesToday.Models
             Armaments.Add(new Armament(ArmamentType.UgoDiplomacy));
 
             //// Initialize Stats Dictionary
-            Stats = new Dictionary<string, int>();
-            Stats.Add("Combat", 0);
-            Stats.Add("Stealth", 0);
-            Stats.Add("Cunning", 0);
-            Stats.Add("Diplomacy", 0);
+            Stats.Add(new Stat(StatType.Combat));
+            Stats.Add(new Stat(StatType.Stealth));
+            Stats.Add(new Stat(StatType.Cunning));
+            Stats.Add(new Stat(StatType.Diplomacy));
         }
     }
 }

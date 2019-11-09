@@ -13,10 +13,10 @@ namespace TomorrowDiesToday.Services.Data
     public class PlayerDataService : IDataService<PlayerModel, PlayerRequest>
     {
         public IObservable<PlayerModel> DataReceived => _update;
-        public IObservable<Dictionary<string, PlayerModel>> DataDictReceived => _updateDict;
+        public IObservable<List<PlayerModel>> DataDictReceived => _updateDict;
 
         private readonly ReplaySubject<PlayerModel> _update = new ReplaySubject<PlayerModel>(1);
-        private readonly ReplaySubject<Dictionary<string, PlayerModel>> _updateDict = new ReplaySubject<Dictionary<string, PlayerModel>>(1);
+        private readonly ReplaySubject<List<PlayerModel>> _updateDict = new ReplaySubject<List<PlayerModel>>(1);
         private IDBClient _client;
 
         public PlayerDataService(IDBClient client)
@@ -51,12 +51,12 @@ namespace TomorrowDiesToday.Services.Data
             else
             {
                 var playerDTOs = await _client.RequestPlayerList(request.GameId);
-                var playerModels = new Dictionary<string, PlayerModel>();
+                var playerModels = new List<PlayerModel>();
                 foreach (PlayerDTO playerDTO in playerDTOs)
                 {
                     PlayerModel playerModel = PlayerToModel(playerDTO);
                     playerModel.GameId = request.GameId;
-                    playerModels.Add(playerDTO.PlayerId, playerModel);
+                    playerModels.Add(playerModel);
                 }
                 _updateDict.OnNext(playerModels);
             }
@@ -76,8 +76,8 @@ namespace TomorrowDiesToday.Services.Data
                 var squadDTO = new SquadDTO
                 {
                     SquadId = squad.SquadId,
-                    Data = squadModel.Data,
-                    Stats = squadModel.Stats
+                    Armaments = squad.Armaments,
+                    Stats = squad.Stats
                 };
                 squadDTOs.Add(squadDTO);
             }
@@ -92,16 +92,16 @@ namespace TomorrowDiesToday.Services.Data
 
         private PlayerModel PlayerToModel(PlayerDTO playerDTO)
         {
-            var squadModels = new Dictionary<string, SquadModel>();
+            var squadModels = new List<SquadModel>();
             foreach (SquadDTO squadDTO in playerDTO.Squads)
             {
                 var squadModel = new SquadModel
                 {
                     SquadId = squadDTO.SquadId,
-                    Data = squadDTO.Data,
+                    Armaments = squadDTO.Armaments,
                     Stats = squadDTO.Stats
                 };
-                squadModels.Add(squadModel.SquadId, squadModel);
+                squadModels.Add(squadModel);
             }
             var playerModel = new PlayerModel
             {
