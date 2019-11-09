@@ -70,6 +70,9 @@ namespace TomorrowDiesToday
         {
             builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
             builder.RegisterType<GameService>().As<IGameService>().SingleInstance();
+            builder.RegisterType<PlayerService>().As<IPlayerService>().SingleInstance();
+            builder.RegisterType<SquadService>().As<ISquadService>().SingleInstance();
+            builder.RegisterType<TileService>().As<ITileService>().SingleInstance();
             builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
             builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
             builder.RegisterType<NavigationService>().As<INavigationService>().SingleInstance();
