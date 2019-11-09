@@ -11,6 +11,10 @@ namespace TomorrowDiesToday.Models
 
         public Dictionary<string, PlayerModel> OtherPlayers { get; set; }
 
-        public Dictionary<string, TileModel> Tiles { get; set; }
+        public Dictionary<string, TileModel> ActiveTiles { get; set; }
+
+        public Dictionary<string, TileModel> AllTiles { get; set; }
+
+        public Dictionary<string, SquadModel> SelectedSquads { get; set; }
     }
 }

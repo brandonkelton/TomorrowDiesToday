@@ -49,7 +49,7 @@ namespace TomorrowDiesToday.Services.Data
 
         public async Task Update(GameModel gameModel)
         {
-            if (gameModel.Tiles.Count > 0)
+            if (gameModel.ActiveTiles.Count > 0)
             {
                 var gameDTO = GameToDTO(gameModel);
                 await _client.UpdateGame(gameDTO);
@@ -59,7 +59,7 @@ namespace TomorrowDiesToday.Services.Data
         private GameDTO GameToDTO(GameModel gameModel)
         {
             var tileDTOs = new List<TileDTO>();
-            foreach (KeyValuePair<string, TileModel> tile in gameModel.Tiles)
+            foreach (KeyValuePair<string, TileModel> tile in gameModel.ActiveTiles)
             {
                 string tileId = tile.Key;
                 TileModel tileModel = tile.Value;
@@ -90,7 +90,7 @@ namespace TomorrowDiesToday.Services.Data
             }
             var gameModel = new GameModel
             {
-                Tiles = tileModels
+                ActiveTiles = tileModels
             };
             return gameModel;
         }
