@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace TomorrowDiesToday.Models
@@ -13,5 +14,7 @@ namespace TomorrowDiesToday.Models
 
         // { SquadId => SquadModel }
         public Dictionary<string, SquadModel> Squads { get; set; } = new Dictionary<string, SquadModel>();
+
+        public List<SquadModel> SquadList => Squads.Select(s => s.Value).ToList();
     }
 }
