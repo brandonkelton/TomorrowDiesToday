@@ -13,5 +13,7 @@ namespace TomorrowDiesToday.Models
 
         // { SquadId => SquadModel }
         public List<SquadModel> Squads { get; set; } = new List<SquadModel>();
+
+        public int Points { get; set; }
     }
 }

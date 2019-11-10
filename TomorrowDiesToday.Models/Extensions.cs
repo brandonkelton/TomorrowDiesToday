@@ -9,7 +9,7 @@ namespace TomorrowDiesToday.Models
 {
     public static class Extensions
     {
-        public static string GetDescription(this Enum e)
+        public static string ToDescription(this Enum e)
         {
             var attribute =
                 e.GetType()
