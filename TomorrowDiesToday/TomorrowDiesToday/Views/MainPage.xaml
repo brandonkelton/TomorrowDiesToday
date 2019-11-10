@@ -83,17 +83,16 @@
                 </StackLayout>
             </StackLayout>
         </Frame>
-        
-        <Frame x:Name="swiper" 
+
+        <BoxView x:Name="swiper" 
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0,Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.05,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-
-            <Frame.GestureRecognizers>
+            <BoxView.GestureRecognizers>
                 <SwipeGestureRecognizer Direction="Right" Swiped="OnPlayerClicked"/>
-            </Frame.GestureRecognizers>
-        </Frame>
-                 
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
         <Frame x:Name="sideSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#666666"
              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=-.76,Constant=0}"
              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.75,Constant=0}"
@@ -107,7 +106,6 @@
                 <StackLayout Orientation="Vertical">
                     <Button 
                         Text="Refresh"
-                        TextColor="Black"
                         BackgroundColor="#ffffff"
                         BorderRadius="10"
                         BorderWidth="2"
