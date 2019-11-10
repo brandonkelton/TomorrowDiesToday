@@ -253,6 +253,10 @@ namespace TomorrowDiesToday.Services.Game
 
             _playerUpdateDictSubscription = _playerDataService.DataDictReceived.Subscribe(playerModels =>
             {
+                foreach(KeyValuePair<string, PlayerModel> player in playerModels)
+                {
+                    player.Value.PlayerName = NameLookup[int.Parse(player.Value.PlayerId)];
+                }
                 _gameService.Game.OtherPlayers = playerModels;
                 _otherPlayersUpdate.OnNext(playerModels);
             });
