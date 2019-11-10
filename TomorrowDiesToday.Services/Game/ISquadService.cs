@@ -8,13 +8,10 @@ namespace TomorrowDiesToday.Services.Game
     public interface ISquadService
     {
         IObservable<string> ErrorMessage { get; }
-
         IObservable<Dictionary<string, SquadModel>> SelectedSquadsUpdate { get; }
-
         IObservable<SquadModel> SquadUpdate { get; }
 
         void CalculateSquadStats(SquadModel squadModel);
-
         void ToggleSquad(SquadModel squadModel);
     }
 }

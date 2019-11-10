@@ -11,16 +11,17 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class PlayerService : IPlayerService
     {
-        private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         public IObservable<string> ErrorMessage => _errorMessage;
-
-        private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayersUpdate
-            = new ReplaySubject<Dictionary<string, PlayerModel>>(1); // { PlayerId => PlayerModel }
         public IObservable<Dictionary<string, PlayerModel>> OtherPlayersUpdate => _otherPlayersUpdate;
-
-        private readonly ReplaySubject<PlayerModel> _thisPlayerUpdate
-            = new ReplaySubject<PlayerModel>(1);
         public IObservable<PlayerModel> ThisPlayerUpdate => _thisPlayerUpdate;
+        
+        private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
+        private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayersUpdate = new ReplaySubject<Dictionary<string, PlayerModel>>(1);
+        private readonly ReplaySubject<PlayerModel> _thisPlayerUpdate = new ReplaySubject<PlayerModel>(1);
+
+        private IGameService _gameService;
+        private IDataService<PlayerModel, PlayerRequest> _playerDataService;
+        private ISquadService _squadService;
 
         private Dictionary<int, string> _nameLookupTable = new Dictionary<int, string>
         {
@@ -35,15 +36,6 @@ namespace TomorrowDiesToday.Services.Game
             { 8,  "The Node" },
             { 9,  "Ugo Dottore" },
         };
-        public Dictionary<int, string> NameLookup
-        {
-            get { return _nameLookupTable; }
-        }
-
-        private IGameService _gameService;
-        private IDataService<PlayerModel, PlayerRequest> _playerDataService;
-        private ISquadService _squadService;
-
         private Dictionary<string, Dictionary<string, int>> _playerStats = new Dictionary<string, Dictionary<string, int>>
         {
             {
@@ -201,6 +193,7 @@ namespace TomorrowDiesToday.Services.Game
             await _playerDataService.Update(_gameService.Game.ThisPlayer);
         }
 
+        #region Helper Methods
         private void Dispose()
         {
             if (_playerUpdateSubscription != null) _playerUpdateSubscription.Dispose();
@@ -214,7 +207,7 @@ namespace TomorrowDiesToday.Services.Game
             {
                 GameId = _gameService.Game.GameId,
                 PlayerId = playerId,
-                PlayerName = NameLookup[int.Parse(playerId)],
+                PlayerName = _nameLookupTable[int.Parse(playerId)],
                 Squads = new Dictionary<string, SquadModel>
                 {
                     {string.Format("{0}-1", playerId), new SquadModel() },
@@ -255,7 +248,7 @@ namespace TomorrowDiesToday.Services.Game
             {
                 foreach(KeyValuePair<string, PlayerModel> player in playerModels)
                 {
-                    player.Value.PlayerName = NameLookup[int.Parse(player.Value.PlayerId)];
+                    player.Value.PlayerName = _nameLookupTable[int.Parse(player.Value.PlayerId)];
                 }
                 _gameService.Game.OtherPlayers = playerModels;
                 _otherPlayersUpdate.OnNext(playerModels);
@@ -280,5 +273,6 @@ namespace TomorrowDiesToday.Services.Game
         {
             _thisPlayerUpdate.OnNext(_gameService.Game.ThisPlayer);
         }
+        #endregion
     }
 }

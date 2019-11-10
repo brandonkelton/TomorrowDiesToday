@@ -11,16 +11,14 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class TileService : ITileService
     {
-        private readonly ReplaySubject<Dictionary<string, TileModel>> _activeTilesUpdate
-            = new ReplaySubject<Dictionary<string, TileModel>>(1); // { TileId => TileModel }
+        
         public IObservable<Dictionary<string, TileModel>> ActiveTilesUpdate => _activeTilesUpdate;
-
-        private readonly ReplaySubject<Dictionary<string, TileModel>> _allTilesUpdate
-            = new ReplaySubject<Dictionary<string, TileModel>>(1); // { TileId => TileModel }
         public IObservable<Dictionary<string, TileModel>> AllTilesUpdate => _allTilesUpdate;
-
-        private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         public IObservable<string> ErrorMessage => _errorMessage;
+
+        private readonly ReplaySubject<Dictionary<string, TileModel>> _activeTilesUpdate = new ReplaySubject<Dictionary<string, TileModel>>(1);
+        private readonly ReplaySubject<Dictionary<string, TileModel>> _allTilesUpdate = new ReplaySubject<Dictionary<string, TileModel>>(1);
+        private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
 
         private Dictionary<string, string> _flipMissions = new Dictionary<string, string> //resourceLookupDictionary <TileName, TileStats>
         {
@@ -81,9 +79,11 @@ namespace TomorrowDiesToday.Services.Game
             { "CIA Building", "2,2,2,2"},
             { "Interpol HQ", "1,2,2,1"}
         };
-        private IGameService _gameService;
-        private IDataService<GameModel, GameRequest> _gameDataService;
+
         private IDisposable _tilesUpdateSubscription = null;
+
+        private IDataService<GameModel, GameRequest> _gameDataService;
+        private IGameService _gameService;
 
         public TileService(IDataService<GameModel, GameRequest> gameDataService, IGameService gameService)
         {
@@ -125,6 +125,7 @@ namespace TomorrowDiesToday.Services.Game
             UpdateAllTiles();
         }
 
+        #region Helper Methods
         private void Dispose()
         {
             if (_tilesUpdateSubscription != null) _tilesUpdateSubscription.Dispose();
@@ -230,5 +231,6 @@ namespace TomorrowDiesToday.Services.Game
         {
             _allTilesUpdate.OnNext(_gameService.Game.AllTiles);
         }
+        #endregion
     }
 }

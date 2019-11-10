@@ -8,22 +8,20 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class SquadService : ISquadService
     {
-        private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
+        
         public IObservable<string> ErrorMessage => _errorMessage;
-
-        private readonly ReplaySubject<Dictionary<string, SquadModel>> _selectedSquadsUpdate
-            = new ReplaySubject<Dictionary<string, SquadModel>>(1);
         public IObservable<Dictionary<string, SquadModel>> SelectedSquadsUpdate => _selectedSquadsUpdate;
-
-        private readonly ReplaySubject<SquadModel> _squadUpdate
-            = new ReplaySubject<SquadModel>(1);
         public IObservable<SquadModel> SquadUpdate => _squadUpdate;
+
+        private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
+        private readonly ReplaySubject<Dictionary<string, SquadModel>> _selectedSquadsUpdate = new ReplaySubject<Dictionary<string, SquadModel>>(1);
+        private readonly ReplaySubject<SquadModel> _squadUpdate = new ReplaySubject<SquadModel>(1);
+
+        private IGameService _gameService;
 
         private const int MAX_SQUAD_SIZE = 6;
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
-
-        private IGameService _gameService;
 
         public void CalculateSquadStats(SquadModel squadModel)
         {
@@ -59,6 +57,7 @@ namespace TomorrowDiesToday.Services.Game
             UpdateSquad(squadModel);
         }
 
+        #region Helper Methods
         private Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)
         {
             int combatTotal = 0;
@@ -373,5 +372,6 @@ namespace TomorrowDiesToday.Services.Game
                 return true;
             }
         }
+        #endregion
     }
 }
