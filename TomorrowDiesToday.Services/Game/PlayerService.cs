@@ -14,7 +14,7 @@ namespace TomorrowDiesToday.Services.Game
         public IObservable<string> ErrorMessage => _errorMessage;
         public IObservable<Dictionary<string, PlayerModel>> OtherPlayersUpdate => _otherPlayersUpdate;
         public IObservable<PlayerModel> ThisPlayerUpdate => _thisPlayerUpdate;
-        
+
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayersUpdate = new ReplaySubject<Dictionary<string, PlayerModel>>(1);
         private readonly ReplaySubject<PlayerModel> _thisPlayerUpdate = new ReplaySubject<PlayerModel>(1);
@@ -22,123 +22,6 @@ namespace TomorrowDiesToday.Services.Game
         private IGameService _gameService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
         private ISquadService _squadService;
-
-        private Dictionary<int, string> _nameLookupTable = new Dictionary<int, string>
-        {
-            { 0,  "General Goodman" },
-            { 1,  "Archibald Kluge" },
-            { 2,  "Axle Robbins" },
-            { 3,  "Azura Badeau" },
-            { 4,  "Boris Myasneek" },
-            { 5,  "Cassandra O'Shea" },
-            { 6,  "Emerson Barlow" },
-            { 7,  "Jin Feng" },
-            { 8,  "The Node" },
-            { 9,  "Ugo Dottore" },
-        };
-        private Dictionary<string, Dictionary<string, int>> _playerStats = new Dictionary<string, Dictionary<string, int>>
-        {
-            {
-                "General Goodman", new Dictionary<string, int>
-                 {
-                    {"Id", 0 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            },
-            {
-                "Archibald Kluge", new Dictionary<string, int>
-                 {
-                    {"Id", 1 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            },
-            {
-                "Axle Robbins", new Dictionary<string, int>
-                 {
-                    {"Id", 2 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            },
-            {
-                "Azura Badeau", new Dictionary<string, int>
-                 {
-                    {"Id", 3 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            },
-            {
-                "Boris Myasneek", new Dictionary<string, int>
-                 {
-                    {"Id", 4 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            },
-            {
-                "Cassandra O'Shea", new Dictionary<string, int>
-                 {
-                    {"Id", 5 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            },
-            {
-                "Emerson Barlow", new Dictionary<string, int>
-                 {
-                    {"Id", 6 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            },
-            {
-                "Jin Feng", new Dictionary<string, int>
-                 {
-                    {"Id", 7 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            },
-            {
-                "The Node", new Dictionary<string, int>
-                 {
-                    {"Id", 8 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            },
-            {
-                "Ugo Dottore", new Dictionary<string, int>
-                 {
-                    {"Id", 9 },
-                    {"Combat", 0 },
-                    {"Stealth", 0 },
-                    {"Cunning", 0 },
-                    {"Diplomacy", 0 }
-                 }
-            }
-        };
 
         private IDisposable _playerUpdateSubscription = null;
         private IDisposable _playerUpdateDictSubscription = null;
@@ -154,7 +37,7 @@ namespace TomorrowDiesToday.Services.Game
 
         public async Task<bool> ChoosePlayer(string playerName)
         {
-            string playerId = _playerStats[playerName]["Id"].ToString();
+            string playerId = _squadService.NamedHenchmenStats[playerName][0].ToString();
             PlayerRequest request = new PlayerRequest
             {
                 GameId = _gameService.Game.GameId,
@@ -207,7 +90,7 @@ namespace TomorrowDiesToday.Services.Game
             {
                 GameId = _gameService.Game.GameId,
                 PlayerId = playerId,
-                PlayerName = _nameLookupTable[int.Parse(playerId)],
+                PlayerName = _squadService.NamedHenchmenNames[int.Parse(playerId)],
                 Squads = new Dictionary<string, SquadModel>
                 {
                     {string.Format("{0}-1", playerId), new SquadModel() },
@@ -248,7 +131,7 @@ namespace TomorrowDiesToday.Services.Game
             {
                 foreach(KeyValuePair<string, PlayerModel> player in playerModels)
                 {
-                    player.Value.PlayerName = _nameLookupTable[int.Parse(player.Value.PlayerId)];
+                    player.Value.PlayerName = _squadService.NamedHenchmenNames[int.Parse(player.Value.PlayerId)];
                 }
                 _gameService.Game.OtherPlayers = playerModels;
                 _otherPlayersUpdate.OnNext(playerModels);

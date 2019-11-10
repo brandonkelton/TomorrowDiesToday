@@ -11,6 +11,9 @@ namespace TomorrowDiesToday.Services.Game
         IObservable<Dictionary<string, SquadModel>> SelectedSquadsUpdate { get; }
         IObservable<SquadModel> SquadUpdate { get; }
 
+        string[] NamedHenchmenNames { get; }
+        Dictionary<string, int[]> NamedHenchmenStats { get; }
+
         void CalculateSquadStats(SquadModel squadModel);
         void ToggleSquad(SquadModel squadModel);
     }

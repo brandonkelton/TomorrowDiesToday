@@ -8,10 +8,13 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class SquadService : ISquadService
     {
-        
+
         public IObservable<string> ErrorMessage => _errorMessage;
         public IObservable<Dictionary<string, SquadModel>> SelectedSquadsUpdate => _selectedSquadsUpdate;
         public IObservable<SquadModel> SquadUpdate => _squadUpdate;
+
+        public string[] NamedHenchmenNames => _namedHenchmenNames;
+        public Dictionary<string, int[]> NamedHenchmenStats => _namedHenchmenStats;
 
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<Dictionary<string, SquadModel>> _selectedSquadsUpdate = new ReplaySubject<Dictionary<string, SquadModel>>(1);
@@ -22,6 +25,34 @@ namespace TomorrowDiesToday.Services.Game
         private const int MAX_SQUAD_SIZE = 6;
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
+
+        private string[] _namedHenchmenNames = new string[]
+        {
+            "General Goodman",
+            "Archibald Kluge",
+            "Axle Robbins",
+            "Azura Badeau",
+            "Boris 'Myasneek'",
+            "Cassandra O'Shea",
+            "Emerson Barlow",
+            "Jin Feng",
+            "The Node",
+            "Ugo Dottore"
+        };
+        private Dictionary<string, int[]> _namedHenchmenStats = new Dictionary<string, int[]>
+        {
+            // Name, { ID, Combat, Stealth, Cunning, Diplomacy }
+            { "General Goodman",    new int[] {0, 2, 2, 2, 2} },
+            { "Archibald Kluge",    new int[] {1, 0, 1, 3, 1} },
+            { "Axle Robbins",       new int[] {2, 1, 0, 2, 2} },
+            { "Azura Badeau",       new int[] {3, 2, 2, 1, 0} },
+            { "Boris 'Myasneek'", new int[] {4, 3, 1, 1, 0} },
+            { "Cassandra O'Shea",   new int[] {5, 0, 0, 2, 3} },
+            { "Emerson Barlow",     new int[] {6, 1, 3, 1, 0} },
+            { "Jin Feng",           new int[] {7, 0, 3, 1, 1} },
+            { "The Node",           new int[] {8, 0, 2, 2, 1} },
+            { "Ugo Dottore",        new int[] {9, 1, 0, 3, 1} },
+        };
 
         public void CalculateSquadStats(SquadModel squadModel)
         {
