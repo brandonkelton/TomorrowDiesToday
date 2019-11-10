@@ -17,7 +17,7 @@
             <Button Grid.Row="2" Text="Archibald Kluge" Command="{Binding SelectPlayerCommand}" CommandParameter="Archibald Kluge"/>
             <Button Grid.Row="3" Text="Axle Robbins" Command="{Binding SelectPlayerCommand}" CommandParameter="Axle Robbins"/>
             <Button Grid.Row="4" Text="Azura Badeau" Command="{Binding SelectPlayerCommand}" CommandParameter="Azura Badeau"/>
-            <Button Grid.Row="5" Text="Boris Myasneek" Command="{Binding SelectPlayerCommand}" CommandParameter="Boris Myasneek"/>
+            <Button Grid.Row="5" Text="Boris Myasneek" Command="{Binding SelectPlayerCommand}" CommandParameter="Boris 'Myasneek'"/>
             <Button Grid.Row="6" Text="Cassandra O'Shea" Command="{Binding SelectPlayerCommand}" CommandParameter="Cassandra O'Shea"/>
             <Button Grid.Row="7" Text="Emerson Barlow" Command="{Binding SelectPlayerCommand}" CommandParameter="Emerson Barlow"/>
             <Button Grid.Row="8" Text="Jin Feng" Command="{Binding SelectPlayerCommand}" CommandParameter="Jin Feng"/>

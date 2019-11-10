@@ -8,6 +8,7 @@ namespace TomorrowDiesToday.Models
     {
         #region Class Properties
         public string TileId { get; set; }
+        public string TileName { get; set; }
         public bool IsFlipped { get; set; }
         public int AlertTokens { get; set; }
         public string ImageLocation { get; set; }
