@@ -81,7 +81,7 @@ namespace TomorrowDiesToday.ViewModels
             }
             IsLoadingData = false;
 
-            await _navService.NavigateTo<WaitForPlayersPage>();
+            await _navService.NavigateTo<MainPage>();
         }
 
         private void SubscribeToUpdates()
