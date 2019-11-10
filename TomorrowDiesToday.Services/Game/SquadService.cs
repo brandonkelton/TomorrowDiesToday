@@ -8,24 +8,26 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class SquadService : ISquadService
     {
-
+        #region Properties
+        // Observables
         public IObservable<string> ErrorMessage => _errorMessage;
         public IObservable<Dictionary<string, SquadModel>> SelectedSquadsUpdate => _selectedSquadsUpdate;
         public IObservable<SquadModel> SquadUpdate => _squadUpdate;
-
-        public string[] NamedHenchmenNames => _namedHenchmenNames;
-        public Dictionary<string, int[]> NamedHenchmenStats => _namedHenchmenStats;
-
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<Dictionary<string, SquadModel>> _selectedSquadsUpdate = new ReplaySubject<Dictionary<string, SquadModel>>(1);
         private readonly ReplaySubject<SquadModel> _squadUpdate = new ReplaySubject<SquadModel>(1);
 
+        // Requred Service(s)
         private IGameService _gameService;
 
+        // Constants
         private const int MAX_SQUAD_SIZE = 6;
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
 
+        // Miscellaneous
+        public string[] NamedHenchmenNames => _namedHenchmenNames;
+        public Dictionary<string, int[]> NamedHenchmenStats => _namedHenchmenStats;
         private string[] _namedHenchmenNames = new string[]
         {
             "General Goodman",
@@ -53,7 +55,9 @@ namespace TomorrowDiesToday.Services.Game
             { "The Node",           new int[] {8, 0, 2, 2, 1} },
             { "Ugo Dottore",        new int[] {9, 1, 0, 3, 1} },
         };
+        #endregion
 
+        #region Public Methods
         public void CalculateSquadStats(SquadModel squadModel)
         {
             Dictionary<string, int> stats = new Dictionary<string, int>();
@@ -87,6 +91,7 @@ namespace TomorrowDiesToday.Services.Game
 
             UpdateSquad(squadModel);
         }
+        #endregion
 
         #region Helper Methods
         private Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)

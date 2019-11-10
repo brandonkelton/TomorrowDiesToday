@@ -11,22 +11,27 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class PlayerService : IPlayerService
     {
+        #region Properties
+        // Observables
         public IObservable<string> ErrorMessage => _errorMessage;
         public IObservable<Dictionary<string, PlayerModel>> OtherPlayersUpdate => _otherPlayersUpdate;
         public IObservable<PlayerModel> ThisPlayerUpdate => _thisPlayerUpdate;
-
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayersUpdate = new ReplaySubject<Dictionary<string, PlayerModel>>(1);
         private readonly ReplaySubject<PlayerModel> _thisPlayerUpdate = new ReplaySubject<PlayerModel>(1);
 
+        // Requred Service(s)
         private IGameService _gameService;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
         private ISquadService _squadService;
 
+        // Subscriptions
         private IDisposable _playerUpdateSubscription = null;
         private IDisposable _playerUpdateDictSubscription = null;
         private IDisposable _squadUpdateSubscription = null;
+        #endregion
 
+        #region Constructor
         public PlayerService(IDataService<PlayerModel, PlayerRequest> playerDataService, IGameService gameService, ISquadService squadService)
         {
             _gameService = gameService;
@@ -34,7 +39,9 @@ namespace TomorrowDiesToday.Services.Game
             _squadService = squadService;
             SubscribeToUpdates();
         }
+        #endregion
 
+        #region Public Methods
         public async Task<bool> ChoosePlayer(string playerName)
         {
             string playerId = _squadService.NamedHenchmenStats[playerName][0].ToString();
@@ -75,6 +82,7 @@ namespace TomorrowDiesToday.Services.Game
         {
             await _playerDataService.Update(_gameService.Game.ThisPlayer);
         }
+        #endregion
 
         #region Helper Methods
         private void Dispose()

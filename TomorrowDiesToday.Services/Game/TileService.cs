@@ -11,16 +11,23 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class TileService : ITileService
     {
-        
+        #region Properties
+        // Observables
         public IObservable<Dictionary<string, TileModel>> ActiveTilesUpdate => _activeTilesUpdate;
         public IObservable<Dictionary<string, TileModel>> AllTilesUpdate => _allTilesUpdate;
         public IObservable<string> ErrorMessage => _errorMessage;
-
         private readonly ReplaySubject<Dictionary<string, TileModel>> _activeTilesUpdate = new ReplaySubject<Dictionary<string, TileModel>>(1);
         private readonly ReplaySubject<Dictionary<string, TileModel>> _allTilesUpdate = new ReplaySubject<Dictionary<string, TileModel>>(1);
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
 
+        // Required Service(s)
+        private IDataService<GameModel, GameRequest> _gameDataService;
+        private IGameService _gameService;
 
+        // Subscriptions
+        private IDisposable _tilesUpdateSubscription = null;
+
+        // Miscellaneous
         private Dictionary<string, int[]> _resourceMissions = new Dictionary<string, int[]>
         { //<TileName, TileStats>
             //Resource Missions
@@ -65,12 +72,9 @@ namespace TomorrowDiesToday.Services.Game
             { "CIA Building", new int[] { 31, 2, 2, 2, 2 }},
             { "Interpol HQ",  new int[] { 32, 1, 2, 2, 1 }}
         };
+        #endregion
 
-        private IDisposable _tilesUpdateSubscription = null;
-
-        private IDataService<GameModel, GameRequest> _gameDataService;
-        private IGameService _gameService;
-
+        #region Constructor
         public TileService(IDataService<GameModel, GameRequest> gameDataService, IGameService gameService)
         {
             _gameService = gameService;
@@ -78,7 +82,9 @@ namespace TomorrowDiesToday.Services.Game
             InitializeAllTiles();
             SubscribeToUpdates();
         }
+        #endregion
 
+        #region Public Methods
         public async Task RequestActiveTilesUpdate()
         {
             GameRequest gameRequest = new GameRequest { GameId = _gameService.Game.GameId };
@@ -110,6 +116,7 @@ namespace TomorrowDiesToday.Services.Game
 
             _allTilesUpdate.OnNext(_gameService.Game.AllTiles);
         }
+        #endregion
 
         #region Helper Methods
         private void Dispose()

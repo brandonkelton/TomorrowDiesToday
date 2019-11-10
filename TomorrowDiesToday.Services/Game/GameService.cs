@@ -12,21 +12,32 @@ namespace TomorrowDiesToday.Services.Game
 {
     public class GameService : IGameService
     {
+        #region Properties
+        // Observables
         public IObservable<string> ErrorMessage => _errorMessage;
-        public GameModel Game => _game;
         public IObservable<GameModel> ThisGame => _thisGame;
-
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
-        private GameModel _game { get; set; }
-        private IDataService<GameModel, GameRequest> _gameDataService;
-        private static Random _random = new Random();
         private readonly ReplaySubject<GameModel> _thisGame = new ReplaySubject<GameModel>(1);
 
+        // Main GameModel instance
+        public GameModel Game => _game;
+        private GameModel _game { get; set; }
+
+        // Requred Service(s)
+        private IDataService<GameModel, GameRequest> _gameDataService;
+
+        // Miscellaneous
+        private static Random _random = new Random();
+        #endregion
+
+        #region Constructor
         public GameService(IDataService<GameModel, GameRequest> gameDataService)
         {
             _gameDataService = gameDataService;
         }
-        
+        #endregion
+
+        #region Public Methods
         public async Task CreateGame()
         {
             bool gameExists = true;
@@ -74,6 +85,7 @@ namespace TomorrowDiesToday.Services.Game
                 return false;
             }
         }
+        #endregion
 
         #region Helper Methods
         private string GenerateGameId()
