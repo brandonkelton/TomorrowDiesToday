@@ -13,6 +13,8 @@ namespace TomorrowDiesToday.Models
 
         public List<PlayerModel> Players = new List<PlayerModel>();
 
+        List<ArmamentType> Types = new List<ArmamentType>();
+
         public void Test()
         {
             var points = Players.Sum(player => {
@@ -21,5 +23,16 @@ namespace TomorrowDiesToday.Models
             });
             var allPlayersquads = Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected));
         }
+
+        public bool AddArmament(ArmamentType armament)
+        {
+            if (isValidAdd())) {
+                throw new ArmamentException();
+            }
+        }
+
+
+
+        public bool HasArmament => Types.FirstOrDefault()
     }
 }
