@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reactive.Subjects;
 using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
@@ -14,10 +15,11 @@ namespace TomorrowDiesToday.Services.Game
         #region Properties
         // Observables
         public IObservable<string> ErrorMessage => _errorMessage;
-        public IObservable<Dictionary<string, PlayerModel>> OtherPlayersUpdate => _otherPlayersUpdate;
+        public IObservable<List<PlayerModel>> OtherPlayersUpdate => _otherPlayersUpdate;
         public IObservable<PlayerModel> ThisPlayerUpdate => _thisPlayerUpdate;
+
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
-        private readonly ReplaySubject<Dictionary<string, PlayerModel>> _otherPlayersUpdate = new ReplaySubject<Dictionary<string, PlayerModel>>(1);
+        private readonly ReplaySubject<List<PlayerModel>> _otherPlayersUpdate = new ReplaySubject<List<PlayerModel>>(1);
         private readonly ReplaySubject<PlayerModel> _thisPlayerUpdate = new ReplaySubject<PlayerModel>(1);
 
         // Requred Service(s)
@@ -27,8 +29,13 @@ namespace TomorrowDiesToday.Services.Game
 
         // Subscriptions
         private IDisposable _playerUpdateSubscription = null;
-        private IDisposable _playerUpdateDictSubscription = null;
+        private IDisposable _playerUpdateListSubscription = null;
         private IDisposable _squadUpdateSubscription = null;
+
+        // Miscellaneous
+        private string _gameId => _gameService.Game.GameId;
+        private string _playerId => _gameService.Game.PlayerId;
+        private List<PlayerModel> _players => _gameService.Game.Players;
         #endregion
 
         #region Constructor
@@ -54,8 +61,9 @@ namespace TomorrowDiesToday.Services.Game
             {
                 await _playerDataService.Create(request);
                 PlayerModel thisPlayer = GeneratePlayer(playerId);
-                _gameService.Game.ThisPlayer = thisPlayer;
-                UpdateThisPlayer();
+                _gameService.Game.Players.Add(thisPlayer);
+                _gameService.Game.PlayerId = thisPlayer.PlayerId;
+                _thisPlayerUpdate.OnNext(thisPlayer);
                 return true;
             }
             else
@@ -80,7 +88,9 @@ namespace TomorrowDiesToday.Services.Game
 
         public async Task SendThisPlayer()
         {
-            await _playerDataService.Update(_gameService.Game.ThisPlayer);
+            var playerId = _gameService.Game.PlayerId;
+            var thisPlayer = _gameService.Game.Players.Where(player => player.PlayerId == playerId).FirstOrDefault();
+            await _playerDataService.Update(thisPlayer);
         }
         #endregion
 
@@ -88,7 +98,7 @@ namespace TomorrowDiesToday.Services.Game
         private void Dispose()
         {
             if (_playerUpdateSubscription != null) _playerUpdateSubscription.Dispose();
-            if (_playerUpdateDictSubscription != null) _playerUpdateDictSubscription.Dispose();
+            if (_playerUpdateListSubscription != null) _playerUpdateListSubscription.Dispose();
             if (_squadUpdateSubscription != null) _squadUpdateSubscription.Dispose();
         }
 
@@ -99,7 +109,7 @@ namespace TomorrowDiesToday.Services.Game
                 GameId = _gameService.Game.GameId,
                 PlayerId = playerId,
                 PlayerName = _squadService.NamedHenchmenNames[int.Parse(playerId)],
-                Squads = new Dictionary<string, SquadModel>
+                Squads = new List<SquadModel>
                 {
                     {string.Format("{0}-1", playerId), new SquadModel() },
                     {string.Format("{0}-2", playerId), new SquadModel() },
@@ -109,12 +119,6 @@ namespace TomorrowDiesToday.Services.Game
                     {string.Format("{0}-6", playerId), new SquadModel() },
                 }
             };
-
-            foreach (KeyValuePair<string, SquadModel> squad in playerModel.Squads)
-            {
-                squad.Value.PlayerId = playerId;
-                squad.Value.SquadId = squad.Key;
-            }
 
             // Add chosen Named Henchman to squad 1
             string firstSquad = string.Format("{0}-1", playerId);
@@ -130,40 +134,33 @@ namespace TomorrowDiesToday.Services.Game
         {
             _playerUpdateSubscription = _playerDataService.DataReceived.Subscribe(playerModel =>
             {
-                var otherPlayers = _gameService.Game.OtherPlayers;
-                otherPlayers[playerModel.PlayerId] = playerModel;
-                _otherPlayersUpdate.OnNext(otherPlayers);
+                var playerId = playerModel.PlayerId;
+                var player = _players.Where(player => player.PlayerId == playerId).First();
+                player = playerModel;
+                _otherPlayersUpdate.OnNext(_players.Where(player => player.PlayerId != _playerId).ToList<PlayerModel>());
             });
 
-            _playerUpdateDictSubscription = _playerDataService.DataDictReceived.Subscribe(playerModels =>
+            _playerUpdateListSubscription = _playerDataService.DataListReceived.Subscribe(playerModels =>
             {
-                foreach(KeyValuePair<string, PlayerModel> player in playerModels)
+                var newOtherPlayers = playerModels.Where(player => player.PlayerId != _playerId).ToList<PlayerModel>();
+                foreach(PlayerModel newOtherPlayer in newOtherPlayers)
                 {
-                    player.Value.PlayerName = _squadService.NamedHenchmenNames[int.Parse(player.Value.PlayerId)];
+                    newOtherPlayer.PlayerName = ((ArmamentType) int.Parse(newOtherPlayer.PlayerId)).ToDescription();
+                    var otherPlayer = _players.Where(oldPlayer => oldPlayer.PlayerId == newOtherPlayer.PlayerId).First();
+                    otherPlayer = newOtherPlayer;
                 }
-                _gameService.Game.OtherPlayers = playerModels;
-                _otherPlayersUpdate.OnNext(playerModels);
+                _otherPlayersUpdate.OnNext(newOtherPlayers);
             });
 
             _squadUpdateSubscription = _squadService.SquadUpdate.Subscribe(squadModel =>
             {
-                if (squadModel.PlayerId == _gameService.Game.ThisPlayer.PlayerId)
-                {
-                    var thisPlayer = _gameService.Game.ThisPlayer;
-                    _thisPlayerUpdate.OnNext(thisPlayer);
-                }
-                else
-                {
-                    var otherPlayers = _gameService.Game.OtherPlayers;
-                    _otherPlayersUpdate.OnNext(otherPlayers);
-                }
+                var thisPlayer = _players.Where(player => player.PlayerId == _playerId).First();
+                var thisSquad = thisPlayer.Squads.Where(squad => squad.SquadId == squadModel.SquadId).First();
+                thisSquad = squadModel;
+                _thisPlayerUpdate.OnNext(thisPlayer);
             });
         }
 
-        private void UpdateThisPlayer()
-        {
-            _thisPlayerUpdate.OnNext(_gameService.Game.ThisPlayer);
-        }
         #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 using TomorrowDiesToday.Models;
@@ -11,10 +12,10 @@ namespace TomorrowDiesToday.Services.Game
         #region Properties
         // Observables
         public IObservable<string> ErrorMessage => _errorMessage;
-        public IObservable<Dictionary<string, SquadModel>> SelectedSquadsUpdate => _selectedSquadsUpdate;
+        public IObservable<List<SquadModel>> SelectedSquadsUpdate => _selectedSquadsUpdate;
         public IObservable<SquadModel> SquadUpdate => _squadUpdate;
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
-        private readonly ReplaySubject<Dictionary<string, SquadModel>> _selectedSquadsUpdate = new ReplaySubject<Dictionary<string, SquadModel>>(1);
+        private readonly ReplaySubject<List<SquadModel>> _selectedSquadsUpdate = new ReplaySubject<List<SquadModel>>(1);
         private readonly ReplaySubject<SquadModel> _squadUpdate = new ReplaySubject<SquadModel>(1);
 
         // Requred Service(s)
@@ -74,22 +75,10 @@ namespace TomorrowDiesToday.Services.Game
         public void ToggleSquad(SquadModel squadModel)
         {
             squadModel.IsSelected = !squadModel.IsSelected;
-
-            var selectedSquads = _gameService.Game.SelectedSquads;
-            // Remove squad from selected squads if being deselected
-            if (selectedSquads.ContainsKey(squadModel.SquadId) && !squadModel.IsSelected)
-            {
-                selectedSquads.Remove(squadModel.SquadId);
-                _selectedSquadsUpdate.OnNext(selectedSquads);
-            }
-            // Add squad to selected squads if recently selected
-            else if (squadModel.IsSelected && !selectedSquads.ContainsKey(squadModel.SquadId))
-            {
-                selectedSquads.Add(squadModel.SquadId, squadModel);
-                _selectedSquadsUpdate.OnNext(selectedSquads);
-            }
-
-            UpdateSquad(squadModel);
+            var players = _gameService.Game.Players;
+            var selectedSquads = players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
+            _selectedSquadsUpdate.OnNext(selectedSquads);
+            _squadUpdate.OnNext(squadModel);
         }
         #endregion
 
@@ -359,14 +348,6 @@ namespace TomorrowDiesToday.Services.Game
             }
 
             return total;
-        }
-
-        private void UpdateSquad(SquadModel squadModel)
-        {
-            if (ValidateSquad(squadModel))
-            {
-                _squadUpdate.OnNext(squadModel);
-            }
         }
 
         private bool ValidateSquad(SquadModel squadModel)

@@ -10,7 +10,7 @@ namespace TomorrowDiesToday.Services.Game
     public interface IPlayerService
     {
         IObservable<string> ErrorMessage { get; }
-        IObservable<Dictionary<string, PlayerModel>> OtherPlayersUpdate { get; }
+        IObservable<List<PlayerModel>> OtherPlayersUpdate { get; }
         IObservable<PlayerModel> ThisPlayerUpdate { get; }
 
         Task<bool> ChoosePlayer(string playerId);

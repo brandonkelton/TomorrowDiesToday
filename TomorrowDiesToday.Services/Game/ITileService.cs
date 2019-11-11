@@ -8,9 +8,7 @@ namespace TomorrowDiesToday.Services.Game
 {
     public interface ITileService
     {
-        IObservable<Dictionary<string, TileModel>> ActiveTilesUpdate { get; }
-
-        IObservable<Dictionary<string, TileModel>> AllTilesUpdate { get; }
+        IObservable<List<TileModel>> TilesUpdate { get; }
 
         IObservable<string> ErrorMessage { get; }
 
