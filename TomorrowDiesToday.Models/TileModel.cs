@@ -1,31 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Models
 {
     public class TileModel : IModel
     {
-        #region Class Properties
+        #region Properties
         public string TileId { get; set; }
+
         public string TileName { get; set; }
+
+        public bool IsActive { get; set; }
+
         public bool IsFlipped { get; set; }
+
         public int AlertTokens { get; set; }
+
         public string ImageLocation { get; set; }
-        public Dictionary<string, int> Stats { get; set; }
+
+        public List<Stat> Stats { get; set; } = new List<Stat>();
         #endregion
 
+        private TileStats _missionStats;
+        private TileStats _flippedStats;
+
         #region Constructor(s)
-        public TileModel()
+        public TileModel(TileType tileType, TileStats missionStats, TileStats flippedMissionStats)
         {
+            _missionStats = missionStats;
+            _flippedStats = flippedMissionStats;
             IsFlipped = false;
             AlertTokens = 0;
             ImageLocation = "";
-
-            Stats.Add("Combat", 0);
-            Stats.Add("Stealth", 0);
-            Stats.Add("Cunning", 0);
-            Stats.Add("Diplomacy", 0);
         }
         #endregion
     }
