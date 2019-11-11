@@ -13,10 +13,10 @@ namespace TomorrowDiesToday.Services.Data
     public class PlayerDataService : IDataService<PlayerModel, PlayerRequest>
     {
         public IObservable<PlayerModel> DataReceived => _update;
-        public IObservable<Dictionary<string, PlayerModel>> DataDictReceived => _updateDict;
+        public IObservable<List<PlayerModel>> DataListReceived => _updateListReceived;
 
         private readonly ReplaySubject<PlayerModel> _update = new ReplaySubject<PlayerModel>(1);
-        private readonly ReplaySubject<Dictionary<string, PlayerModel>> _updateDict = new ReplaySubject<Dictionary<string, PlayerModel>>(1);
+        private readonly ReplaySubject<List<PlayerModel>> _updateListReceived = new ReplaySubject<List<PlayerModel>>(1);
         private IDBClient _client;
 
         public PlayerDataService(IDBClient client)

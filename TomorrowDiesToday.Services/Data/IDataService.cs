@@ -11,7 +11,7 @@ namespace TomorrowDiesToday.Services.Data
     public interface IDataService<T, U> where T : IModel where U : IDataRequest
     {
         IObservable<T> DataReceived { get; }
-        IObservable<Dictionary<string, T>> DataDictReceived { get; }
+        IObservable<List<T>> DataListReceived { get; }
 
         Task ConfigureTable();
 
