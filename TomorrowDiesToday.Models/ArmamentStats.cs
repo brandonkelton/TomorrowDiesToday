@@ -15,6 +15,15 @@ namespace TomorrowDiesToday.Models
 
         public Stat Stealth { get; set; }
 
+        public ArmamentStats()
+        {
+            // Initialize Stats List
+            Combat = new Stat(StatType.Combat);
+            Cunning = new Stat(StatType.Cunning);
+            Diplomacy = new Stat(StatType.Diplomacy);
+            Stealth = new Stat(StatType.Stealth);
+        }
+
         public ArmamentStats(int combat, int stealth, int cunning, int diplomacy)
         {
             // Initialize Stats List

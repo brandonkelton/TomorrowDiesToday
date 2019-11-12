@@ -17,6 +17,11 @@ namespace TomorrowDiesToday.Models
             StatType = statType;
         }
 
+        public Stat()
+        {
+            StatType = StatType.None;
+        }
+
         public Stat(StatType statType, int value)
         {
             StatType = statType;

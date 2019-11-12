@@ -12,9 +12,20 @@ namespace TomorrowDiesToday.Models
 
         public ArmamentStats Stats;
 
+        public Armament()
+        {
+            ArmamentType = ArmamentType.None;
+        }
+
         public Armament(ArmamentType armamentType)
         {
             ArmamentType = armamentType;
+        }
+
+        public Armament(ArmamentType armamentType, ArmamentStats stats)
+        {
+            ArmamentType = armamentType;
+            Stats = stats;
         }
 
         public void SetCount(int value)
