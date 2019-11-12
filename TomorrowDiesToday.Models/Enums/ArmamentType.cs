@@ -7,8 +7,10 @@ namespace TomorrowDiesToday.Models
 {
     public enum ArmamentType
     {
-        [Description("No Henchman Selected")]
-        None,
+        #region Named Henchmen
+
+        [Description("General Goodman")]
+        GeneralGoodman,
 
         [Description("Archibald Kluge")]
         ArchibaldKluge,
@@ -37,6 +39,10 @@ namespace TomorrowDiesToday.Models
         [Description("Ugo Dottore")]
         UgoDottore,
 
+        #endregion
+
+        #region Faceless Henchmen
+
         [Description("Thief")]
         Thief,
 
@@ -55,6 +61,10 @@ namespace TomorrowDiesToday.Models
         [Description("Scientist")]
         Scientist,
 
+        #endregion
+
+        #region Abilities
+
         [Description("Hypnotic Spray")]
         HypnoticSpray,
 
@@ -71,6 +81,8 @@ namespace TomorrowDiesToday.Models
         UgoCunning,
 
         [Description("Ugo Diplomacy")]
-        UgoDiplomacy
+        UgoDiplomacy,
+
+        #endregion
     }
 }

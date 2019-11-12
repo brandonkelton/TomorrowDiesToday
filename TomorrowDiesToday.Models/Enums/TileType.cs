@@ -10,7 +10,7 @@ namespace TomorrowDiesToday.Models.Enums
         #region Resource Missions
 
         [Description("Blood Diamond Harvest")]
-        BloodDiomondHarvest,
+        BloodDiamondHarvest,
 
         [Description("Skin Trade")]
         SkinTrade,
@@ -108,10 +108,10 @@ namespace TomorrowDiesToday.Models.Enums
         #region Agent Headquarters
 
         [Description("CIA Building")]
-        BloodDiomondHarvest,
+        CIABuilding,
 
         [Description("Interpol HQ")]
-        BloodDiomondHarvest,
+        InterpolHQ,
 
         #endregion
     }
