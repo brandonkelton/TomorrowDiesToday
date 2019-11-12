@@ -102,42 +102,6 @@ namespace TomorrowDiesToday.Services.Game
 
         private PlayerModel GeneratePlayer(string playerId)
         {
-            ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
-            Armament playerArmament = new Armament(playerArmamentType);
-            playerArmament.SetCount(1);
-            switch (playerArmamentType)
-            {
-                case ArmamentType.GeneralGoodman:
-                    playerArmament.Stats = new ArmamentStats(2,2,2,2);
-                    break;
-                case ArmamentType.ArchibaldKluge:
-                    playerArmament.Stats = new ArmamentStats(0,1,3,1);
-                    break;
-                case ArmamentType.AxleRobbins:
-                    playerArmament.Stats = new ArmamentStats(1,0,2,2);
-                    break;
-                case ArmamentType.AzuraBadeau:
-                    playerArmament.Stats = new ArmamentStats(2,2,1,0);
-                    break;
-                case ArmamentType.BorisMyasneek:
-                    playerArmament.Stats = new ArmamentStats(3,1,1,0);
-                    break;
-                case ArmamentType.CassandraOShea:
-                    playerArmament.Stats = new ArmamentStats(0,0,2,3);
-                    break;
-                case ArmamentType.EmmersonBarlow:
-                    playerArmament.Stats = new ArmamentStats(1,3,1,0);
-                    break;
-                case ArmamentType.JinFeng:
-                    playerArmament.Stats = new ArmamentStats(0,3,1,1);
-                    break;
-                case ArmamentType.TheNode:
-                    playerArmament.Stats = new ArmamentStats(0,2,2,1);
-                    break;
-                case ArmamentType.UgoDottore:
-                    playerArmament.Stats = new ArmamentStats(1,0,3,1);
-                    break;
-            }
             PlayerModel playerModel = new PlayerModel
             {
                 GameId = _gameService.Game.GameId,
@@ -162,12 +126,54 @@ namespace TomorrowDiesToday.Services.Game
                 }
             };
 
+            ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
+
+            foreach(SquadModel squad in playerModel.Squads)
+            {
+                ArmamentStats stats = new ArmamentStats();
+                switch (playerArmamentType)
+                {
+                    case ArmamentType.GeneralGoodman:
+                        stats = new ArmamentStats(2, 2, 2, 2);
+                        break;
+                    case ArmamentType.ArchibaldKluge:
+                        stats = new ArmamentStats(0, 1, 3, 1);
+                        break;
+                    case ArmamentType.AxleRobbins:
+                        stats = new ArmamentStats(1, 0, 2, 2);
+                        break;
+                    case ArmamentType.AzuraBadeau:
+                        stats = new ArmamentStats(2, 2, 1, 0);
+                        break;
+                    case ArmamentType.BorisMyasneek:
+                        stats = new ArmamentStats(3, 1, 1, 0);
+                        break;
+                    case ArmamentType.CassandraOShea:
+                        stats = new ArmamentStats(0, 0, 2, 3);
+                        break;
+                    case ArmamentType.EmmersonBarlow:
+                        stats = new ArmamentStats(1, 3, 1, 0);
+                        break;
+                    case ArmamentType.JinFeng:
+                        stats = new ArmamentStats(0, 3, 1, 1);
+                        break;
+                    case ArmamentType.TheNode:
+                        stats = new ArmamentStats(0, 2, 2, 1);
+                        break;
+                    case ArmamentType.UgoDottore:
+                        stats = new ArmamentStats(1, 0, 3, 1);
+                        break;
+                }
+                squad.Armaments.Add(new Armament(playerArmamentType, stats));
+            }
+
             _gameService.Game.Players.Add(playerModel);
-            _gameService.Game.PlayerId = playerId;
+            _gameService.Game.PlayerId = playerId;;
 
             // Add chosen Named Henchman to first squad
             var firstSquad = playerModel.Squads.Where(squad => squad.SquadId == string.Format("{0}-1", playerId)).FirstOrDefault();
-            firstSquad.Armaments.Add(playerArmament);
+            var playerArmament = firstSquad.Armaments.Where(armament => armament.ArmamentType == playerArmamentType).FirstOrDefault();
+            playerArmament.SetCount(1);
 
             // Calculate stats for first squad
             _squadService.CalculateSquadStats(firstSquad);
