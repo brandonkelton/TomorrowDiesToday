@@ -86,15 +86,12 @@ namespace TomorrowDiesToday.ViewModels
             _gameSubscription = _gameService.ThisGame.Subscribe(gameModel =>
             {
                 GameId = gameModel.GameId;
-                CurrentPlayer = gameModel.ThisPlayer.PlayerName;
+                var playerArmamentType = ((ArmamentType) int.Parse(gameModel.PlayerId));
+                CurrentPlayer = playerArmamentType.ToDescription();
             });
             _playerDictSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
-                Players.Clear();
-                foreach(KeyValuePair<string, PlayerModel> player in playerModels)
-                {
-                    Players.Add(player.Value);
-                }
+                Players = new ObservableCollection<PlayerModel>(playerModels);
             });
         }
 

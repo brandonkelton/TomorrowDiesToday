@@ -66,11 +66,7 @@ namespace TomorrowDiesToday.ViewModels
             });
             _playerDictSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
-                Players.Clear();
-                foreach (KeyValuePair<string, PlayerModel> player in playerModels)
-                {
-                    Players.Add(player.Value);
-                }
+                Players = new ObservableCollection<PlayerModel>(playerModels);
             });
         }
     }
