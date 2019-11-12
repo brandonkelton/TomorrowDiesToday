@@ -15,6 +15,6 @@ namespace TomorrowDiesToday.Services.Database.DTOs
 
         public List<Armament> Armaments { get; set; } = new List<Armament>();
 
-        public List<Stat> Stats { get; set; } = new List<Stat>();
+        public SquadStats Stats { get; set; } = new SquadStats();
     }
 }
