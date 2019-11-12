@@ -74,11 +74,11 @@ namespace TomorrowDiesToday.Tests
         public async Task Update()
         {
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
+            var thisPlayer = new PlayerModel { PlayerId = "TestGame" };
             var gameModel = new GameModel
             {
                 GameId = "TestGame",
-                ThisPlayer = new PlayerModel { PlayerId = "TestGame" },
-                OtherPlayers = new Dictionary<string, PlayerModel>()
+                Players = new List<PlayerModel>() { thisPlayer }
             };
             await gameDataService.Update(gameModel);
             Assert.True(true); // pass if no exceptions thrown

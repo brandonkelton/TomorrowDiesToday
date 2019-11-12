@@ -74,7 +74,7 @@ namespace TomorrowDiesToday.Tests
             {
                 GameId = "TestGame",
                 PlayerId = "TestPlayer",
-                Squads = new Dictionary<string, SquadModel>()
+                Squads = new List<SquadModel>()
             };
             await playerDataService.Update(playerModel);
             Assert.True(true); // pass if no exceptions thrown
