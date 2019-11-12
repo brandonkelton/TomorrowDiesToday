@@ -7,6 +7,7 @@ using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Services.Database.DTOs;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Services.Game;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Services.Data
 {
@@ -49,7 +50,7 @@ namespace TomorrowDiesToday.Services.Data
 
         public async Task Update(GameModel gameModel)
         {
-            if (gameModel.ActiveTiles.Count > 0)
+            if (gameModel.Tiles.Count > 0)
             {
                 var gameDTO = GameToDTO(gameModel);
                 await _client.UpdateGame(gameDTO);
@@ -59,13 +60,14 @@ namespace TomorrowDiesToday.Services.Data
         private GameDTO GameToDTO(GameModel gameModel)
         {
             var tileDTOs = new List<TileDTO>();
-            foreach (KeyValuePair<string, TileModel> tile in gameModel.ActiveTiles)
+            foreach (TileModel tileModel in gameModel.Tiles)
             {
-                string tileId = tile.Key;
-                TileModel tileModel = tile.Value;
                 var tileDTO = new TileDTO
                 {
-                    TileId = tileModel.TileId
+                    TileId = tileModel.TileId,
+                    IsActive = tileModel.IsActive,
+                    IsFlipped = tileModel.IsFlipped,
+                    AlertTokens = tileModel.AlertTokens
                 };
                 tileDTOs.Add(tileDTO);
             }
@@ -79,18 +81,21 @@ namespace TomorrowDiesToday.Services.Data
 
         private GameModel GameToModel(GameDTO gameDTO)
         {
-            var tileModels = new Dictionary<string, TileModel>();
+            var tileModels = new List<TileModel>();
             foreach (TileDTO tileDTO in gameDTO.Tiles)
             {
-                var tileModel = new TileModel
+                var tileModel = new TileModel((TileType) int.Parse(tileDTO.TileId))
                 {
-                    TileId = tileDTO.TileId
+                    TileId = tileDTO.TileId,
+                    IsActive = tileDTO.IsActive,
+                    IsFlipped = tileDTO.IsFlipped,
+                    AlertTokens = tileDTO.AlertTokens
                 };
-                tileModels.Add(tileModel.TileId, tileModel);
+                tileModels.Add(tileModel);
             }
             var gameModel = new GameModel
             {
-                ActiveTiles = tileModels
+                Tiles = tileModels
             };
             return gameModel;
         }
