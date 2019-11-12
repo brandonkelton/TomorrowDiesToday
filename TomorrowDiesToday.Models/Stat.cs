@@ -17,6 +17,12 @@ namespace TomorrowDiesToday.Models
             StatType = statType;
         }
 
+        public Stat(StatType statType, int value)
+        {
+            StatType = statType;
+            Value = value;
+        }
+
         public void SetValue(int value)
         {
             Value = value;

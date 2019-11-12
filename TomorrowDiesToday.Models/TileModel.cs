@@ -14,6 +14,8 @@ namespace TomorrowDiesToday.Models
 
         public bool IsActive { get; set; }
 
+        public bool IsDoomsday { get; set; }
+
         public bool IsFlipped { get; set; }
 
         public int AlertTokens { get; set; }
@@ -21,20 +23,48 @@ namespace TomorrowDiesToday.Models
         public string ImageLocation { get; set; }
 
         public List<Stat> Stats { get; set; } = new List<Stat>();
+
         #endregion
 
         private TileStats _missionStats;
-        private TileStats _flippedStats;
+        private TileStats _flippedMissionStats;
 
         #region Constructor(s)
-        public TileModel(TileType tileType, TileStats missionStats, TileStats flippedMissionStats)
+
+        public TileModel(TileType tileType)
         {
-            _missionStats = missionStats;
-            _flippedStats = flippedMissionStats;
+            _missionStats = new TileStats();
+            _flippedMissionStats = new TileStats();
+            IsActive = false;
+            IsDoomsday = false;
             IsFlipped = false;
             AlertTokens = 0;
             ImageLocation = "";
         }
+
+        public TileModel(TileType tileType, TileStats missionStats)
+        {
+            _missionStats = missionStats;
+            IsActive = false;
+            IsDoomsday = true;
+            IsFlipped = false;
+            AlertTokens = 0;
+            ImageLocation = "";
+        }
+
+        public TileModel(TileType tileType, TileStats missionStats, TileStats flippedMissionStats)
+        {
+            _missionStats = missionStats;
+            _flippedMissionStats = flippedMissionStats;
+            IsActive = false;
+            IsDoomsday = false;
+            IsFlipped = false;
+            AlertTokens = 0;
+            ImageLocation = "";
+        }
+
+        
+
         #endregion
     }
 }
