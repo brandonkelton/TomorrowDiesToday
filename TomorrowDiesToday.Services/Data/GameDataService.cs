@@ -30,9 +30,10 @@ namespace TomorrowDiesToday.Services.Data
             await _client.InitializeGameTable();
         }
 
-        public async Task Create(GameRequest request)
+        public async Task Create(GameModel gameModel)
         {
-            await _client.CreateGame(request.GameId);
+            var gameDTO = GameToDTO(gameModel);
+            await _client.UpdateGame(gameDTO);
         }
 
         public async Task<bool> Exists(GameRequest request)

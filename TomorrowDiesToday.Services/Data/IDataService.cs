@@ -15,7 +15,7 @@ namespace TomorrowDiesToday.Services.Data
 
         Task ConfigureTable();
 
-        Task Create(U request);
+        Task Create(T model);
 
         Task<bool> Exists(U request);
 

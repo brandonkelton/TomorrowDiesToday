@@ -55,13 +55,13 @@ namespace TomorrowDiesToday.Services.Game
                 request = new GameRequest { GameId = gameId };
                 gameExists = await _gameDataService.Exists(request);
             }
-            await _gameDataService.Create(request);
             _game = new GameModel
             {
                 GameId = gameId,
                 Players = new List<PlayerModel>(),
                 Tiles = new List<TileModel>()
             };
+            await _gameDataService.Create(_game);
             _thisGame.OnNext(Game);
         }
 

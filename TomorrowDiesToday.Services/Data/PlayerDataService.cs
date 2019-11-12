@@ -29,9 +29,10 @@ namespace TomorrowDiesToday.Services.Data
             await _client.InitializePlayerTable();
         }
 
-        public async Task Create(PlayerRequest request)
+        public async Task Create(PlayerModel playerModel)
         {
-            await _client.CreatePlayer(request.GameId, request.PlayerId);
+            var playerDTO = PlayerToDTO(playerModel);
+            await _client.UpdatePlayer(playerDTO);
         }
 
         public async Task<bool> Exists(PlayerRequest request)

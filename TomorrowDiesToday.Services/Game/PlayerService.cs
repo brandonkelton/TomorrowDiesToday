@@ -59,8 +59,9 @@ namespace TomorrowDiesToday.Services.Game
             };
             if (!await _playerDataService.Exists(request))
             {
-                await _playerDataService.Create(request);
-                InitializePlayer(playerId);
+                var playerModel = GeneratePlayer(playerId);
+                await _playerDataService.Create(playerModel);
+                
                 return true;
             }
             else
@@ -99,7 +100,7 @@ namespace TomorrowDiesToday.Services.Game
             if (_squadUpdateSubscription != null) _squadUpdateSubscription.Dispose();
         }
 
-        private void InitializePlayer(string playerId)
+        private PlayerModel GeneratePlayer(string playerId)
         {
             ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
             Armament playerArmament = new Armament(playerArmamentType);
@@ -172,6 +173,8 @@ namespace TomorrowDiesToday.Services.Game
             _squadService.CalculateSquadStats(firstSquad);
 
             _thisPlayerUpdate.OnNext(playerModel); ;
+
+            return playerModel;
         }
 
         private void SubscribeToUpdates()
