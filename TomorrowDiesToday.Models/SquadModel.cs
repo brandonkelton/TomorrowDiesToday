@@ -11,9 +11,7 @@ namespace TomorrowDiesToday.Models
 
         public string SquadId { get; set; }
 
-        // Wasn't sure if you need an initial henchman of none (maybe don't create list with initial henchman?)
-        // In that case, remove None as an ArmamentType
-        public List<Armament> Armaments { get; set; } = new List<Armament>() { new Armament(ArmamentType.None) };
+        public List<Armament> Armaments { get; set; } = new List<Armament>();
 
         public List<Stat> Stats { get; set; } = new List<Stat>();
 
@@ -21,6 +19,7 @@ namespace TomorrowDiesToday.Models
 
         public SquadModel()
         {
+            // Initialize Armaments
             Armaments.Add(new Armament(ArmamentType.Thief));
             Armaments.Add(new Armament(ArmamentType.Hacker));
             Armaments.Add(new Armament(ArmamentType.Soldier));
@@ -34,7 +33,7 @@ namespace TomorrowDiesToday.Models
             Armaments.Add(new Armament(ArmamentType.UgoCunning));
             Armaments.Add(new Armament(ArmamentType.UgoDiplomacy));
 
-            //// Initialize Stats Dictionary
+            // Initialize Stats List
             Stats.Add(new Stat(StatType.Combat));
             Stats.Add(new Stat(StatType.Stealth));
             Stats.Add(new Stat(StatType.Cunning));
