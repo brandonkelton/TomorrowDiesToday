@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Models.Enums;
 using TomorrowDiesToday.Services.Data.Models;
 
 namespace TomorrowDiesToday.Services.Game

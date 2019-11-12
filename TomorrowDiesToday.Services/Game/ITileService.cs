@@ -8,7 +8,9 @@ namespace TomorrowDiesToday.Services.Game
 {
     public interface ITileService
     {
-        IObservable<List<TileModel>> TilesUpdate { get; }
+        IObservable<List<TileModel>> ActiveTilesUpdate { get; }
+
+        IObservable<List<TileModel>> AllTilesUpdate { get; }
 
         IObservable<string> ErrorMessage { get; }
 
@@ -16,6 +18,8 @@ namespace TomorrowDiesToday.Services.Game
 
         Task RequestActiveTilesUpdate();
 
-        void ToggleTile(TileModel tileModel);
+        void ToggleActive(TileModel tileModel);
+
+        void ToggleFlipped(TileModel tileModel);
     }
 }

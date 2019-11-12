@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Services.Game
 {
@@ -49,9 +50,8 @@ namespace TomorrowDiesToday.Services.Game
         #endregion
 
         #region Public Methods
-        public async Task<bool> ChoosePlayer(string playerName)
+        public async Task<bool> ChoosePlayer(string playerId)
         {
-            string playerId = _squadService.NamedHenchmenStats[playerName][0].ToString();
             PlayerRequest request = new PlayerRequest
             {
                 GameId = _gameService.Game.GameId,
@@ -60,10 +60,7 @@ namespace TomorrowDiesToday.Services.Game
             if (!await _playerDataService.Exists(request))
             {
                 await _playerDataService.Create(request);
-                PlayerModel thisPlayer = GeneratePlayer(playerId);
-                _gameService.Game.Players.Add(thisPlayer);
-                _gameService.Game.PlayerId = thisPlayer.PlayerId;
-                _thisPlayerUpdate.OnNext(thisPlayer);
+                InitializePlayer(playerId);
                 return true;
             }
             else
@@ -102,32 +99,79 @@ namespace TomorrowDiesToday.Services.Game
             if (_squadUpdateSubscription != null) _squadUpdateSubscription.Dispose();
         }
 
-        private PlayerModel GeneratePlayer(string playerId)
+        private void InitializePlayer(string playerId)
         {
+            ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
+            Armament playerArmament = new Armament(playerArmamentType);
+            switch (playerArmamentType)
+            {
+                case ArmamentType.GeneralGoodman:
+                    playerArmament.Stats = new ArmamentStats(2,2,2,2);
+                    break;
+                case ArmamentType.ArchibaldKluge:
+                    playerArmament.Stats = new ArmamentStats(0,1,3,1);
+                    break;
+                case ArmamentType.AxleRobbins:
+                    playerArmament.Stats = new ArmamentStats(1,0,2,2);
+                    break;
+                case ArmamentType.AzuraBadeau:
+                    playerArmament.Stats = new ArmamentStats(2,2,1,0);
+                    break;
+                case ArmamentType.BorisMyasneek:
+                    playerArmament.Stats = new ArmamentStats(3,1,1,0);
+                    break;
+                case ArmamentType.CassandraOShea:
+                    playerArmament.Stats = new ArmamentStats(0,0,2,3);
+                    break;
+                case ArmamentType.EmmersonBarlow:
+                    playerArmament.Stats = new ArmamentStats(1,3,1,0);
+                    break;
+                case ArmamentType.JinFeng:
+                    playerArmament.Stats = new ArmamentStats(0,3,1,1);
+                    break;
+                case ArmamentType.TheNode:
+                    playerArmament.Stats = new ArmamentStats(0,2,2,1);
+                    break;
+                case ArmamentType.UgoDottore:
+                    playerArmament.Stats = new ArmamentStats(1,0,3,1);
+                    break;
+            }
             PlayerModel playerModel = new PlayerModel
             {
                 GameId = _gameService.Game.GameId,
                 PlayerId = playerId,
-                PlayerName = _squadService.NamedHenchmenNames[int.Parse(playerId)],
+                PlayerName = playerArmamentType.ToDescription(),
                 Squads = new List<SquadModel>
                 {
-                    {string.Format("{0}-1", playerId), new SquadModel() },
-                    {string.Format("{0}-2", playerId), new SquadModel() },
-                    {string.Format("{0}-3", playerId), new SquadModel() },
-                    {string.Format("{0}-4", playerId), new SquadModel() },
-                    {string.Format("{0}-5", playerId), new SquadModel() },
-                    {string.Format("{0}-6", playerId), new SquadModel() },
+                    new SquadModel
+                    {
+                        PlayerId = playerId,
+                        SquadId = string.Format("{0}-1", playerId),
+                    },
+                    new SquadModel
+                    {
+                        PlayerId = playerId,
+                        SquadId = string.Format("{0}-2", playerId),
+                    },
+                    new SquadModel
+                    {
+                        PlayerId = playerId,
+                        SquadId = string.Format("{0}-3", playerId),
+                    }
                 }
             };
 
-            // Add chosen Named Henchman to squad 1
-            string firstSquad = string.Format("{0}-1", playerId);
-            playerModel.Squads[firstSquad].Data["Named Henchman"] = int.Parse(playerId);
+            _gameService.Game.Players.Add(playerModel);
+            _gameService.Game.PlayerId = playerId;
 
-            // Calculate stats for squad 1
-            _squadService.CalculateSquadStats(playerModel.Squads[firstSquad]);
+            // Add chosen Named Henchman to first squad
+            var firstSquad = playerModel.Squads.Where(squad => squad.SquadId == string.Format("{0}-1", playerId)).FirstOrDefault();
+            firstSquad.Armaments.Add(playerArmament);
 
-            return playerModel;
+            // Calculate stats for first squad
+            _squadService.CalculateSquadStats(firstSquad);
+
+            _thisPlayerUpdate.OnNext(playerModel); ;
         }
 
         private void SubscribeToUpdates()
@@ -136,27 +180,30 @@ namespace TomorrowDiesToday.Services.Game
             {
                 var playerId = playerModel.PlayerId;
                 var player = _players.Where(player => player.PlayerId == playerId).First();
-                player = playerModel;
-                _otherPlayersUpdate.OnNext(_players.Where(player => player.PlayerId != _playerId).ToList<PlayerModel>());
+                _players.Remove(player);
+                _players.Add(playerModel);
+                _otherPlayersUpdate.OnNext(_players.Where(player => player.PlayerId != _playerId).ToList());
             });
 
             _playerUpdateListSubscription = _playerDataService.DataListReceived.Subscribe(playerModels =>
             {
-                var newOtherPlayers = playerModels.Where(player => player.PlayerId != _playerId).ToList<PlayerModel>();
+                var newOtherPlayers = playerModels.Where(player => player.PlayerId != _playerId).ToList();
                 foreach(PlayerModel newOtherPlayer in newOtherPlayers)
                 {
                     newOtherPlayer.PlayerName = ((ArmamentType) int.Parse(newOtherPlayer.PlayerId)).ToDescription();
-                    var otherPlayer = _players.Where(oldPlayer => oldPlayer.PlayerId == newOtherPlayer.PlayerId).First();
-                    otherPlayer = newOtherPlayer;
+                    var otherPlayer = _players.Where(oldPlayer => oldPlayer.PlayerId == newOtherPlayer.PlayerId).FirstOrDefault();
+                    _players.Remove(otherPlayer);
+                    _players.Add(newOtherPlayer);
                 }
                 _otherPlayersUpdate.OnNext(newOtherPlayers);
             });
 
             _squadUpdateSubscription = _squadService.SquadUpdate.Subscribe(squadModel =>
             {
-                var thisPlayer = _players.Where(player => player.PlayerId == _playerId).First();
-                var thisSquad = thisPlayer.Squads.Where(squad => squad.SquadId == squadModel.SquadId).First();
-                thisSquad = squadModel;
+                var thisPlayer = _players.Where(player => player.PlayerId == _playerId).FirstOrDefault();
+                var thisSquad = thisPlayer.Squads.Where(squad => squad.SquadId == squadModel.SquadId).FirstOrDefault();
+                thisPlayer.Squads.Remove(thisSquad);
+                thisPlayer.Squads.Add(squadModel);
                 _thisPlayerUpdate.OnNext(thisPlayer);
             });
         }
