@@ -55,7 +55,12 @@ namespace TomorrowDiesToday.ViewModels
         private void ConfigureCommands()
         {
             //NextStepCommand = new Command(() => NextAfterGameCreated());
-            RefreshPlayerListCommand = new Command(() => _playerService.RequestPlayersUpdate());
+            RefreshPlayerListCommand = new Command(() => RefreshPlayers());
+        }
+
+        private void RefreshPlayers()
+        {
+            _playerService.RequestPlayersUpdate();
         }
 
         private void SubscribeToUpdates()
@@ -66,7 +71,8 @@ namespace TomorrowDiesToday.ViewModels
             });
             _playerDictSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
-                Players = new ObservableCollection<PlayerModel>(playerModels);
+                Players.Clear();
+                playerModels.ForEach(item => Players.Add(item));
             });
         }
     }

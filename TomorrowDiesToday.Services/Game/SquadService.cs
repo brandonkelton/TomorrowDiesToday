@@ -33,12 +33,10 @@ namespace TomorrowDiesToday.Services.Game
 
         public void CalculateSquadStats(SquadModel squadModel)
         {
-            SquadStats stats = new SquadStats();
-
-            stats.Combat.SetValue(squadModel.Armaments.Sum(armament => armament.Count * armament.Stats.Combat.Value));
-            stats.Stealth.SetValue(squadModel.Armaments.Sum(armament => armament.Count * armament.Stats.Stealth.Value));
-            stats.Cunning.SetValue(squadModel.Armaments.Sum(armament => armament.Count * armament.Stats.Cunning.Value));
-            stats.Diplomacy.SetValue(squadModel.Armaments.Sum(armament => armament.Count * armament.Stats.Diplomacy.Value));
+            squadModel.Stats.Combat.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Stealth.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Stealth.Value));
+            squadModel.Stats.Cunning.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Cunning.Value));
+            squadModel.Stats.Diplomacy.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Diplomacy.Value));
 
             if (squadModel.IsSelected)
             {

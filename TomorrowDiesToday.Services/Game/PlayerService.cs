@@ -103,6 +103,7 @@ namespace TomorrowDiesToday.Services.Game
         {
             ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
             Armament playerArmament = new Armament(playerArmamentType);
+            playerArmament.SetCount(1);
             switch (playerArmamentType)
             {
                 case ArmamentType.GeneralGoodman:
@@ -140,7 +141,6 @@ namespace TomorrowDiesToday.Services.Game
             {
                 GameId = _gameService.Game.GameId,
                 PlayerId = playerId,
-                PlayerName = playerArmamentType.ToDescription(),
                 Squads = new List<SquadModel>
                 {
                     new SquadModel
@@ -179,23 +179,31 @@ namespace TomorrowDiesToday.Services.Game
             _playerUpdateSubscription = _playerDataService.DataReceived.Subscribe(playerModel =>
             {
                 var playerId = playerModel.PlayerId;
-                var player = _players.Where(player => player.PlayerId == playerId).First();
-                _players.Remove(player);
-                _players.Add(playerModel);
+                var existingPlayer = _players.Where(player => player.PlayerId == playerId).FirstOrDefault();
+                if (existingPlayer != null)
+                {
+                    existingPlayer.Squads = playerModel.Squads;
+                }
+            
                 _otherPlayersUpdate.OnNext(_players.Where(player => player.PlayerId != _playerId).ToList());
             });
 
             _playerUpdateListSubscription = _playerDataService.DataListReceived.Subscribe(playerModels =>
             {
-                var newOtherPlayers = playerModels.Where(player => player.PlayerId != _playerId).ToList();
-                foreach(PlayerModel newOtherPlayer in newOtherPlayers)
+                var otherPlayers = playerModels.Where(player => player.PlayerId != _playerId).ToList();
+                foreach(PlayerModel otherPlayer in otherPlayers)
                 {
-                    newOtherPlayer.PlayerName = ((ArmamentType) int.Parse(newOtherPlayer.PlayerId)).ToDescription();
-                    var otherPlayer = _players.Where(oldPlayer => oldPlayer.PlayerId == newOtherPlayer.PlayerId).FirstOrDefault();
-                    _players.Remove(otherPlayer);
-                    _players.Add(newOtherPlayer);
+                    var existingPlayer = _players.Where(player => player.PlayerId == otherPlayer.PlayerId).FirstOrDefault();
+                    if (existingPlayer != null)
+                    {
+                        existingPlayer.Squads = otherPlayer.Squads;
+                    }
+                    else
+                    {
+                        _gameService.Game.Players.Add(otherPlayer);
+                    }
                 }
-                _otherPlayersUpdate.OnNext(newOtherPlayers);
+                _otherPlayersUpdate.OnNext(_players.Where(player => player.PlayerId != _playerId).ToList());
             });
 
             _squadUpdateSubscription = _squadService.SquadUpdate.Subscribe(squadModel =>

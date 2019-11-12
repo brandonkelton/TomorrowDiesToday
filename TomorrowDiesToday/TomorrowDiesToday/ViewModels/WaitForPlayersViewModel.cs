@@ -91,7 +91,8 @@ namespace TomorrowDiesToday.ViewModels
             });
             _playerDictSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
-                Players = new ObservableCollection<PlayerModel>(playerModels);
+                Players.Clear();
+                playerModels.ForEach(item => Players.Add(item));
             });
         }
 
