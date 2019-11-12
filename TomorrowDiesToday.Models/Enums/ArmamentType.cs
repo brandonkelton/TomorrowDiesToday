@@ -84,5 +84,8 @@ namespace TomorrowDiesToday.Models
         UgoDiplomacy,
 
         #endregion
+
+        [Description("No Armament Selected")]
+        None,
     }
 }

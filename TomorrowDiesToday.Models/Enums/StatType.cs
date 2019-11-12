@@ -17,6 +17,9 @@ namespace TomorrowDiesToday.Models.Enums
         Cunning,
 
         [Description("Diplomacy")]
-        Diplomacy
+        Diplomacy,
+
+        [Description("None")]
+        None,
     }
 }
