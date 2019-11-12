@@ -13,7 +13,7 @@ namespace TomorrowDiesToday.Models
 
         public List<Armament> Armaments { get; set; } = new List<Armament>();
 
-        public List<Stat> Stats { get; set; } = new List<Stat>();
+        public SquadStats Stats { get; set; } = new SquadStats();
 
         public bool IsSelected { get; set; }
 
@@ -32,12 +32,6 @@ namespace TomorrowDiesToday.Models
             Armaments.Add(new Armament(ArmamentType.UgoStealth));
             Armaments.Add(new Armament(ArmamentType.UgoCunning));
             Armaments.Add(new Armament(ArmamentType.UgoDiplomacy));
-
-            // Initialize Stats List
-            Stats.Add(new Stat(StatType.Combat));
-            Stats.Add(new Stat(StatType.Stealth));
-            Stats.Add(new Stat(StatType.Cunning));
-            Stats.Add(new Stat(StatType.Diplomacy));
         }
     }
 }

@@ -19,9 +19,9 @@ namespace TomorrowDiesToday.Models
         {
             // Initialize Stats List
             Combat = new Stat(StatType.Combat, combat);
+            Cunning = new Stat(StatType.Cunning, cunning);
+            Diplomacy = new Stat(StatType.Diplomacy, diplomacy);
             Stealth = new Stat(StatType.Stealth, stealth);
-            Stealth = new Stat(StatType.Cunning, cunning);
-            Stealth = new Stat(StatType.Diplomacy, diplomacy);
         }
     }
 }

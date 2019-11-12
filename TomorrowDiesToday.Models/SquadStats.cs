@@ -19,18 +19,18 @@ namespace TomorrowDiesToday.Models
         {
             // Initialize Stats List
             Combat = new Stat(StatType.Combat);
+            Cunning = new Stat(StatType.Cunning);
+            Diplomacy = new Stat(StatType.Diplomacy);
             Stealth = new Stat(StatType.Stealth);
-            Stealth = new Stat(StatType.Cunning);
-            Stealth = new Stat(StatType.Diplomacy);
         }
 
         public SquadStats(int combat, int stealth, int cunning, int diplomacy)
         {
             // Initialize Stats List
             Combat = new Stat(StatType.Combat, combat);
+            Cunning = new Stat(StatType.Cunning, cunning);
+            Diplomacy = new Stat(StatType.Diplomacy, diplomacy);
             Stealth = new Stat(StatType.Stealth, stealth);
-            Stealth = new Stat(StatType.Cunning, cunning);
-            Stealth = new Stat(StatType.Diplomacy, diplomacy);
         }
     }
 }

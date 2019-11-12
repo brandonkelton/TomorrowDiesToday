@@ -10,7 +10,7 @@ namespace TomorrowDiesToday.Models
         #region Properties
         public string TileId { get; set; }
 
-        public string TileName { get; set; }
+        public string TileName => ((TileType) int.Parse(TileId)).ToDescription();
 
         public bool IsActive { get; set; }
 
@@ -22,7 +22,7 @@ namespace TomorrowDiesToday.Models
 
         public string ImageLocation { get; set; }
 
-        public List<Stat> Stats { get; set; } = new List<Stat>();
+        public TileStats Stats => IsDoomsday? _missionStats: IsFlipped? _flippedMissionStats: _missionStats;
 
         #endregion
 
