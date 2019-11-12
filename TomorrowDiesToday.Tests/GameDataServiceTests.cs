@@ -43,8 +43,8 @@ namespace TomorrowDiesToday.Tests
         public async Task Create()
         {
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            var gameRequest = new GameRequest { GameId = "TestGame" };
-            await gameDataService.Create(gameRequest);
+            var gameModel = new GameModel { GameId = "TestGame" };
+            await gameDataService.Create(gameModel);
             Assert.True(true); // pass if no exceptions thrown
         }
 
