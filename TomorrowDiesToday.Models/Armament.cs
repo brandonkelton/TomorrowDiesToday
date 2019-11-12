@@ -8,16 +8,18 @@ namespace TomorrowDiesToday.Models
     {
         public ArmamentType ArmamentType { get; private set; }
 
-        public int Value { get; private set; } = 0;
+        public int Count { get; private set; } = 0;
+
+        public ArmamentStats Stats;
 
         public Armament(ArmamentType armamentType)
         {
             ArmamentType = armamentType;
         }
 
-        public void SetValue(int value)
+        public void SetCount(int value)
         {
-            Value = value;
+            Count = value;
         }
     }
 }
