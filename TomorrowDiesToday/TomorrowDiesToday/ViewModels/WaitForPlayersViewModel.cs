@@ -18,6 +18,7 @@ namespace TomorrowDiesToday.ViewModels
     public class WaitForPlayersViewModel : BaseViewModel, IWaitForPlayersViewModel, IDisposable
     {
         private IGameService _gameService;
+        private IPlayerService _playerService;
         private INavigationService _navService;
         private IDisposable _gameSubscription = null;
         private IDisposable _playerDictSubscription = null;
@@ -62,9 +63,10 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _playerAlreadySelected, value);
         }
 
-        public WaitForPlayersViewModel(IGameService gameService, INavigationService navService)
+        public WaitForPlayersViewModel(IGameService gameService, IPlayerService playerService, INavigationService navService)
         {
             _gameService = gameService;
+            _playerService = playerService;
             _navService = navService;
 
             //IsWaitingForSelection = true;
@@ -84,15 +86,13 @@ namespace TomorrowDiesToday.ViewModels
             _gameSubscription = _gameService.ThisGame.Subscribe(gameModel =>
             {
                 GameId = gameModel.GameId;
-                CurrentPlayer = gameModel.ThisPlayer.PlayerName;
+                var playerArmamentType = ((ArmamentType) int.Parse(gameModel.PlayerId));
+                CurrentPlayer = playerArmamentType.ToDescription();
             });
-            _playerDictSubscription = _gameService.OtherPlayers.Subscribe(dict =>
+            _playerDictSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
                 Players.Clear();
-                foreach(KeyValuePair<string, PlayerModel> player in dict)
-                {
-                    Players.Add(player.Value);
-                }
+                playerModels.ForEach(item => Players.Add(item));
             });
         }
 
@@ -103,7 +103,7 @@ namespace TomorrowDiesToday.ViewModels
 
         private void RefreshPlayers()
         {
-            _gameService.RequestPlayersUpdate();
+            _playerService.RequestPlayersUpdate();
         }
 
         public void Dispose()

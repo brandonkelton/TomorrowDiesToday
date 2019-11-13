@@ -6,36 +6,17 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
-using Xamarin.Forms;
-using TomorrowDiesToday.Navigation;
 using TomorrowDiesToday.Services.Game;
+using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class MainPageViewModel : BaseViewModel, IMainPageViewModel, IDisposable
+    public class MainPageViewModel : BaseViewModel, IMainPageViewModel
     {
-        private IGameService _gameService;
-        private INavigationService _navService;
-        private IDisposable _gameSubscription = null;
-        private IDisposable _playerDictSubscription = null;
-
         public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
-
-        public MainPageViewModel(INavigationService navigationService, IGameService gameService)
-        {
-            _navService = navigationService;
-            _gameService = gameService;
-            _gameService.RequestPlayersUpdate();
-            SubscribeToUpdates();           
-
-            Items = new ObservableCollection<object>
-            {
-                new {Title="First"},
-                new {Title="second"},
-                new {Title="third"}
-            };
-        }
         public ObservableCollection<object> Items { get; }
+
+        public ICommand RefreshPlayerListCommand { get; private set; }
 
         private string _gameId;
         public string GameId
@@ -44,11 +25,42 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _gameId, value);
         }
 
-        private string _currentPlayer;
-        public string CurrentPlayer
+        private IGameService _gameService;
+        private IPlayerService _playerService;
+
+        private IDisposable _gameSubscription = null;
+        private IDisposable _playerDictSubscription = null;
+
+        public MainPageViewModel(IGameService gameService, IPlayerService playerService)
         {
-            get => _currentPlayer;
-            set => SetProperty(ref _currentPlayer, value);
+            _gameService = gameService;
+            _playerService = playerService;
+
+            Items = new ObservableCollection<object>
+            {
+                new {Title="First"},
+                new {Title="second"},
+                new {Title="third"}
+            };
+            ConfigureCommands();
+            SubscribeToUpdates();
+        }
+
+        public void Dispose()
+        {
+            if (_gameSubscription != null) _gameSubscription.Dispose();
+            if (_playerDictSubscription != null) _playerDictSubscription.Dispose();
+        }
+
+        private void ConfigureCommands()
+        {
+            //NextStepCommand = new Command(() => NextAfterGameCreated());
+            RefreshPlayerListCommand = new Command(() => RefreshPlayers());
+        }
+
+        private void RefreshPlayers()
+        {
+            _playerService.RequestPlayersUpdate();
         }
 
         private void SubscribeToUpdates()
@@ -56,22 +68,12 @@ namespace TomorrowDiesToday.ViewModels
             _gameSubscription = _gameService.ThisGame.Subscribe(gameModel =>
             {
                 GameId = gameModel.GameId;
-                CurrentPlayer = gameModel.ThisPlayer.PlayerName;
             });
-            _playerDictSubscription = _gameService.OtherPlayers.Subscribe(dict =>
+            _playerDictSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
                 Players.Clear();
-                foreach (KeyValuePair<string, PlayerModel> player in dict)
-                {
-                    Players.Add(player.Value);
-                }
+                playerModels.ForEach(item => Players.Add(item));
             });
-        }
-
-        public void Dispose()
-        {
-            if (_gameSubscription != null) _gameSubscription.Dispose();
-            if (_playerDictSubscription != null) _playerDictSubscription.Dispose();
         }
     }
 }

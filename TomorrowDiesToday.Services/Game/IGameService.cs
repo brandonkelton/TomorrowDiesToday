@@ -8,38 +8,12 @@ namespace TomorrowDiesToday.Services.Game
 {
     public interface IGameService
     {
-        GameModel Game { get; set; }
-
-        Dictionary<int, string> PlayerLookup { get;  }
+        GameModel Game { get; }
 
         IObservable<string> ErrorMessage { get; }
-        IObservable<Dictionary<string, PlayerModel>> OtherPlayers { get; }
         IObservable<GameModel> ThisGame { get; }
-        IObservable<PlayerModel> ThisPlayer { get; }
-        IObservable<Dictionary<string, TileModel>> Tiles { get; }
-
-        Task<bool> ChoosePlayer(string playerId);
 
         Task CreateGame();
-
         Task<bool> JoinGame(string gameId);
-
-        Task RequestPlayerUpdate(PlayerModel playerModel);
-
-        Task RequestPlayersUpdate();
-
-        Task RequestTilesUpdate();
-
-        Task SendThisPlayer();
-
-        Task SendTiles();
-
-        void ToggleSquad(SquadModel squadModel);
-
-        void ToggleTile(TileModel tileModel);
-
-        void UpdateSquad(SquadModel squadModel);
-
-        void UpdateTile(TileModel tileModel);
     }
 }
