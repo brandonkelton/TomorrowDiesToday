@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TomorrowDiesToday.Models;
 
 namespace TomorrowDiesToday.Services.Database.DTOs
 {
@@ -11,7 +12,9 @@ namespace TomorrowDiesToday.Services.Database.DTOs
     public class SquadDTO
     {
         public string SquadId { get; set; }
-        public Dictionary<string, int> Data { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Dictionary<string, int> Stats { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public List<Armament> Armaments { get; set; } = new List<Armament>();
+
+        public SquadStats Stats { get; set; } = new SquadStats();
     }
 }

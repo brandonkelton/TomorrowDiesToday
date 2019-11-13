@@ -12,6 +12,7 @@ using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
 using TomorrowDiesToday.Navigation;
 using TomorrowDiesToday.Views;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.ViewModels
 {
@@ -75,7 +76,7 @@ namespace TomorrowDiesToday.ViewModels
             IsLoadingData = true;
             if (! await _playerService.ChoosePlayer(playerId))
             {
-                PlayerAlreadySelected = $"{playerId} Has Already Been Selected";
+                PlayerAlreadySelected = $"{playerId} Has Already Been Sdelected";
                 IsLoadingData = false;
                 return;
             }
