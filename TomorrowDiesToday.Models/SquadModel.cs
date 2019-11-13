@@ -20,18 +20,18 @@ namespace TomorrowDiesToday.Models
         public SquadModel()
         {
             // Initialize Armaments
-            Armaments.Add(new Armament(ArmamentType.Thief));
-            Armaments.Add(new Armament(ArmamentType.Hacker));
-            Armaments.Add(new Armament(ArmamentType.Soldier));
-            Armaments.Add(new Armament(ArmamentType.Assassin));
-            Armaments.Add(new Armament(ArmamentType.Fixer));
-            Armaments.Add(new Armament(ArmamentType.Scientist));
-            Armaments.Add(new Armament(ArmamentType.HypnoticSpray));
-            Armaments.Add(new Armament(ArmamentType.ExplosiveRounds));
-            Armaments.Add(new Armament(ArmamentType.UgoCombat));
-            Armaments.Add(new Armament(ArmamentType.UgoStealth));
-            Armaments.Add(new Armament(ArmamentType.UgoCunning));
-            Armaments.Add(new Armament(ArmamentType.UgoDiplomacy));
+            Armaments.Add(new Armament(ArmamentType.Thief, new ArmamentStats(0, 2, 1, 0)));
+            Armaments.Add(new Armament(ArmamentType.Hacker, new ArmamentStats(0, 1, 2, 0)));
+            Armaments.Add(new Armament(ArmamentType.Soldier, new ArmamentStats(2, 1, 0, 0)));
+            Armaments.Add(new Armament(ArmamentType.Assassin, new ArmamentStats(1, 2, 0, 0)));
+            Armaments.Add(new Armament(ArmamentType.Fixer, new ArmamentStats(0, 0, 1, 2)));
+            Armaments.Add(new Armament(ArmamentType.Scientist, new ArmamentStats(0, 0, 2, 1)));
+            Armaments.Add(new Armament(ArmamentType.HypnoticSpray, new ArmamentStats(0, 0, 0, 2)));
+            Armaments.Add(new Armament(ArmamentType.ExplosiveRounds, new ArmamentStats(2, 0, 0, 0)));
+            Armaments.Add(new Armament(ArmamentType.UgoCombat, new ArmamentStats(1, 0, 0, 0)));
+            Armaments.Add(new Armament(ArmamentType.UgoStealth, new ArmamentStats(0, 1, 0, 0)));
+            Armaments.Add(new Armament(ArmamentType.UgoCunning, new ArmamentStats(0, 0, 1, 0)));
+            Armaments.Add(new Armament(ArmamentType.UgoDiplomacy, new ArmamentStats(0, 0, 0, 1)));
         }
     }
 }
