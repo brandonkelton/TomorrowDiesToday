@@ -112,6 +112,7 @@
                 </StackLayout>
             </StackLayout>
         </Frame>
+
         <BoxView x:Name="swiper" 
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0,Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.05,Constant=0}"
@@ -120,9 +121,7 @@
                 <SwipeGestureRecognizer Direction="Right" Swiped="OnPlayerClicked"/>
             </BoxView.GestureRecognizers>
         </BoxView>
-                 
 
-        
         <Frame x:Name="sideSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#666666"
              RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=-.76,Constant=0}"
              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.75,Constant=0}"
@@ -130,7 +129,33 @@
             <Frame.GestureRecognizers>
                 <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
             </Frame.GestureRecognizers>
-
+            <StackLayout 
+                Spacing="5"
+                Padding="10,5">
+                <StackLayout Orientation="Vertical">
+                    <Button 
+                        Text="Refresh"
+                        BackgroundColor="#ffffff"
+                        BorderRadius="10"
+                        BorderWidth="2"
+                        BorderColor="#000000"
+                        HorizontalOptions="Center"
+                        Command="{Binding RefreshPlayerListCommand}"/>
+                    <ListView
+                            ItemsSource="{Binding Players}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Label
+                                        TextColor="Black"
+                                        FontSize="20"
+                                        Text="{Binding PlayerName}"/>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+            </StackLayout>
         </Frame>
 
     </RelativeLayout>

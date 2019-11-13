@@ -45,12 +45,12 @@ namespace TomorrowDiesToday.Tests
             var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
             var gameId = "TestGame";
             var playerId = "TestPlayer";
-            var playerRequest = new PlayerRequest
+            var playerModel = new PlayerModel
             {
                 GameId = gameId,
                 PlayerId = playerId
             };
-            await playerDataService.Create(playerRequest);
+            await playerDataService.Create(playerModel);
             Assert.True(true); // pass if no exceptions thrown
         }
 
@@ -74,7 +74,7 @@ namespace TomorrowDiesToday.Tests
             {
                 GameId = "TestGame",
                 PlayerId = "TestPlayer",
-                Squads = new Dictionary<string, SquadModel>()
+                Squads = new List<SquadModel>()
             };
             await playerDataService.Update(playerModel);
             Assert.True(true); // pass if no exceptions thrown
