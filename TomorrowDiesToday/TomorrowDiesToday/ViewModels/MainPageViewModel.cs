@@ -16,9 +16,9 @@ namespace TomorrowDiesToday.ViewModels
         {
             Items = new ObservableCollection<object>
             {
-                new {Title="First"},
-                new {Title="second"},
-                new {Title="third"}
+                new {Title="First", ComReq=5, SteReq=6,CunReq=1,DipReq=2 },
+                new {Title="second", ComReq=5, SteReq=6,CunReq=1,DipReq=2},
+                new {Title="third", ComReq=5, SteReq=6,CunReq=1,DipReq=2}
             };
         }
         public ObservableCollection<object> Items { get; }

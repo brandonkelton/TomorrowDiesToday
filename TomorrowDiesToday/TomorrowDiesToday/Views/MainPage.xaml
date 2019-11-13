@@ -39,6 +39,35 @@
                     BackgroundColor="#4b4c4c">
                             <StackLayout Spacing="5">
                                 <Button Text="{Binding Title}"/>
+                                <StackLayout Spacing="5" Orientation="Horizontal" VerticalOptions="CenterAndExpand">
+                                    <StackLayout Spacing="5" HorizontalOptions="StartAndExpand">
+                                        <StackLayout Spacing="5" Orientation="Horizontal">
+                                            <Label Text="Co"></Label>
+                                            <Label Text="{Binding ComReq}"></Label>
+
+                                        </StackLayout>
+                                        <StackLayout Spacing="5" Orientation="Horizontal">
+                                            <Label Text="St"></Label>
+                                            <Label Text="{Binding SteReq}"></Label>
+
+                                        </StackLayout>
+                                        <StackLayout Spacing="5" Orientation="Horizontal">
+                                            <Label Text="Cu"></Label>
+                                            <Label Text="{Binding CunReq}"></Label>
+
+                                        </StackLayout>
+                                        <StackLayout Spacing="5" Orientation="Horizontal">
+                                            <Label Text="Di"></Label>
+                                            <Label Text="{Binding DipReq}"></Label>
+
+                                        </StackLayout>
+                                    </StackLayout>
+
+                                    <StackLayout Spacing="5" HorizontalOptions="EndAndExpand">
+
+                                    </StackLayout>
+
+                                </StackLayout>
                             </StackLayout>
                         </Frame>
                         
