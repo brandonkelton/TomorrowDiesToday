@@ -15,6 +15,6 @@ namespace TomorrowDiesToday.Services.Game
 
         void CalculateSquadStats(SquadModel squadModel);
 
-        void ToggleSquad(SquadModel squadModel);
+        void ToggleSelected(SquadModel squadModel);
     }
 }

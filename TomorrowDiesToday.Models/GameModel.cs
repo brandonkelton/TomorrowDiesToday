@@ -12,5 +12,7 @@ namespace TomorrowDiesToday.Models
         public List<PlayerModel> Players { get; set; }
 
         public List<TileModel> Tiles { get; set; }
+
+        public SquadStats SelectedSquadStats { get; set; }
     }
 }

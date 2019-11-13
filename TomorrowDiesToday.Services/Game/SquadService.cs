@@ -14,9 +14,12 @@ namespace TomorrowDiesToday.Services.Game
         // Observables
         public IObservable<string> ErrorMessage => _errorMessage;
         public IObservable<List<SquadModel>> SelectedSquadsUpdate => _selectedSquadsUpdate;
+        public IObservable<SquadStats> SelectedSquadStatsUpdate => _selectedSquadStatsUpdate;
         public IObservable<SquadModel> SquadUpdate => _squadUpdate;
+
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<List<SquadModel>> _selectedSquadsUpdate = new ReplaySubject<List<SquadModel>>(1);
+        private readonly ReplaySubject<SquadStats> _selectedSquadStatsUpdate = new ReplaySubject<SquadStats>(1);
         private readonly ReplaySubject<SquadModel> _squadUpdate = new ReplaySubject<SquadModel>(1);
 
         // Requred Service(s)
@@ -26,6 +29,8 @@ namespace TomorrowDiesToday.Services.Game
         private const int MAX_SQUAD_SIZE = 6;
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
         private const int DATA_STRIP_LENGTH = 13;
+
+        List<SquadModel> _selectedSquads => _gameService.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
 
         #endregion
 
@@ -47,12 +52,11 @@ namespace TomorrowDiesToday.Services.Game
             _squadUpdate.OnNext(squadModel);
         }
 
-        public void ToggleSquad(SquadModel squadModel)
+        public void ToggleSelected(SquadModel squadModel)
         {
             squadModel.IsSelected = !squadModel.IsSelected;
-            var players = _gameService.Game.Players;
-            var selectedSquads = players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
-            _selectedSquadsUpdate.OnNext(selectedSquads);
+            _selectedSquadsUpdate.OnNext(_selectedSquads);
+            SumSelectedSquadStats();
             _squadUpdate.OnNext(squadModel);
         }
 
@@ -60,28 +64,16 @@ namespace TomorrowDiesToday.Services.Game
 
         #region Helper Methods
 
-        private Dictionary<string, int> AddSquadStats(params Dictionary<string, int>[] squads)
+        private void SumSelectedSquadStats()
         {
-            int combatTotal = 0;
-            int stealthTotal = 0;
-            int cunningTotal = 0;
-            int diplomacyTotal = 0;
-            Dictionary<string, int> squadTotals = new Dictionary<string, int>();
+            SquadStats stats = _gameService.Game.SelectedSquadStats;
 
-            foreach (Dictionary<string, int> squad in squads)
-            {
-                combatTotal += squad["Combat"];
-                stealthTotal += squad["Stealth"];
-                cunningTotal += squad["Cunning"];
-                diplomacyTotal += squad["Diplomacy"];
-            }
+            stats.Combat.SetValue(_selectedSquads.Sum(a => a.Stats.Combat.Value));
+            stats.Stealth.SetValue(_selectedSquads.Sum(a => a.Stats.Stealth.Value));
+            stats.Cunning.SetValue(_selectedSquads.Sum(a => a.Stats.Cunning.Value));
+            stats.Diplomacy.SetValue(_selectedSquads.Sum(a => a.Stats.Diplomacy.Value));
 
-            squadTotals.Add("Combat", combatTotal);
-            squadTotals.Add("Stealth", stealthTotal);
-            squadTotals.Add("Cunning", cunningTotal);
-            squadTotals.Add("Diplomacy", diplomacyTotal);
-
-            return squadTotals;
+            _selectedSquadStatsUpdate.OnNext(stats);
         }
 
         //private bool ValidateSquad(SquadModel squadModel)
