@@ -16,7 +16,7 @@ using TomorrowDiesToday.Views;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel, IOnInitAsync, IDisposable
+    public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel, IDisposable
     {
         public string Title => "Tomorrow Dies Today";
         private IGameService _gameService;
@@ -40,43 +40,11 @@ namespace TomorrowDiesToday.ViewModels
             if (_gameSubscription != null) _gameSubscription.Dispose();
         }
 
-        public async Task OnInitAsync()
-        {
-            await CreateGame();
-        }
-
-        private bool _isLoadingData;
-        public bool IsLoadingData
-        {
-            get => _isLoadingData;
-            private set => SetProperty(ref _isLoadingData, value);
-        }
-
         private string _gameId;
         public string GameId
         {
             get => _gameId;
             private set => SetProperty(ref _gameId, value);
-        }
-
-        private bool _gameCreated;
-        public bool GameCreated
-        {
-            get => _gameCreated;
-            private set => SetProperty(ref _gameCreated, value);
-        }
-
-        private async Task CreateGame()
-        {
-            IsLoadingData = true;
-
-            while (!GameCreated)
-            {
-                await _gameService.CreateGame();
-                GameCreated = true;
-            }
-
-            IsLoadingData = false;
         }
 
         private async Task GoToCharacterPage()

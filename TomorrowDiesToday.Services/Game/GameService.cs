@@ -29,7 +29,7 @@ namespace TomorrowDiesToday.Services.Game
         private IDataService<GameModel, GameRequest> _gameDataService;
 
         // Miscellaneous
-        private static Random _random = new Random();
+        
 
         #endregion
 
@@ -92,10 +92,10 @@ namespace TomorrowDiesToday.Services.Game
 
         private string GenerateGameId()
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            Random random = new Random();
             string gameId = new string(Enumerable.Repeat(chars, chars.Length)
-              .Select(s => s[_random.Next(s.Length)]).Take(6).ToArray());
+              .Select(s => s[random.Next(s.Length)]).Take(6).ToArray());
 
             return gameId;
         }

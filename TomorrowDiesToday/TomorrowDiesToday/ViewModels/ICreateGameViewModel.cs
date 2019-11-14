@@ -12,7 +12,5 @@ namespace TomorrowDiesToday.ViewModels
         ICommand NextStepCommand { get; }
 
         string GameId { get; }
-        bool IsLoadingData { get; }
-        bool GameCreated { get; }
     }
 }
