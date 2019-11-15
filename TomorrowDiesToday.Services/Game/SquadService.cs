@@ -37,15 +37,23 @@ namespace TomorrowDiesToday.Services.Game
 
         public void CalculateSquadStats(SquadModel squadModel)
         {
+            //Faceless Henchman
             squadModel.Stats.Combat.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
             squadModel.Stats.Stealth.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Stealth.Value));
             squadModel.Stats.Cunning.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Cunning.Value));
             squadModel.Stats.Diplomacy.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Diplomacy.Value));
 
+            //Abilities
             squadModel.Stats.Combat.Value += (squadModel.Abilities.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
             squadModel.Stats.Stealth.Value += (squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Stealth.Value));
             squadModel.Stats.Cunning.Value += (squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Cunning.Value));
             squadModel.Stats.Diplomacy.Value += (squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Diplomacy.Value));
+
+            //Items
+            squadModel.Stats.Combat.Value += (squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Combat.Value += (squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Combat.Value += (squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Combat.Value += (squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
 
 
             if (squadModel.IsSelected)
