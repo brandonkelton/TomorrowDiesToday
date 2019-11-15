@@ -38,5 +38,10 @@ namespace TomorrowDiesToday.Models
         {
             return new TileStats(Combat.Value + 1, Stealth.Value + 1, Cunning.Value + 1, Diplomacy.Value + 1);
         }
+
+        public TileStats MultiplyAll(int multiplier)
+        {
+            return new TileStats(Combat.Value * multiplier, Stealth.Value * multiplier, Cunning.Value * multiplier, Diplomacy.Value * multiplier);
+        }
     }
 }

@@ -30,28 +30,39 @@ namespace TomorrowDiesToday.Models
         {
             get
             {
-                TileStats modifiedStats= new TileStats();
+                TileStats stats = new TileStats();
 
-                if (IsFlipped) {
-                    modifiedStats = _flippedMissionStats;
+                if (IsFlipped)
+                {
+                    stats.Combat.SetValue(_flippedMissionStats.Combat.Value);
+                    stats.Stealth.SetValue(_flippedMissionStats.Stealth.Value);
+                    stats.Cunning.SetValue(_flippedMissionStats.Cunning.Value);
+                    stats.Diplomacy.SetValue(_flippedMissionStats.Diplomacy.Value);
                 }
-                else {
-                    modifiedStats = _missionStats;
+                else 
+                {
+                    stats.Combat.SetValue(_missionStats.Combat.Value);
+                    stats.Stealth.SetValue(_missionStats.Stealth.Value);
+                    stats.Cunning.SetValue(_missionStats.Cunning.Value);
+                    stats.Diplomacy.SetValue(_missionStats.Diplomacy.Value);
                 }
 
-                if (IsHQ) {
-                    modifiedStats.Combat.SetValue(modifiedStats.Combat.Value * AlertTokens);
-                    modifiedStats.Stealth.SetValue(modifiedStats.Combat.Value * AlertTokens);
-                    modifiedStats.Cunning.SetValue(modifiedStats.Combat.Value * AlertTokens);
-                    modifiedStats.Diplomacy.SetValue(modifiedStats.Combat.Value * AlertTokens);
+                if (IsHQ)
+                {
+                    stats = stats.MultiplyAll(AlertTokens);
                 }
-                if (IsDoomsday) {
-                    //Doomsdaystuff
+
+                if (IsDoomsday) 
+                {
+                    // Doomsday stuff
                 }
-                if (IsGlobalSecurityEvent) {
-                    modifiedStats = modifiedStats.IncreaseAll(1);
+
+                if (IsGlobalSecurityEvent) 
+                {
+                    stats = stats.IncreaseAll(1);
                 }
-                return modifiedStats;
+
+                return stats;
             }
         }
 
