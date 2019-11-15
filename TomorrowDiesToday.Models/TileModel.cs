@@ -52,9 +52,18 @@ namespace TomorrowDiesToday.Models
 
         public TileModel(TileType tileType, TileStats missionStats)
         {
+            if (tileType == TileType.CIABuilding || tileType == TileType.InterpolHQ)
+            {
+                IsHQ = true;
+                IsDoomsday = false;
+            }
+            else
+            {
+                IsDoomsday = true;
+                IsHQ = false;
+            }
             _missionStats = missionStats;
             IsActive = false;
-            IsDoomsday = true;
             IsFlipped = false;
             AlertTokens = 0;
             ImageLocation = "";
@@ -70,8 +79,6 @@ namespace TomorrowDiesToday.Models
             AlertTokens = 0;
             ImageLocation = "";
         }
-
-        
 
         #endregion
     }
