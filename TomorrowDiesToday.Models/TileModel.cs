@@ -16,6 +16,8 @@ namespace TomorrowDiesToday.Models
 
         public bool IsDoomsday { get; set; }
 
+        public bool IsGlobalSecurityEvent { get; set; }
+
         public bool IsHQ { get; set; }
 
         public bool IsFlipped { get; set; }
@@ -24,7 +26,11 @@ namespace TomorrowDiesToday.Models
 
         public string ImageLocation { get; set; }
 
-        public TileStats Stats => IsDoomsday? _missionStats: IsFlipped? _flippedMissionStats: _missionStats;
+        public TileStats Stats => IsDoomsday? 
+                                    IsGlobalSecurityEvent? _missionStats.IncreaseAll(1) : _missionStats : 
+                                  IsFlipped?
+                                    IsGlobalSecurityEvent? _flippedMissionStats.IncreaseAll(1) : _flippedMissionStats :
+                                  IsGlobalSecurityEvent? _missionStats.IncreaseAll(1) : _missionStats;
 
         #endregion
 
