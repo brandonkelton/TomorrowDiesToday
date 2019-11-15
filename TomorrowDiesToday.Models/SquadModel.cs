@@ -12,6 +12,7 @@ namespace TomorrowDiesToday.Models
         public string SquadId { get; set; }
 
         public List<Armament> Armaments { get; set; } = new List<Armament>();
+        public List<Armament> Abilities { get; set; } = new List<Armament>();
 
         public SquadStats Stats { get; set; } = new SquadStats();
 
@@ -28,10 +29,10 @@ namespace TomorrowDiesToday.Models
             Armaments.Add(new Armament(ArmamentType.Scientist, new ArmamentStats(0, 0, 2, 1)));
             Armaments.Add(new Armament(ArmamentType.HypnoticSpray, new ArmamentStats(0, 0, 0, 2)));
             Armaments.Add(new Armament(ArmamentType.ExplosiveRounds, new ArmamentStats(2, 0, 0, 0)));
-            Armaments.Add(new Armament(ArmamentType.UgoCombat, new ArmamentStats(1, 0, 0, 0)));
-            Armaments.Add(new Armament(ArmamentType.UgoStealth, new ArmamentStats(0, 1, 0, 0)));
-            Armaments.Add(new Armament(ArmamentType.UgoCunning, new ArmamentStats(0, 0, 1, 0)));
-            Armaments.Add(new Armament(ArmamentType.UgoDiplomacy, new ArmamentStats(0, 0, 0, 1)));
+            Abilities.Add(new Armament(ArmamentType.UgoCombat, new ArmamentStats(1, 0, 0, 0)));
+            Abilities.Add(new Armament(ArmamentType.UgoStealth, new ArmamentStats(0, 1, 0, 0)));
+            Abilities.Add(new Armament(ArmamentType.UgoCunning, new ArmamentStats(0, 0, 1, 0)));
+            Abilities.Add(new Armament(ArmamentType.UgoDiplomacy, new ArmamentStats(0, 0, 0, 1)));
         }
     }
 }
