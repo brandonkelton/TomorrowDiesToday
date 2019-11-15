@@ -13,6 +13,7 @@ namespace TomorrowDiesToday.Models
 
         public List<Armament> Armaments { get; set; } = new List<Armament>();
         public List<Armament> Abilities { get; set; } = new List<Armament>();
+        public List<Armament> Items { get; set; } = new List<Armament>();
 
         public SquadStats Stats { get; set; } = new SquadStats();
 
