@@ -40,10 +40,10 @@ namespace TomorrowDiesToday.Models
                 }
 
                 if (IsHQ) {
-                    modifiedStats.Combat.SetValue(modifiedStats.Combat.Value * AlertToken);
-                    modifiedStats.Stealth.SetValue(modifiedStats.Combat.Value * AlertToken);
-                    modifiedStats.Cunning.SetValue(modifiedStats.Combat.Value * AlertToken);
-                    modifiedStats.Diplomacy.SetValue(modifiedStats.Combat.Value * AlertToken);
+                    modifiedStats.Combat.SetValue(modifiedStats.Combat.Value * AlertTokens);
+                    modifiedStats.Stealth.SetValue(modifiedStats.Combat.Value * AlertTokens);
+                    modifiedStats.Cunning.SetValue(modifiedStats.Combat.Value * AlertTokens);
+                    modifiedStats.Diplomacy.SetValue(modifiedStats.Combat.Value * AlertTokens);
                 }
                 if (IsDoomsday) {
                     //Doomsdaystuff
