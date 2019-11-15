@@ -22,13 +22,12 @@ namespace TomorrowDiesToday.Services.Game
         private readonly ReplaySubject<SquadStats> _selectedSquadStatsUpdate = new ReplaySubject<SquadStats>(1);
         private readonly ReplaySubject<SquadModel> _squadUpdate = new ReplaySubject<SquadModel>(1);
 
-        // Requred Service(s)
+        // Required Service(s)
         private IGameService _gameService;
 
         // Constants
         private const int MAX_SQUAD_SIZE = 6;
         private const int NUMBER_OF_FACED_HENCHMAN = 9;
-        private const int DATA_STRIP_LENGTH = 13;
 
         List<SquadModel> _selectedSquads => _gameService.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
 

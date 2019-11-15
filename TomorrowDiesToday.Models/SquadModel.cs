@@ -27,8 +27,12 @@ namespace TomorrowDiesToday.Models
             Armaments.Add(new Armament(ArmamentType.Assassin, new ArmamentStats(1, 2, 0, 0)));
             Armaments.Add(new Armament(ArmamentType.Fixer, new ArmamentStats(0, 0, 1, 2)));
             Armaments.Add(new Armament(ArmamentType.Scientist, new ArmamentStats(0, 0, 2, 1)));
-            Armaments.Add(new Armament(ArmamentType.HypnoticSpray, new ArmamentStats(0, 0, 0, 2)));
-            Armaments.Add(new Armament(ArmamentType.ExplosiveRounds, new ArmamentStats(2, 0, 0, 0)));
+            
+            //Intitialize Items
+            Items.Add(new Armament(ArmamentType.HypnoticSpray, new ArmamentStats(0, 0, 0, 2)));
+            Items.Add(new Armament(ArmamentType.ExplosiveRounds, new ArmamentStats(2, 0, 0, 0)));
+            
+            //Ititialize Abilities
             Abilities.Add(new Armament(ArmamentType.UgoCombat, new ArmamentStats(1, 0, 0, 0)));
             Abilities.Add(new Armament(ArmamentType.UgoStealth, new ArmamentStats(0, 1, 0, 0)));
             Abilities.Add(new Armament(ArmamentType.UgoCunning, new ArmamentStats(0, 0, 1, 0)));
