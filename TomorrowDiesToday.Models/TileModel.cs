@@ -32,6 +32,35 @@ namespace TomorrowDiesToday.Models
                                     IsGlobalSecurityEvent? _flippedMissionStats.IncreaseAll(1) : _flippedMissionStats :
                                   IsGlobalSecurityEvent? _missionStats.IncreaseAll(1) : _missionStats;
 
+        public TileStats Stats
+        {
+            get
+            {
+                TileStats modifiedStats;
+
+                if (IsFlipped) {
+                    modifiedStats = _flippedMissionStats;
+                }
+                else {
+                    modifiedStats = _missionStats;
+                }
+
+                if (IsHQ) {
+                    modifiedStats.Combat.Value = modifiedStats.Combat.Value * AlertToken;
+                    modifiedStats.Stealth.Value = modifiedStats.Combat.Value * AlertToken;
+                    modifiedStats.Cunning.Value = modifiedStats.Combat.Value * AlertToken;
+                    modifiedStats.Diplomacy.Value = modifiedStats.Combat.Value * AlertToken;
+                }
+                if (IsDoomsday) {
+                    //Doomsdaystuff
+                }
+                if (IsGlobalSecurityEvent) {
+                    modifiedStats = modifiedStats.IncreaseAll(1);
+                }
+                return modifiedStats;
+            }
+        }
+
         #endregion
 
         private TileStats _missionStats;
