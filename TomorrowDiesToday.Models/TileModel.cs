@@ -26,12 +26,6 @@ namespace TomorrowDiesToday.Models
 
         public string ImageLocation { get; set; }
 
-        public TileStats Stats => IsDoomsday? 
-                                    IsGlobalSecurityEvent? _missionStats.IncreaseAll(1) : _missionStats : 
-                                  IsFlipped?
-                                    IsGlobalSecurityEvent? _flippedMissionStats.IncreaseAll(1) : _flippedMissionStats :
-                                  IsGlobalSecurityEvent? _missionStats.IncreaseAll(1) : _missionStats;
-
         public TileStats Stats
         {
             get
