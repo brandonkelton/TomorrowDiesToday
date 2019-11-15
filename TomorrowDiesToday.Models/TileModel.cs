@@ -36,7 +36,7 @@ namespace TomorrowDiesToday.Models
         {
             get
             {
-                TileStats modifiedStats;
+                TileStats modifiedStats= new TileStats();
 
                 if (IsFlipped) {
                     modifiedStats = _flippedMissionStats;
@@ -46,10 +46,10 @@ namespace TomorrowDiesToday.Models
                 }
 
                 if (IsHQ) {
-                    modifiedStats.Combat.Value = modifiedStats.Combat.Value * AlertToken;
-                    modifiedStats.Stealth.Value = modifiedStats.Combat.Value * AlertToken;
-                    modifiedStats.Cunning.Value = modifiedStats.Combat.Value * AlertToken;
-                    modifiedStats.Diplomacy.Value = modifiedStats.Combat.Value * AlertToken;
+                    modifiedStats.Combat.SetValue(modifiedStats.Combat.Value * AlertToken);
+                    modifiedStats.Stealth.SetValue(modifiedStats.Combat.Value * AlertToken);
+                    modifiedStats.Cunning.SetValue(modifiedStats.Combat.Value * AlertToken);
+                    modifiedStats.Diplomacy.SetValue(modifiedStats.Combat.Value * AlertToken);
                 }
                 if (IsDoomsday) {
                     //Doomsdaystuff
