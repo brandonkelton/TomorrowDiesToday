@@ -99,38 +99,39 @@ namespace TomorrowDiesToday.Services.Game
         public void IncrementArmamentCount(ArmamentType armamentType, SquadModel squadModel)
         {
             var armament = squadModel.Armaments.Where(a => a.ArmamentType == armamentType).FirstOrDefault();
+            var validTotalArmamentCount = 6;
+            var totalArmamentCount = squadModel.Armaments.Sum(a => a.Count);
             if (armament != null)
             {
-                var playerArmamentType = _gameService.Game.PlayerType;
-                if (armament.ArmamentType == _gameService.Game.PlayerType)
+                if (totalArmamentCount + 1 <= validTotalArmamentCount)
                 {
-                    var playerId = _gameService.Game.PlayerId;
-                    var squads = _gameService.Game.Players.Where(p => p.PlayerId == playerId).FirstOrDefault().Squads;
-                    var namedHenchmanArmament = squads.Select(s => s.Armaments.Where(a => a.ArmamentType == playerArmamentType && a.Count > 0).FirstOrDefault()).FirstOrDefault();
-                    if (namedHenchmanArmament != null)
+                    var playerArmamentType = _gameService.Game.PlayerType;
+
+                    if (armament.ArmamentType == _gameService.Game.PlayerType)
                     {
-                        if (!armament.Equals(namedHenchmanArmament))
+                        var playerId = _gameService.Game.PlayerId;
+                        var squads = _gameService.Game.Players.Where(p => p.PlayerId == playerId).FirstOrDefault().Squads;
+                        var namedHenchmanArmament = squads.Select(s => s.Armaments.Where(a => a.ArmamentType == playerArmamentType && a.Count > 0).FirstOrDefault()).FirstOrDefault();
+
+                        if (namedHenchmanArmament != null)
                         {
-                            namedHenchmanArmament.SetCount(0);
-                            armament.SetCount(1);
-                            CalculateSquadStats(squadModel);
+                            if (!armament.Equals(namedHenchmanArmament))
+                            {
+                                namedHenchmanArmament.SetCount(0);
+                                armament.SetCount(1);
+                                CalculateSquadStats(squadModel);
+                            }
+                            else
+                            {
+                                _errorMessage.OnNext(ErrorType.InvalidNamedHenchmanCount.ToDescription());
+                            }
                         }
                         else
                         {
-                            _errorMessage.OnNext(ErrorType.InvalidNamedHenchmanCount.ToDescription());
+                            armament.SetCount(1);
+                            CalculateSquadStats(squadModel);
                         }
                     }
-                    else
-                    {
-                        armament.SetCount(1);
-                        CalculateSquadStats(squadModel);
-                    }
-                }
-                var hasNamedHenchman = !(squadModel.Armaments.Where(a => a.ArmamentType == playerArmamentType).FirstOrDefault() == null);
-                var validTotalArmamentCount = hasNamedHenchman ? 7 : 6;
-                var totalArmamentCount = squadModel.Armaments.Sum(a => a.Count);
-                if (totalArmamentCount + 1 <= validTotalArmamentCount)
-                {
                     armament.SetCount(armament.Count + 1);
                     CalculateSquadStats(squadModel);
                 }
