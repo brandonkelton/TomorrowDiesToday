@@ -25,17 +25,21 @@ namespace TomorrowDiesToday.Services.Game
         // Required Service(s)
         private IDataService<GameModel, GameRequest> _gameDataService;
         private IGameService _gameService;
+        private ISquadService _squadService;
 
         // Subscriptions
+        private IDisposable _selectedSquadStatsUpdateSubscription = null;
         private IDisposable _tilesUpdateSubscription = null;
+        
 
         #endregion
 
         #region Constructor
-        public TileService(IDataService<GameModel, GameRequest> gameDataService, IGameService gameService)
+        public TileService(IDataService<GameModel, GameRequest> gameDataService, IGameService gameService, ISquadService squadService)
         {
             _gameService = gameService;
             _gameDataService = gameDataService;
+            _squadService = squadService;
             InitializeAllTiles();
             SubscribeToUpdates();
         }
@@ -72,6 +76,7 @@ namespace TomorrowDiesToday.Services.Game
         #region Helper Methods
         private void Dispose()
         {
+            if (_selectedSquadStatsUpdateSubscription != null) _selectedSquadStatsUpdateSubscription.Dispose();
             if (_tilesUpdateSubscription != null) _tilesUpdateSubscription.Dispose();
         }
 
@@ -117,6 +122,14 @@ namespace TomorrowDiesToday.Services.Game
 
         private void SubscribeToUpdates()
         {
+            _selectedSquadStatsUpdateSubscription = _squadService.SelectedSquadStatsUpdate.Subscribe(squadStats =>
+            {
+                var activeTiles = _gameService.Game.Tiles.Where(tile => tile.IsActive).ToList();
+                activeTiles.ForEach(t => SuccessCheck(t));
+                _activeTilesUpdate.OnNext(activeTiles);
+                _allTilesUpdate.OnNext(_gameService.Game.Tiles);
+            });
+
             _tilesUpdateSubscription = _gameDataService.DataReceived.Subscribe(gameModel =>
             {
                 var tiles = gameModel.Tiles;
@@ -125,30 +138,28 @@ namespace TomorrowDiesToday.Services.Game
             });
         }
 
-        private bool SuccessCheck(TileModel tileModel)
+        private void SuccessCheck(TileModel tileModel)
         {
             TileStats tileStats = tileModel.Stats;
             SquadStats selectedSquadStats = _gameService.Game.SelectedSquadStats;
-            bool success = true;
+            tileModel.Success = true;
 
             if (tileStats.Combat.Value > selectedSquadStats.Combat.Value)
             {
-                success = false;
+                tileModel.Success = false;
             }
             else if (tileStats.Stealth.Value > selectedSquadStats.Stealth.Value)
             {
-                success = false;
+                tileModel.Success = false;
             }
             else if (tileStats.Cunning.Value > selectedSquadStats.Cunning.Value)
             {
-                success = false;
+                tileModel.Success = false;
             }
             else if (tileStats.Diplomacy.Value > selectedSquadStats.Diplomacy.Value)
             {
-                success = false;
+                tileModel.Success = false;
             }
-
-            return success;
         }
 
         #endregion

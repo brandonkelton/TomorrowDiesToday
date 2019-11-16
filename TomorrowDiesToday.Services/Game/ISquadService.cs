@@ -11,6 +11,8 @@ namespace TomorrowDiesToday.Services.Game
 
         IObservable<List<SquadModel>> SelectedSquadsUpdate { get; }
 
+        IObservable<SquadStats> SelectedSquadStatsUpdate { get; }
+
         IObservable<SquadModel> SquadUpdate { get; }
 
         void CalculateSquadStats(SquadModel squadModel);

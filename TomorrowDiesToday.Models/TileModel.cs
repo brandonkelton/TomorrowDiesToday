@@ -8,9 +8,10 @@ namespace TomorrowDiesToday.Models
     public class TileModel : IModel
     {
         #region Properties
-        public string TileId { get; set; }
 
-        public string TileName => ((TileType) int.Parse(TileId)).ToDescription();
+        public int AlertTokens { get; set; }
+
+        public string ImageLocation { get; set; }
 
         public bool IsActive { get; set; }
 
@@ -21,10 +22,6 @@ namespace TomorrowDiesToday.Models
         public bool IsHQ { get; set; }
 
         public bool IsFlipped { get; set; }
-
-        public int AlertTokens { get; set; }
-
-        public string ImageLocation { get; set; }
 
         public TileStats Stats
         {
@@ -65,6 +62,12 @@ namespace TomorrowDiesToday.Models
                 return stats;
             }
         }
+
+        public bool Success { get; set; }
+
+        public string TileId { get; set; }
+
+        public string TileName => ((TileType)int.Parse(TileId)).ToDescription();
 
         #endregion
 
