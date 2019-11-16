@@ -102,10 +102,14 @@ namespace TomorrowDiesToday.Services.Game
 
         private PlayerModel GeneratePlayer(string playerId)
         {
+            ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
+
             PlayerModel playerModel = new PlayerModel
             {
                 GameId = _gameService.Game.GameId,
                 PlayerId = playerId,
+                PlayerName = playerArmamentType.ToDescription(),
+                PlayerType = playerArmamentType,
                 Squads = new List<SquadModel>
                 {
                     new SquadModel
@@ -125,8 +129,6 @@ namespace TomorrowDiesToday.Services.Game
                     }
                 }
             };
-
-            ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
 
             foreach(SquadModel squad in playerModel.Squads)
             {

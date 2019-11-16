@@ -10,7 +10,9 @@ namespace TomorrowDiesToday.Models
 
         public string PlayerId { get; set; }
 
-        public string PlayerName => ((ArmamentType) int.Parse(PlayerId)).ToDescription();
+        public string PlayerName { get; set; }
+
+        public ArmamentType PlayerType { get; set; }
 
         public List<SquadModel> Squads { get; set; } = new List<SquadModel>();
     }
