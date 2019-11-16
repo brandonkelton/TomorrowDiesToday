@@ -41,26 +41,6 @@ namespace TomorrowDiesToday.Services.Database
             return existingPlayer != null;
         }
 
-        public async Task CreateGame(string gameId)
-        {
-            var game = new GameDTO
-            {
-                GameId = gameId
-            };
-            await _context.SaveAsync(game);
-        }
-
-        public async Task CreatePlayer(string gameId, string playerId)
-        {
-            var player = new PlayerDTO
-            {
-                GameId = gameId,
-                PlayerId = playerId,
-                Squads = new List<SquadDTO>()
-            };
-            await _context.SaveAsync(player);
-        }
-
         public async Task DeleteGame(string gameId, string playerId)
         {
             // NOTE: possible better solutions, but delete player when the player exits game,

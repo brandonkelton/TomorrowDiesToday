@@ -13,9 +13,11 @@ namespace TomorrowDiesToday.Services.Game
     public class GameService : IGameService
     {
         #region Properties
+
         // Observables
         public IObservable<string> ErrorMessage => _errorMessage;
         public IObservable<GameModel> ThisGame => _thisGame;
+
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<GameModel> _thisGame = new ReplaySubject<GameModel>(1);
 
@@ -28,16 +30,20 @@ namespace TomorrowDiesToday.Services.Game
 
         // Miscellaneous
         private static Random _random = new Random();
+
         #endregion
 
         #region Constructor
+
         public GameService(IDataService<GameModel, GameRequest> gameDataService)
         {
             _gameDataService = gameDataService;
         }
+
         #endregion
 
         #region Public Methods
+
         public async Task CreateGame()
         {
             bool gameExists = true;
@@ -49,16 +55,13 @@ namespace TomorrowDiesToday.Services.Game
                 request = new GameRequest { GameId = gameId };
                 gameExists = await _gameDataService.Exists(request);
             }
-            await _gameDataService.Create(request);
             _game = new GameModel
             {
                 GameId = gameId,
-                ThisPlayer = new PlayerModel(),
-                OtherPlayers = new Dictionary<string, PlayerModel>(),
-                ActiveTiles = new Dictionary<string, TileModel>(),
-                AllTiles = new Dictionary<string, TileModel>(),
-                SelectedSquads = new Dictionary<string, SquadModel>()
+                Players = new List<PlayerModel>(),
+                Tiles = new List<TileModel>()
             };
+            await _gameDataService.Create(_game);
             _thisGame.OnNext(Game);
         }
 
@@ -70,11 +73,8 @@ namespace TomorrowDiesToday.Services.Game
                 _game = new GameModel
                 {
                     GameId = gameId,
-                    ThisPlayer = new PlayerModel(),
-                    OtherPlayers = new Dictionary<string, PlayerModel>(),
-                    ActiveTiles = new Dictionary<string, TileModel>(),
-                    AllTiles = new Dictionary<string, TileModel>(),
-                    SelectedSquads = new Dictionary<string, SquadModel>()
+                    Players = new List<PlayerModel>(),
+                    Tiles = new List<TileModel>()
                 };
                 _thisGame.OnNext(Game);
                 return true;
@@ -85,9 +85,11 @@ namespace TomorrowDiesToday.Services.Game
                 return false;
             }
         }
+
         #endregion
 
         #region Helper Methods
+
         private string GenerateGameId()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -97,6 +99,7 @@ namespace TomorrowDiesToday.Services.Game
 
             return gameId;
         }
+
         #endregion
     }
 }
