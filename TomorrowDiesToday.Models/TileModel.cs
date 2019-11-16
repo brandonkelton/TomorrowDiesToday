@@ -67,7 +67,9 @@ namespace TomorrowDiesToday.Models
 
         public string TileId { get; set; }
 
-        public string TileName => ((TileType)int.Parse(TileId)).ToDescription();
+        public string TileName => TileType.ToDescription();
+
+        public TileType TileType { get; set; }
 
         #endregion
 
@@ -93,6 +95,7 @@ namespace TomorrowDiesToday.Models
             {
                 IsHQ = true;
                 IsDoomsday = false;
+                IsActive = true;
             }
             else
             {

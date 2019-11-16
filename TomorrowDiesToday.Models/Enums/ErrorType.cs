@@ -18,5 +18,11 @@ namespace TomorrowDiesToday.Models.Enums
 
         [Description("Invalid Squad Size")]
         InvalidSquadSize,
+
+        [Description("Invalid Tile Deactivation")]
+        InvalidTileDeactivation,
+
+        [Description("Invalid Tile Flip")]
+        InvalidTileFlip,
     }
 }

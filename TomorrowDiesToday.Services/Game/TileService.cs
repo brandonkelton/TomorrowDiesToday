@@ -59,16 +59,35 @@ namespace TomorrowDiesToday.Services.Game
 
         public void ToggleActive(TileModel tileModel)
         {
-            tileModel.IsActive = !tileModel.IsActive;
-            var activeTiles = _gameService.Game.Tiles.Where(tile => tile.IsActive).ToList();
-            _activeTilesUpdate.OnNext(activeTiles);
-            _allTilesUpdate.OnNext(_gameService.Game.Tiles);
+            if (tileModel.TileType != TileType.CIABuilding && tileModel.TileType != TileType.InterpolHQ)
+            {
+                tileModel.IsActive = !tileModel.IsActive;
+                var activeTiles = _gameService.Game.Tiles.Where(tile => tile.IsActive).ToList();
+                _activeTilesUpdate.OnNext(activeTiles);
+                _allTilesUpdate.OnNext(_gameService.Game.Tiles);
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidTileDeactivation.ToDescription());
+            }
         }
 
         public void ToggleFlipped(TileModel tileModel)
         {
-            tileModel.IsFlipped = !tileModel.IsFlipped;
-            _allTilesUpdate.OnNext(_gameService.Game.Tiles);
+            if (!tileModel.IsDoomsday && !tileModel.IsHQ)
+            {
+                tileModel.IsFlipped = !tileModel.IsFlipped;
+                if (tileModel.IsActive)
+                {
+                    var activeTiles = _gameService.Game.Tiles.Where(tile => tile.IsActive).ToList();
+                    _activeTilesUpdate.OnNext(activeTiles);
+                }
+                _allTilesUpdate.OnNext(_gameService.Game.Tiles);
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidTileFlip.ToDescription());
+            }
         }
 
         #endregion
