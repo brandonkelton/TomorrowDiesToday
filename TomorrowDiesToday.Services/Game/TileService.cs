@@ -115,38 +115,6 @@ namespace TomorrowDiesToday.Services.Game
             _allTilesUpdate.OnNext(allTiles);
         }
 
-        //private Dictionary<string, int> HandleTileAlerts(int alerts, Dictionary<string, int> tileDictionary)
-        //{
-
-        //    if (alerts > 0)
-        //    {
-        //        tileDictionary["Combat"] *= alerts;
-        //        tileDictionary["Stealth"] *= alerts;
-        //        tileDictionary["Cunning"] *= alerts;
-        //        tileDictionary["Diplomacy"] *= alerts;
-        //    }
-
-        //    return tileDictionary;
-        //}
-
-        //private Dictionary<string, int> ParseToDictionary(string dataStrip)
-        //{
-        //    string[] keyArray = new string[] { "Combat", "Stealth", "Cunning", "Diplomacy" };
-        //    string[] stringArray = dataStrip.Split(',');
-        //    int[] statusValueArray = Array.ConvertAll(stringArray, int.Parse);
-        //    Dictionary<string, int> tileStatus = new Dictionary<string, int>();
-
-        //    if (keyArray.Length == statusValueArray.Length)
-        //    {
-        //        for (int i = 0; i < keyArray.Length; i++)
-        //        {
-        //            tileStatus.Add(keyArray[i], statusValueArray[i]);
-        //        }
-        //    }
-
-        //    return tileStatus;
-        //}
-
         private void SubscribeToUpdates()
         {
             _tilesUpdateSubscription = _gameDataService.DataReceived.Subscribe(gameModel =>
@@ -157,51 +125,32 @@ namespace TomorrowDiesToday.Services.Game
             });
         }
 
-        //private bool SuccessCheck(Dictionary<string, int> tileStats, Dictionary<string, int> squadStats)
-        //{
-        //    int combatResult = squadStats["Combat"] - tileStats["Combat"];
-        //    int stealthResult = squadStats["Stealth"] - tileStats["Stealth"];
-        //    int cunningResult = squadStats["Cunning"] - tileStats["Cunning"];
-        //    int diplomacyResult = squadStats["Diplomacy"] - tileStats["Diplomacy"];
+        private bool SuccessCheck(TileModel tileModel)
+        {
+            TileStats tileStats = tileModel.Stats;
+            SquadStats selectedSquadStats = _gameService.Game.SelectedSquadStats;
+            bool success = true;
 
-        //    if (combatResult >= 0 && stealthResult >= 0 && cunningResult >= 0 && diplomacyResult >= 0)
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
+            if (tileStats.Combat.Value > selectedSquadStats.Combat.Value)
+            {
+                success = false;
+            }
+            else if (tileStats.Stealth.Value > selectedSquadStats.Stealth.Value)
+            {
+                success = false;
+            }
+            else if (tileStats.Cunning.Value > selectedSquadStats.Cunning.Value)
+            {
+                success = false;
+            }
+            else if (tileStats.Diplomacy.Value > selectedSquadStats.Diplomacy.Value)
+            {
+                success = false;
+            }
 
-        //private Dictionary<string, int> TileLookup(string tileName, Boolean flipped, int alerts) //returns Dictionary of matching name
-        //{
-        //    Dictionary<string, int> tileDictionary;
-        //    string dataStrip;
+            return success;
+        }
 
-        //    if (flipped == true)
-        //    {
-        //        dataStrip = _flipMissions[tileName];
-        //    }
-        //    else if (flipped == false)
-        //    {
-        //        dataStrip = _missions[tileName];
-        //    }
-        //    else
-        //    {
-        //        //throw some exception
-        //        System.ArgumentException argEx = new System.ArgumentException("Index is out of range", "index");
-        //        throw argEx;
-        //    }
-
-        //    tileDictionary = ParseToDictionary(dataStrip);
-        //    if (alerts > 0)
-        //    {
-        //        HandleTileAlerts(alerts, tileDictionary);
-        //    }
-
-        //    return tileDictionary;
-        //}
         #endregion
     }
 }
