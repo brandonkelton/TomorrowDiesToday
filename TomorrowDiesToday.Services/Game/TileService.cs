@@ -30,7 +30,9 @@ namespace TomorrowDiesToday.Services.Game
         // Subscriptions
         private IDisposable _selectedSquadStatsUpdateSubscription = null;
         private IDisposable _tilesUpdateSubscription = null;
-        
+
+        private List<TileModel> _activeTiles => _gameService.Game.Tiles.Where(t => t.IsActive).ToList();
+        private List<TileModel> _allTiles => _gameService.Game.Tiles;
 
         #endregion
 
@@ -57,6 +59,33 @@ namespace TomorrowDiesToday.Services.Game
             await _gameDataService.Update(_gameService.Game);
         }
 
+        public void DecrementAlertTokens(TileModel tileModel)
+        {
+            if (tileModel.AlertTokens - 1 >= 0)
+            {
+                tileModel.AlertTokens -= 1;
+                if (tileModel.IsActive)
+                {
+                    _activeTilesUpdate.OnNext(_activeTiles);
+                }
+                _allTilesUpdate.OnNext(_allTiles);
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidAlertTokenCount.ToDescription());
+            }
+        }
+
+        public void IncrementAlertTokens(TileModel tileModel)
+        {
+            tileModel.AlertTokens += 1;
+            if (tileModel.IsActive)
+            {
+                _activeTilesUpdate.OnNext(_activeTiles);
+            }
+            _allTilesUpdate.OnNext(_allTiles);
+        }
+
         public void ToggleActive(TileModel tileModel)
         {
             if (tileModel.TileType != TileType.CIABuilding && tileModel.TileType != TileType.InterpolHQ)
@@ -70,6 +99,13 @@ namespace TomorrowDiesToday.Services.Game
             {
                 _errorMessage.OnNext(ErrorType.InvalidTileDeactivation.ToDescription());
             }
+        }
+
+        public void ToggleGlobalSecurityEvent()
+        {
+            _allTiles.ForEach(t => t.IsGlobalSecurityEvent = !t.IsGlobalSecurityEvent);
+            _allTilesUpdate.OnNext(_allTiles);
+            _activeTilesUpdate.OnNext(_activeTiles);
         }
 
         public void ToggleFlipped(TileModel tileModel)

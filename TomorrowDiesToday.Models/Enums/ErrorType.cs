@@ -10,6 +10,9 @@ namespace TomorrowDiesToday.Models.Enums
         [Description("None")]
         None,
 
+        [Description("Invalid Alert Token Count")]
+        InvalidAlertTokenCount,
+
         [Description("Invalid Armament Count")]
         InvalidArmamentCount,
 
