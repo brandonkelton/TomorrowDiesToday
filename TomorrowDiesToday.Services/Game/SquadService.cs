@@ -44,16 +44,16 @@ namespace TomorrowDiesToday.Services.Game
             squadModel.Stats.Diplomacy.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Diplomacy.Value));
 
             //Abilities
-            squadModel.Stats.Combat.Value += (squadModel.Abilities.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
-            squadModel.Stats.Stealth.Value += (squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Stealth.Value));
-            squadModel.Stats.Cunning.Value += (squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Cunning.Value));
-            squadModel.Stats.Diplomacy.Value += (squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Diplomacy.Value));
+            squadModel.Stats.Combat.SetValue(squadModel.Abilities.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Stealth.SetValue(squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Stealth.Value));
+            squadModel.Stats.Cunning.SetValue(squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Cunning.Value));
+            squadModel.Stats.Diplomacy.SetValue(squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Diplomacy.Value));
 
             //Items
-            squadModel.Stats.Combat.Value += (squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
-            squadModel.Stats.Combat.Value += (squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
-            squadModel.Stats.Combat.Value += (squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
-            squadModel.Stats.Combat.Value += (squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Combat.SetValue(squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Combat.SetValue(squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Combat.SetValue(squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Combat.SetValue(squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
 
 
             if (squadModel.IsSelected)
@@ -88,46 +88,6 @@ namespace TomorrowDiesToday.Services.Game
 
             _selectedSquadStatsUpdate.OnNext(stats);
         }
-
-        //private bool ValidateSquad(SquadModel squadModel)
-        //{
-        //    var squadData = squadModel.Data;
-        //    int unitTotal = squadData["Thief"] + squadData["Hacker"] + squadData["Soldier"]
-        //        + squadData["Assassin"] + squadData["Fixer"] + squadData["Scientist"];
-        //    int ugoTotal = squadData["Ugo Combat"] + squadData["Ugo Stealth"] + squadData["Ugo Cunning"] + squadData["Ugo Diplomacy"];
-
-        //    string validationError = "";
-
-        //    if (unitTotal > MAX_SQUAD_SIZE || unitTotal < 0)
-        //    {
-        //        validationError += "Invalid squad size\n";
-        //    }
-        //    if (squadData["Named Henchman"] > NUMBER_OF_FACED_HENCHMAN || squadData["Named Henchman"] < 0)
-        //    {
-        //        validationError += "Invalid number of named henchmen\n";
-        //    }
-        //    if (squadData["Hypnotic Spray"] > 1 || squadData["Hypnotic Spray"] < 0)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    if (squadData["Explosive Rounds"] > 1 || squadData["Explosive Rounds"] < 0)
-        //    {
-        //        validationError += "\n";
-        //    }
-        //    if (ugoTotal > MAX_SQUAD_SIZE || ugoTotal < 0)
-        //    {
-        //        validationError += "\n";
-        //    }
-        //    if (validationError != "")
-        //    {
-        //        _errorMessage.OnNext(validationError);
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        return true;
-        //    }
-        //}
 
         #endregion
     }
