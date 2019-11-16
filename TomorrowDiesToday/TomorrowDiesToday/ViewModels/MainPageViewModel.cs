@@ -15,6 +15,7 @@ namespace TomorrowDiesToday.ViewModels
     {
         public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
         public ObservableCollection<object> Items { get; }
+        public ObservableCollection<SquadModel> Squads { get; private set; } = new ObservableCollection<SquadModel>();
 
         public ICommand RefreshPlayerListCommand { get; private set; }
 
@@ -27,14 +28,17 @@ namespace TomorrowDiesToday.ViewModels
 
         private IGameService _gameService;
         private IPlayerService _playerService;
+        private ISquadService _squadService;
 
         private IDisposable _gameSubscription = null;
         private IDisposable _playerDictSubscription = null;
+        private IDisposable _playerSquadsSubscription = null;
 
-        public MainPageViewModel(IGameService gameService, IPlayerService playerService)
+        public MainPageViewModel(IGameService gameService, IPlayerService playerService, ISquadService squadService)
         {
             _gameService = gameService;
             _playerService = playerService;
+            _squadService = squadService;
 
             Items = new ObservableCollection<object>
             {
@@ -50,6 +54,7 @@ namespace TomorrowDiesToday.ViewModels
         {
             if (_gameSubscription != null) _gameSubscription.Dispose();
             if (_playerDictSubscription != null) _playerDictSubscription.Dispose();
+            if (_playerSquadsSubscription != null) _playerSquadsSubscription.Dispose();
         }
 
         private void ConfigureCommands()
@@ -61,6 +66,14 @@ namespace TomorrowDiesToday.ViewModels
         private void RefreshPlayers()
         {
             _playerService.RequestPlayersUpdate();
+            Squads.Clear();
+            foreach (PlayerModel player in Players)
+            {
+                foreach (SquadModel squad in player.Squads)
+                {
+                    Squads.Add(squad);
+                }
+            }
         }
 
         private void SubscribeToUpdates()
@@ -74,6 +87,13 @@ namespace TomorrowDiesToday.ViewModels
                 Players.Clear();
                 playerModels.ForEach(item => Players.Add(item));
             });
+            foreach (PlayerModel player in Players)
+            {
+                foreach (SquadModel squad in player.Squads)
+                {
+                    Squads.Add(squad);
+                }
+            }
         }
     }
 }
