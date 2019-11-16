@@ -54,7 +54,7 @@ namespace TomorrowDiesToday.Models
                     // Doomsday stuff
                 }
 
-                if (IsGlobalSecurityEvent) 
+                if (IsGlobalSecurityEvent && !IsHQ  && !IsDoomsday) 
                 {
                     stats = stats.IncreaseAll(1);
                 }
