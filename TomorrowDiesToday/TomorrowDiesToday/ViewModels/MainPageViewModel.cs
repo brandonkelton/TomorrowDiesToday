@@ -31,7 +31,7 @@ namespace TomorrowDiesToday.ViewModels
         private ISquadService _squadService;
 
         private IDisposable _gameSubscription = null;
-        private IDisposable _playerDictSubscription = null;
+        private IDisposable _playerListSubscription = null;
         private IDisposable _playerSquadsSubscription = null;
 
         public MainPageViewModel(IGameService gameService, IPlayerService playerService, ISquadService squadService)
@@ -53,7 +53,7 @@ namespace TomorrowDiesToday.ViewModels
         public void Dispose()
         {
             if (_gameSubscription != null) _gameSubscription.Dispose();
-            if (_playerDictSubscription != null) _playerDictSubscription.Dispose();
+            if (_playerListSubscription != null) _playerListSubscription.Dispose();
             if (_playerSquadsSubscription != null) _playerSquadsSubscription.Dispose();
         }
 
@@ -66,14 +66,6 @@ namespace TomorrowDiesToday.ViewModels
         private void RefreshPlayers()
         {
             _playerService.RequestPlayersUpdate();
-            Squads.Clear();
-            foreach (PlayerModel player in Players)
-            {
-                foreach (SquadModel squad in player.Squads)
-                {
-                    Squads.Add(squad);
-                }
-            }
         }
 
         private void SubscribeToUpdates()
@@ -82,18 +74,15 @@ namespace TomorrowDiesToday.ViewModels
             {
                 GameId = gameModel.GameId;
             });
-            _playerDictSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
+
+            _playerListSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
                 Players.Clear();
-                playerModels.ForEach(item => Players.Add(item));
+                Squads.Clear();
+                playerModels.ForEach(playerModel => Players.Add(playerModel));
+                playerModels.ForEach(playerModel => playerModel.Squads.ForEach(squadModel => Squads.Add(squadModel)));
             });
-            foreach (PlayerModel player in Players)
-            {
-                foreach (SquadModel squad in player.Squads)
-                {
-                    Squads.Add(squad);
-                }
-            }
+
         }
     }
 }
