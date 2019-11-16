@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Services.Game
 {
@@ -24,10 +25,6 @@ namespace TomorrowDiesToday.Services.Game
 
         // Required Service(s)
         private IGameService _gameService;
-
-        // Constants
-        private const int MAX_SQUAD_SIZE = 6;
-        private const int NUMBER_OF_FACED_HENCHMAN = 9;
 
         List<SquadModel> _selectedSquads => _gameService.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
 
@@ -63,6 +60,89 @@ namespace TomorrowDiesToday.Services.Game
             }
 
             _squadUpdate.OnNext(squadModel);
+
+            if (squadModel.IsSelected)
+            {
+                _selectedSquadsUpdate.OnNext(_selectedSquads);
+                SumSelectedSquadStats();
+            }
+        }
+
+        public void DecrementArmamentCount(ArmamentType armamentType, SquadModel squadModel)
+        {
+            var armament = squadModel.Armaments.Where(a => a.ArmamentType == armamentType).FirstOrDefault();
+            if (armament != null)
+            {
+                if (armament.Count - 1 >= 0)
+                {
+                    armament.SetCount(armament.Count - 1);
+                    CalculateSquadStats(squadModel);
+                }
+                else
+                {
+                    if (armament.ArmamentType == _gameService.Game.PlayerType)
+                    {
+                        _errorMessage.OnNext(ErrorType.InvalidNamedHenchmanCount.ToDescription());
+                    }
+                    else
+                    {
+                        _errorMessage.OnNext(ErrorType.InvalidArmamentCount.ToDescription());
+                    }
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidArmamentType.ToDescription());
+            }
+        }
+
+        public void IncrementArmamentCount(ArmamentType armamentType, SquadModel squadModel)
+        {
+            var armament = squadModel.Armaments.Where(a => a.ArmamentType == armamentType).FirstOrDefault();
+            if (armament != null)
+            {
+                var playerArmamentType = _gameService.Game.PlayerType;
+                if (armament.ArmamentType == _gameService.Game.PlayerType)
+                {
+                    var playerId = _gameService.Game.PlayerId;
+                    var squads = _gameService.Game.Players.Where(p => p.PlayerId == playerId).FirstOrDefault().Squads;
+                    var namedHenchmanArmament = squads.Select(s => s.Armaments.Where(a => a.ArmamentType == playerArmamentType && a.Count > 0).FirstOrDefault()).FirstOrDefault();
+                    if (namedHenchmanArmament != null)
+                    {
+                        if (!armament.Equals(namedHenchmanArmament))
+                        {
+                            namedHenchmanArmament.SetCount(0);
+                            armament.SetCount(1);
+                            CalculateSquadStats(squadModel);
+                        }
+                        else
+                        {
+                            _errorMessage.OnNext(ErrorType.InvalidNamedHenchmanCount.ToDescription());
+                        }
+                    }
+                    else
+                    {
+                        armament.SetCount(1);
+                        CalculateSquadStats(squadModel);
+                    }
+                }
+                var hasNamedHenchman = !(squadModel.Armaments.Where(a => a.ArmamentType == playerArmamentType).FirstOrDefault() == null);
+                var validTotalArmamentCount = hasNamedHenchman ? 7 : 6;
+                var totalArmamentCount = squadModel.Armaments.Sum(a => a.Count);
+                if (totalArmamentCount + 1 <= validTotalArmamentCount)
+                {
+                    armament.SetCount(armament.Count + 1);
+                    CalculateSquadStats(squadModel);
+                }
+                else
+                {
+                    _errorMessage.OnNext(ErrorType.InvalidSquadSize.ToDescription());
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidArmamentType.ToDescription());
+            }
         }
 
         public void ToggleSelected(SquadModel squadModel)
