@@ -68,6 +68,27 @@ namespace TomorrowDiesToday.Services.Game
             }
         }
 
+        public void DecrementAbilityCount(ArmamentType abilityType, SquadModel squadModel)
+        {
+            var ability = squadModel.Armaments.Where(a => a.ArmamentType == abilityType).FirstOrDefault();
+            if (ability != null)
+            {
+                if (ability.Count - 1 >= 0)
+                {
+                    ability.SetCount(ability.Count - 1);
+                    CalculateSquadStats(squadModel);
+                }
+                else
+                {
+                    _errorMessage.OnNext(ErrorType.InvalidAbilityCount.ToDescription());
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidAbilityType.ToDescription());
+            }
+        }
+
         public void DecrementArmamentCount(ArmamentType armamentType, SquadModel squadModel)
         {
             var armament = squadModel.Armaments.Where(a => a.ArmamentType == armamentType).FirstOrDefault();
@@ -93,6 +114,65 @@ namespace TomorrowDiesToday.Services.Game
             else
             {
                 _errorMessage.OnNext(ErrorType.InvalidArmamentType.ToDescription());
+            }
+        }
+
+        public void DecrementItemCount(ArmamentType itemType, SquadModel squadModel)
+        {
+            var item = squadModel.Armaments.Where(a => a.ArmamentType == itemType).FirstOrDefault();
+            if (item != null)
+            {
+                if (item.Count - 1 >= 0)
+                {
+                    item.SetCount(item.Count - 1);
+                    CalculateSquadStats(squadModel);
+                }
+                else
+                {
+                    _errorMessage.OnNext(ErrorType.InvalidAbilityCount.ToDescription());
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidItemType.ToDescription());
+            }
+        }
+
+        public void IncrementAbilityCount(ArmamentType abilityType, SquadModel squadModel)
+        {
+            ArmamentType playerArmamentType = ((ArmamentType)int.Parse(_gameService.Game.PlayerId));
+            if (playerArmamentType == ArmamentType.UgoDottore)
+            {
+                var ability = squadModel.Armaments.Where(a => a.ArmamentType == abilityType).FirstOrDefault();
+
+                if (ability != null)
+                {
+                    var squads = _gameService.Game.Players.Where(p => p.PlayerId == squadModel.PlayerId).FirstOrDefault().Squads;
+                    var abilityArmament = squads.Select(s => s.Abilities.Where(a => a.Count > 0).FirstOrDefault()).FirstOrDefault();
+
+                    if (abilityArmament != null)
+                    {
+                        if (!ability.Equals(abilityArmament))
+                        {
+                            abilityArmament.SetCount(0);
+                            ability.SetCount(1);
+                            CalculateSquadStats(squadModel);
+                        }
+                        else
+                        {
+                            _errorMessage.OnNext(ErrorType.InvalidAbilityCount.ToDescription());
+                        }
+                    }
+                    else
+                    {
+                        ability.SetCount(1);
+                        CalculateSquadStats(squadModel);
+                    }
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidNamedHenchmanType.ToDescription());
             }
         }
 
@@ -143,6 +223,35 @@ namespace TomorrowDiesToday.Services.Game
             else
             {
                 _errorMessage.OnNext(ErrorType.InvalidArmamentType.ToDescription());
+            }
+        }
+
+        public void IncrementItemCount(ArmamentType itemType, SquadModel squadModel)
+        {
+            var item = squadModel.Armaments.Where(a => a.ArmamentType == itemType).FirstOrDefault();
+
+            if (item != null)
+            {
+                var squads = _gameService.Game.Players.Where(p => p.PlayerId == squadModel.PlayerId).FirstOrDefault().Squads;
+                var itemArmament = squads.Select(s => s.Items.Where(a => a.ArmamentType == itemType && a.Count > 0).FirstOrDefault()).FirstOrDefault();
+
+                if (itemArmament != null)
+                {
+                    if (!item.Equals(itemArmament))
+                    {
+                        item.SetCount(1);
+                        CalculateSquadStats(squadModel);
+                    }
+                    else
+                    {
+                        _errorMessage.OnNext(ErrorType.InvalidAbilityCount.ToDescription());
+                    }
+                }
+                else
+                {
+                    item.SetCount(1);
+                    CalculateSquadStats(squadModel);
+                }
             }
         }
 
