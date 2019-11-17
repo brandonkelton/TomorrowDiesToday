@@ -18,6 +18,7 @@ using TomorrowDiesToday.Views;
 using TomorrowDiesToday.Navigation;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms;
+using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday
 {
@@ -76,6 +77,7 @@ namespace TomorrowDiesToday
             builder.RegisterType<GameDataService>().As<IDataService<GameModel, GameRequest>>().SingleInstance();
             builder.RegisterType<PlayerDataService>().As<IDataService<PlayerModel, PlayerRequest>>().SingleInstance();
             builder.RegisterType<NavigationService>().As<INavigationService>().SingleInstance();
+            builder.RegisterType<LocalStorageService>().As<ILocalStorageService>().SingleInstance();
         }
 
         private static void RegisterViewModels(ContainerBuilder builder)
