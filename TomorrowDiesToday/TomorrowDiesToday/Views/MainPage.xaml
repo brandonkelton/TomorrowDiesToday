@@ -112,15 +112,25 @@
                         BorderColor="#000000"
                         HorizontalOptions="Center"
                         Command="{Binding RefreshPlayerListCommand}"/>
-                    <ListView ItemsSource="{Binding Squads}">
+                    <ListView ItemsSource="{Binding OtherPlayers}" IsGroupingEnabled="True" GroupDisplayBinding="{Binding PlayerName}" HasUnevenRows="True">
+                        <ListView.GroupHeaderTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <ViewCell.View>
+                                        <Label Text="{Binding PlayerName}"/>
+                                    </ViewCell.View>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.GroupHeaderTemplate>
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <StackLayout>
-                                        <Label Text="{Binding PlayerId}"/>
-                                        <Label Text="{Binding SquadId}"/>
-                                        <Label Text="Test"/>
-                                    </StackLayout>
+                                    <ViewCell.View>
+                                        <StackLayout Orientation="Horizontal">
+                                            <CheckBox IsChecked="{Binding IsSelected}"/>
+                                            <Label Text="{Binding SquadId}"/>
+                                        </StackLayout>
+                                    </ViewCell.View>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
