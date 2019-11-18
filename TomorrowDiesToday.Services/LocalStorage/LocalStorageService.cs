@@ -1,38 +1,89 @@
 ﻿using Newtonsoft.Json;
-using Plugin.Settings;
+using PCLStorage;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Models.Templates;
 using TomorrowDiesToday.Services.Game;
 
 namespace TomorrowDiesToday.Services.LocalStorage
 {
-    public class LocalStorageService : ILocalStorageService
+    public class LocalStorageService : ILocalStorageService, IOnInitAsync
     {
-        private GameService _gameService;
-        const string GAME_STATE_KEY = "GameState";
+        private IGameService _gameService;
+        const string GAME_STATE_FILENAME = "GameState.TomorrowNeverDies";
 
-        public LocalStorageService(GameService gameService)
+        public LocalStorageService(IGameService gameService)
         {
             _gameService = gameService;
         }
 
-        public bool GameStateExists => CrossSettings.Current.Contains(GAME_STATE_KEY);
-
-        public void StoreGame()
+        public async Task OnInitAsync()
         {
-            var serializedGameState = JsonConvert.SerializeObject(_gameService.Game);
-            CrossSettings.Current.AddOrUpdateValue(GAME_STATE_KEY, serializedGameState);
+            IFolder folder = FileSystem.Current.LocalStorage;
+            ExistenceCheckResult gameExists = await folder.CheckExistsAsync(GAME_STATE_FILENAME);
+            GameExists = gameExists == ExistenceCheckResult.FileExists;
         }
 
-        public void LoadGame()
+        public bool GameExists { get; private set; }
+
+        public async Task<string> GetGameId()
         {
-            var serializedGameState = CrossSettings.Current.GetValueOrDefault(GAME_STATE_KEY, null);
-            if (serializedGameState != null)
+            IFolder folder = FileSystem.Current.LocalStorage;
+            ExistenceCheckResult gameExists = await folder.CheckExistsAsync(GAME_STATE_FILENAME);
+            if (gameExists == ExistenceCheckResult.FileExists)
             {
-                var gameState = JsonConvert.DeserializeObject<GameModel>(serializedGameState);
-                _gameService.SetGame(gameState);
+                IFile file = await folder.GetFileAsync(GAME_STATE_FILENAME);
+                var serializedGame = await file.ReadAllTextAsync();
+                if (serializedGame != null)
+                {
+                    var gameState = JsonConvert.DeserializeObject<GameModel>(serializedGame);
+                    if (gameState != null)
+                    {
+                        return gameState.GameId;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public async Task StoreGame()
+        {
+            IFolder folder = FileSystem.Current.LocalStorage;
+            IFile file = await folder.CreateFileAsync(GAME_STATE_FILENAME, CreationCollisionOption.ReplaceExisting);
+            var serializedGame = JsonConvert.SerializeObject(_gameService.Game);
+            await file.WriteAllTextAsync(serializedGame);
+        }
+
+        public async Task LoadGame()
+        {
+            IFolder folder = FileSystem.Current.LocalStorage;
+            ExistenceCheckResult gameExists = await folder.CheckExistsAsync(GAME_STATE_FILENAME);
+            if (gameExists == ExistenceCheckResult.FileExists)
+            {
+                IFile file = await folder.GetFileAsync(GAME_STATE_FILENAME);
+                var serializedGame = await file.ReadAllTextAsync();
+                if (serializedGame != null)
+                {
+                    var gameState = JsonConvert.DeserializeObject<GameModel>(serializedGame);
+                    _gameService.SetGame(gameState);
+                }
+            }
+        }
+
+        public async Task DeleteGame()
+        {
+            GameExists = false;
+
+            IFolder folder = FileSystem.Current.LocalStorage;
+            ExistenceCheckResult gameExists = await folder.CheckExistsAsync(GAME_STATE_FILENAME);
+            if (gameExists == ExistenceCheckResult.FileExists)
+            {
+                IFile file = await folder.GetFileAsync(GAME_STATE_FILENAME);
+                await file.DeleteAsync();
             }
         }
     }
