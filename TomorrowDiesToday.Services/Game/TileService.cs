@@ -48,17 +48,7 @@ namespace TomorrowDiesToday.Services.Game
         #endregion
 
         #region Public Methods
-        public async Task RequestActiveTilesUpdate()
-        {
-            GameRequest gameRequest = new GameRequest { GameId = _gameService.Game.GameId };
-            await _gameDataService.RequestUpdate(gameRequest);
-        }
-
-        public async Task SendActiveTiles()
-        {
-            await _gameDataService.Update(_gameService.Game);
-        }
-
+        
         public void DecrementAlertTokens(TileModel tileModel)
         {
             if (tileModel.AlertTokens - 1 >= 0)
@@ -84,6 +74,75 @@ namespace TomorrowDiesToday.Services.Game
                 _activeTilesUpdate.OnNext(_activeTiles);
             }
             _allTilesUpdate.OnNext(_allTiles);
+        }
+
+        public void ToggleAgentCIA(TileModel tileModel)
+        {
+            var previousAgentTile = _gameService.Game.Tiles.Where(tile => tile.IsAgentCIA).FirstOrDefault();
+
+            if (previousAgentTile != null)
+            { // Agent is currently on a tile
+                if (tileModel.Equals(previousAgentTile))
+                { // The Agent is on this tile, so remove it.
+                    tileModel.IsAgentCIA = false;
+                }
+                else
+                { // Agent is not on this tile, so remove it from previous tile and add to this tile
+                    previousAgentTile.IsAgentCIA = false;
+                    tileModel.IsAgentCIA = true;
+                }
+            }
+            else
+            { // No tile contained the CIA Agent, so add it to this tile
+                tileModel.IsAgentCIA = true;
+            }
+
+            if (tileModel.IsActive)
+            {
+                _activeTilesUpdate.OnNext(_activeTiles);
+            }
+
+            _allTilesUpdate.OnNext(_allTiles);
+        }
+
+        public void ToggleAgentInterpol(TileModel tileModel)
+        {
+            var previousAgentTile = _gameService.Game.Tiles.Where(tile => tile.IsAgentInterpol).FirstOrDefault();
+
+            if (previousAgentTile != null)
+            { // Agent is currently on a tile
+                if (tileModel.Equals(previousAgentTile))
+                { // The Agent is on this tile, so remove it.
+                    tileModel.IsAgentInterpol = false;
+                }
+                else
+                { // Agent is not on this tile, so remove it from previous tile and add to this tile
+                    previousAgentTile.IsAgentInterpol = false;
+                    tileModel.IsAgentInterpol = true;
+                }
+            }
+            else
+            { // No tile contained the CIA Agent, so add it to this tile
+                tileModel.IsAgentInterpol = true;
+            }
+
+            if (tileModel.IsActive)
+            {
+                _activeTilesUpdate.OnNext(_activeTiles);
+            }
+
+            _allTilesUpdate.OnNext(_allTiles);
+        }
+
+        public async Task RequestActiveTilesUpdate()
+        {
+            GameRequest gameRequest = new GameRequest { GameId = _gameService.Game.GameId };
+            await _gameDataService.RequestUpdate(gameRequest);
+        }
+
+        public async Task SendActiveTiles()
+        {
+            await _gameDataService.Update(_gameService.Game);
         }
 
         public void ToggleActive(TileModel tileModel)

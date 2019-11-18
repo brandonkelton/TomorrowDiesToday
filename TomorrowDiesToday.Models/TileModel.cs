@@ -15,6 +15,10 @@ namespace TomorrowDiesToday.Models
 
         public bool IsActive { get; set; }
 
+        public bool IsAgentCIA { get; set; }
+
+        public bool IsAgentInterpol { get; set; }
+
         public bool IsDoomsday { get; set; }
 
         public bool IsGlobalSecurityEvent { get; set; }
@@ -42,6 +46,19 @@ namespace TomorrowDiesToday.Models
                     stats.Stealth.SetValue(_missionStats.Stealth.Value);
                     stats.Cunning.SetValue(_missionStats.Cunning.Value);
                     stats.Diplomacy.SetValue(_missionStats.Diplomacy.Value);
+                }
+
+                if (IsAgentCIA)
+                {
+                    stats = stats.IncreaseAll(2);
+                }
+
+                if (IsAgentInterpol)
+                {
+                    stats.Combat.SetValue(stats.Combat.Value + 1);
+                    stats.Stealth.SetValue(stats.Stealth.Value + 2);
+                    stats.Cunning.SetValue(stats.Cunning.Value + 2);
+                    stats.Diplomacy.SetValue(stats.Diplomacy.Value + 1);
                 }
 
                 if (IsHQ)
@@ -91,16 +108,29 @@ namespace TomorrowDiesToday.Models
 
         public TileModel(TileType tileType, TileStats missionStats)
         {
-            if (tileType == TileType.CIABuilding || tileType == TileType.InterpolHQ)
+            if (tileType == TileType.CIABuilding)
             {
+                IsAgentCIA = true;
+                IsAgentInterpol = false;
+                IsHQ = true;
+                IsDoomsday = false;
+                IsActive = true;
+            }
+            else if(tileType == TileType.InterpolHQ)
+            {
+                IsAgentCIA = false;
+                IsAgentInterpol = true;
                 IsHQ = true;
                 IsDoomsday = false;
                 IsActive = true;
             }
             else
             {
+                IsAgentCIA = false;
+                IsAgentInterpol = false;
                 IsDoomsday = true;
                 IsHQ = false;
+                IsActive = false;
             }
             _missionStats = missionStats;
             IsActive = false;
