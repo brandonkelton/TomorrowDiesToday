@@ -11,25 +11,11 @@ using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class OtherPlayersModel : ObservableCollection<SquadModel> {
-        public string PlayerName { get; set; }
-        public string PlayerId { get; set; }
-        private bool IsVisible = true;
-        public ICommand Toggle { get; private set; }
-        public OtherPlayersModel(){
-            Toggle = new Command(() => ToggleSquads());
-        }
-        private void ToggleSquads()
-        {
-            IsVisible = !IsVisible;
-        }
-    }
     public class MainPageViewModel : BaseViewModel, IMainPageViewModel
     {
         public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
+
         public ObservableCollection<object> Items { get; }
-        public ObservableCollection<SquadModel> Squads { get; private set; } = new ObservableCollection<SquadModel>();
-        public ObservableCollection<OtherPlayersModel> OtherPlayers { get; set; }
 
         public ICommand RefreshPlayerListCommand { get; private set; }
 
@@ -42,18 +28,14 @@ namespace TomorrowDiesToday.ViewModels
 
         private IGameService _gameService;
         private IPlayerService _playerService;
-        //private ISquadService _squadService;
 
         private IDisposable _gameSubscription = null;
         private IDisposable _playerListSubscription = null;
-        //private IDisposable _playerSquadsSubscription = null;
 
         public MainPageViewModel(IGameService gameService, IPlayerService playerService)
         {
             _gameService = gameService;
             _playerService = playerService;
-
-            OtherPlayers = new ObservableCollection<OtherPlayersModel>();
 
             Items = new ObservableCollection<object>
             {
@@ -73,12 +55,12 @@ namespace TomorrowDiesToday.ViewModels
 
         private void ConfigureCommands()
         {
-            RefreshPlayerListCommand = new Command(() => RefreshPlayers());
+            RefreshPlayerListCommand = new Command(async () => await RefreshPlayers());
         }
 
-        private void RefreshPlayers()
+        private async Task RefreshPlayers()
         {
-            _playerService.RequestPlayersUpdate();
+            await _playerService.RequestPlayersUpdate();
         }
 
         private void SubscribeToUpdates()
@@ -91,20 +73,10 @@ namespace TomorrowDiesToday.ViewModels
             _playerListSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
                 Players.Clear();
-                Squads.Clear();
-                //playerModels.ForEach(playerModel => Players.Add(playerModel));
-                playerModels.ForEach(playerModel => playerModel.Squads.ForEach(squadModel => Squads.Add(squadModel)));
-                playerModels.ForEach(playerModel => OtherPlayers.Add(new OtherPlayersModel() { PlayerId=playerModel.PlayerId, PlayerName=playerModel.PlayerName}));
-                foreach (OtherPlayersModel other in OtherPlayers) {
-                    foreach(SquadModel squad in Squads)
-                    {
-                        string squadId = squad.SquadId.Substring(0, 1);
-                        if(other.PlayerId == squadId)
-                        {
-                            other.Add(squad);
-                        }
-                    }
-                }
+                playerModels.ForEach(playerModel =>
+                {
+                    Players.Add(playerModel);
+                });
             });
 
         }
