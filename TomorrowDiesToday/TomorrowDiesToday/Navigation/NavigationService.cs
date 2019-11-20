@@ -10,34 +10,35 @@ using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday.Navigation
 {
-    public class NavigationService : INavigationService, IAfterInitAsync
+    public class NavigationService : INavigationService, IOnInitAsync
     {
-        private NavigationPage _navigationPage;
         private ILocalStorageService _localStorage;
 
-        public NavigationService(NavigationPage navigationPage, ILocalStorageService localStorage)
-        {
-            _navigationPage = navigationPage;
-            _localStorage = localStorage;
-        }
+        public NavigationPage Navigation { get; private set; }
 
-        public async Task AfterInitAsync()
-        {
-            //await NavigateTo<StartPage>();
-            //if (await _localStorage.GameExists())
-            //{
-            //    await NavigateTo<ResumeGamePage>();
-            //}
-            //else
-            //{
-            //    await NavigateTo<StartPage>();
-            //}
+        public NavigationService(ILocalStorageService localStorage)
+        { // circular dependency between navservice and startpage init
+            var startPage = IoC.Container.Resolve<StartPage>();
+            Navigation = new NavigationPage(startPage);
+            _localStorage = localStorage;
         }
 
         public async Task NavigateTo<T>() where T : Page
         {
             var page = IoC.Container.Resolve<T>();
-            await _navigationPage.PushAsync(page);
+            await Navigation.PushAsync(page).ConfigureAwait(true);
+        }
+
+        public async Task OnInitAsync()
+        {
+            //if (await _localStorage.GetGameExists().ConfigureAwait(true))
+            //{
+            //    await NavigateTo<ResumeGamePage>().ConfigureAwait(true);
+            //}
+            //else
+            //{
+            //    await NavigateTo<StartPage>().ConfigureAwait(true);
+            //}
         }
     }
 }

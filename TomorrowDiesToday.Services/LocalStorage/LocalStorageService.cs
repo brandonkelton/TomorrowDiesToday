@@ -10,7 +10,7 @@ using TomorrowDiesToday.Services.Game;
 
 namespace TomorrowDiesToday.Services.LocalStorage
 {
-    public class LocalStorageService : ILocalStorageService, IOnInitAsync
+    public class LocalStorageService : ILocalStorageService
     {
         private IGameService _gameService;
         const string GAME_STATE_FILENAME = "GameState.TomorrowNeverDies";
@@ -20,14 +20,12 @@ namespace TomorrowDiesToday.Services.LocalStorage
             _gameService = gameService;
         }
 
-        public async Task OnInitAsync()
+        public async Task<bool> GetGameExists()
         {
             IFolder folder = FileSystem.Current.LocalStorage;
             ExistenceCheckResult gameExists = await folder.CheckExistsAsync(GAME_STATE_FILENAME);
-            GameExists = gameExists == ExistenceCheckResult.FileExists;
+            return gameExists == ExistenceCheckResult.FileExists;
         }
-
-        public bool GameExists { get; private set; }
 
         public async Task<string> GetGameId()
         {
@@ -76,8 +74,6 @@ namespace TomorrowDiesToday.Services.LocalStorage
 
         public async Task DeleteGame()
         {
-            GameExists = false;
-
             IFolder folder = FileSystem.Current.LocalStorage;
             ExistenceCheckResult gameExists = await folder.CheckExistsAsync(GAME_STATE_FILENAME);
             if (gameExists == ExistenceCheckResult.FileExists)

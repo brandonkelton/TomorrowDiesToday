@@ -44,7 +44,6 @@ namespace TomorrowDiesToday
             foreach (var c in registeredComponents)
             {
                 c.Activating += ProcessOnInit;
-                c.Activated += ProcessAfterInit;
             }
 
             DependencyResolver.ResolveUsing(type => Container.IsRegistered(type) ? Container.Resolve(type) : null);
@@ -59,26 +58,13 @@ namespace TomorrowDiesToday
 
             if (e.Instance is IOnInitAsync)
             {
-                await (e.Instance as IOnInitAsync).OnInitAsync();
+                await (e.Instance as IOnInitAsync).OnInitAsync().ConfigureAwait(true);
             }
         }
 
         public static void Destroy()
         {
             Container.Dispose();
-        }
-
-        private static async void ProcessAfterInit(object sender, ActivatedEventArgs<object> e)
-        {
-            if (e.Instance is IAfterInit)
-            {
-                (e.Instance as IAfterInit).AfterInit();
-            }
-
-            if (e.Instance is IAfterInitAsync)
-            {
-                await (e.Instance as IAfterInitAsync).AfterInitAsync();
-            }
         }
 
         private static void RegisterServices(ContainerBuilder builder)
