@@ -112,39 +112,24 @@
                         BorderColor="#000000"
                         HorizontalOptions="Center"
                         Command="{Binding RefreshPlayerListCommand}"/>
-                    <ListView ItemsSource="{Binding Players}" HasUnevenRows="True" Margin="20,0,0,0">
+                    <ListView ItemsSource="{Binding Players}" VerticalOptions="Start">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <StackLayout>
+                                    <StackLayout Orientation="Vertical" VerticalOptions="Start">
                                         <Label Text="{Binding PlayerName}"/>
-                                        <StackLayout Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding IsSelected}"/>
-                                            <Label Text="Squad"/>
-                                            <Label Text="{Binding Squads[0].SquadId}"/>
-                                            <Label Text="{Binding Squads[0].Stats.Combat.Value}"/>
-                                            <Label Text="{Binding Squads[0].Stats.Cunning.Value}"/>
-                                            <Label Text="{Binding Squads[0].Stats.Diplomacy.Value}"/>
-                                            <Label Text="{Binding Squads[0].Stats.Stealth.Value}"/>
-                                        </StackLayout>
-                                        <StackLayout Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding IsSelected}"/>
-                                            <Label Text="Squad"/>
-                                            <Label Text="{Binding Squads[1].SquadId}"/>
-                                            <Label Text="{Binding Squads[1].Stats.Combat.Value}"/>
-                                            <Label Text="{Binding Squads[1].Stats.Cunning.Value}"/>
-                                            <Label Text="{Binding Squads[1].Stats.Diplomacy.Value}"/>
-                                            <Label Text="{Binding Squads[1].Stats.Stealth.Value}"/>
-                                        </StackLayout>
-                                        <StackLayout Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding IsSelected}"/>
-                                            <Label Text="Squad"/>
-                                            <Label Text="{Binding Squads[2].SquadId}"/>
-                                            <Label Text="{Binding Squads[2].Stats.Combat.Value}"/>
-                                            <Label Text="{Binding Squads[2].Stats.Cunning.Value}"/>
-                                            <Label Text="{Binding Squads[2].Stats.Diplomacy.Value}"/>
-                                            <Label Text="{Binding Squads[2].Stats.Stealth.Value}"/>
-                                        </StackLayout>
+                                        <ListView ItemsSource="{Binding Squads}" VerticalOptions="Start" RowHeight="30">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ViewCell>
+                                                        <StackLayout Orientation="Horizontal">
+                                                            <CheckBox IsChecked="{Binding IsSelected}"/>
+                                                            <Label Text="{Binding SquadId}"/>
+                                                        </StackLayout>
+                                                    </ViewCell>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
                                     </StackLayout>
                                 </ViewCell>
                             </DataTemplate>
@@ -153,5 +138,7 @@
                 </StackLayout>
             </StackLayout>
         </Frame>
-    </RelativeLayout>    
+
+    </RelativeLayout>
+    
 </ContentPage>

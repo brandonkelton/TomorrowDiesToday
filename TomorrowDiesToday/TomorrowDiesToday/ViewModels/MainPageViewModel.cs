@@ -14,6 +14,7 @@ namespace TomorrowDiesToday.ViewModels
     public class MainPageViewModel : BaseViewModel, IMainPageViewModel
     {
         public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
+
         public ObservableCollection<object> Items { get; }
 
         public ICommand RefreshPlayerListCommand { get; private set; }
@@ -27,11 +28,9 @@ namespace TomorrowDiesToday.ViewModels
 
         private IGameService _gameService;
         private IPlayerService _playerService;
-        //private ISquadService _squadService;
 
         private IDisposable _gameSubscription = null;
         private IDisposable _playerListSubscription = null;
-        //private IDisposable _playerSquadsSubscription = null;
 
         public MainPageViewModel(IGameService gameService, IPlayerService playerService)
         {
@@ -56,12 +55,12 @@ namespace TomorrowDiesToday.ViewModels
 
         private void ConfigureCommands()
         {
-            RefreshPlayerListCommand = new Command(() => RefreshPlayers());
+            RefreshPlayerListCommand = new Command(async () => await RefreshPlayers());
         }
 
-        private void RefreshPlayers()
+        private async Task RefreshPlayers()
         {
-            _playerService.RequestPlayersUpdate();
+            await _playerService.RequestPlayersUpdate();
         }
 
         private void SubscribeToUpdates()
@@ -74,7 +73,10 @@ namespace TomorrowDiesToday.ViewModels
             _playerListSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
                 Players.Clear();
-                playerModels.ForEach(playerModel => Players.Add(playerModel));
+                playerModels.ForEach(playerModel =>
+                {
+                    Players.Add(playerModel);
+                });
             });
 
         }
