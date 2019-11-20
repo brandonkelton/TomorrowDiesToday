@@ -14,16 +14,16 @@
         <StackLayout Orientation="Vertical" VerticalOptions="CenterAndExpand" HorizontalOptions="Center">
             <Label Grid.Row="0" Text="Who would you like to be?"/>
             <Label Grid.Row="1" TextColor="Red" FontAttributes="Bold" IsVisible="{Binding PlayerExists}" Text="{Binding PlayerAlreadySelected}"/>
-            <Button Grid.Row="2" Text="Archibald Kluge" Command="{Binding SelectPlayerCommand}" CommandParameter="Archibald Kluge"/>
-            <Button Grid.Row="3" Text="Axle Robbins" Command="{Binding SelectPlayerCommand}" CommandParameter="Axle Robbins"/>
-            <Button Grid.Row="4" Text="Azura Badeau" Command="{Binding SelectPlayerCommand}" CommandParameter="Azura Badeau"/>
-            <Button Grid.Row="5" Text="Boris Myasneek" Command="{Binding SelectPlayerCommand}" CommandParameter="Boris Myasneek"/>
-            <Button Grid.Row="6" Text="Cassandra O'Shea" Command="{Binding SelectPlayerCommand}" CommandParameter="Cassandra O'Shea"/>
-            <Button Grid.Row="7" Text="Emerson Barlow" Command="{Binding SelectPlayerCommand}" CommandParameter="Emerson Barlow"/>
-            <Button Grid.Row="8" Text="Jin Feng" Command="{Binding SelectPlayerCommand}" CommandParameter="Jin Feng"/>
-            <Button Grid.Row="8" Text="The Node" Command="{Binding SelectPlayerCommand}" CommandParameter="The Node"/>
-            <Button Grid.Row="8" Text="Ugo Dottore" Command="{Binding SelectPlayerCommand}" CommandParameter="Ugo Dottore"/>
-            <Button Grid.Row="8" Text="General Goodman" Command="{Binding SelectPlayerCommand}" CommandParameter="General Goodman"/>
+            <Button Grid.Row="2" Text="Archibald Kluge" Command="{Binding SelectPlayerCommand}" CommandParameter="1"/>
+            <Button Grid.Row="3" Text="Axle Robbins" Command="{Binding SelectPlayerCommand}" CommandParameter="2"/>
+            <Button Grid.Row="4" Text="Azura Badeau" Command="{Binding SelectPlayerCommand}" CommandParameter="3"/>
+            <Button Grid.Row="5" Text="Boris Myasneek" Command="{Binding SelectPlayerCommand}" CommandParameter="4"/>
+            <Button Grid.Row="6" Text="Cassandra O'Shea" Command="{Binding SelectPlayerCommand}" CommandParameter="5"/>
+            <Button Grid.Row="7" Text="Emerson Barlow" Command="{Binding SelectPlayerCommand}" CommandParameter="6"/>
+            <Button Grid.Row="8" Text="Jin Feng" Command="{Binding SelectPlayerCommand}" CommandParameter="7"/>
+            <Button Grid.Row="9" Text="The Node" Command="{Binding SelectPlayerCommand}" CommandParameter="8"/>
+            <Button Grid.Row="10" Text="Ugo Dottore" Command="{Binding SelectPlayerCommand}" CommandParameter="9"/>
+            <Button Grid.Row="11" Text="General Goodman" Command="{Binding SelectPlayerCommand}" CommandParameter="0"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

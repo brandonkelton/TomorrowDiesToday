@@ -6,36 +6,32 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
-using Xamarin.Forms;
-using TomorrowDiesToday.Navigation;
 using TomorrowDiesToday.Services.Game;
+using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class MainPageViewModel : BaseViewModel, IMainPageViewModel, IDisposable
-    {
-        private IGameService _gameService;
-        private INavigationService _navService;
-        private IDisposable _gameSubscription = null;
-        private IDisposable _playerDictSubscription = null;
-
-        public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
-
-        public MainPageViewModel(INavigationService navigationService, IGameService gameService)
-        {
-            _navService = navigationService;
-            _gameService = gameService;
-            _gameService.RequestPlayersUpdate();
-            SubscribeToUpdates();           
-
-            Items = new ObservableCollection<object>
-            {
-                new {Title="First"},
-                new {Title="second"},
-                new {Title="third"}
-            };
+    public class OtherPlayersModel : ObservableCollection<SquadModel> {
+        public string PlayerName { get; set; }
+        public string PlayerId { get; set; }
+        private bool IsVisible = true;
+        public ICommand Toggle { get; private set; }
+        public OtherPlayersModel(){
+            Toggle = new Command(() => ToggleSquads());
         }
+        private void ToggleSquads()
+        {
+            IsVisible = !IsVisible;
+        }
+    }
+    public class MainPageViewModel : BaseViewModel, IMainPageViewModel
+    {
+        public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
         public ObservableCollection<object> Items { get; }
+        public ObservableCollection<SquadModel> Squads { get; private set; } = new ObservableCollection<SquadModel>();
+        public ObservableCollection<OtherPlayersModel> OtherPlayers { get; set; }
+
+        public ICommand RefreshPlayerListCommand { get; private set; }
 
         private string _gameId;
         public string GameId
@@ -44,11 +40,45 @@ namespace TomorrowDiesToday.ViewModels
             set => SetProperty(ref _gameId, value);
         }
 
-        private string _currentPlayer;
-        public string CurrentPlayer
+        private IGameService _gameService;
+        private IPlayerService _playerService;
+        //private ISquadService _squadService;
+
+        private IDisposable _gameSubscription = null;
+        private IDisposable _playerListSubscription = null;
+        //private IDisposable _playerSquadsSubscription = null;
+
+        public MainPageViewModel(IGameService gameService, IPlayerService playerService)
         {
-            get => _currentPlayer;
-            set => SetProperty(ref _currentPlayer, value);
+            _gameService = gameService;
+            _playerService = playerService;
+
+            OtherPlayers = new ObservableCollection<OtherPlayersModel>();
+
+            Items = new ObservableCollection<object>
+            {
+                new {Title="First"},
+                new {Title="second"},
+                new {Title="third"}
+            };
+            ConfigureCommands();
+            SubscribeToUpdates();
+        }
+
+        public void Dispose()
+        {
+            if (_gameSubscription != null) _gameSubscription.Dispose();
+            if (_playerListSubscription != null) _playerListSubscription.Dispose();
+        }
+
+        private void ConfigureCommands()
+        {
+            RefreshPlayerListCommand = new Command(() => RefreshPlayers());
+        }
+
+        private void RefreshPlayers()
+        {
+            _playerService.RequestPlayersUpdate();
         }
 
         private void SubscribeToUpdates()
@@ -56,22 +86,27 @@ namespace TomorrowDiesToday.ViewModels
             _gameSubscription = _gameService.ThisGame.Subscribe(gameModel =>
             {
                 GameId = gameModel.GameId;
-                CurrentPlayer = gameModel.ThisPlayer.PlayerName;
             });
-            _playerDictSubscription = _gameService.OtherPlayers.Subscribe(dict =>
+
+            _playerListSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
                 Players.Clear();
-                foreach (KeyValuePair<string, PlayerModel> player in dict)
-                {
-                    Players.Add(player.Value);
+                Squads.Clear();
+                //playerModels.ForEach(playerModel => Players.Add(playerModel));
+                playerModels.ForEach(playerModel => playerModel.Squads.ForEach(squadModel => Squads.Add(squadModel)));
+                playerModels.ForEach(playerModel => OtherPlayers.Add(new OtherPlayersModel() { PlayerId=playerModel.PlayerId, PlayerName=playerModel.PlayerName}));
+                foreach (OtherPlayersModel other in OtherPlayers) {
+                    foreach(SquadModel squad in Squads)
+                    {
+                        string squadId = squad.SquadId.Substring(0, 1);
+                        if(other.PlayerId == squadId)
+                        {
+                            other.Add(squad);
+                        }
+                    }
                 }
             });
-        }
 
-        public void Dispose()
-        {
-            if (_gameSubscription != null) _gameSubscription.Dispose();
-            if (_playerDictSubscription != null) _playerDictSubscription.Dispose();
         }
     }
 }

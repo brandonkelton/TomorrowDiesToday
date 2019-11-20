@@ -11,5 +11,11 @@ namespace TomorrowDiesToday.Services.Database.DTOs
     public class TileDTO
     {
         public string TileId { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public bool IsFlipped { get; set; }
+
+        public int AlertTokens { get; set; }
     }
 }

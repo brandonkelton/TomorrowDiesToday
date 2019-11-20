@@ -8,13 +8,11 @@ namespace TomorrowDiesToday.Models
     public class PlayerModel : IModel
     {
         public string GameId { get; set; }
+
         public string PlayerId { get; set; }
 
-        public string PlayerName { get; set; }
+        public string PlayerName => ((ArmamentType) int.Parse(PlayerId)).ToDescription();
 
-        // { SquadId => SquadModel }
-        public Dictionary<string, SquadModel> Squads { get; set; } = new Dictionary<string, SquadModel>();
-
-        public List<SquadModel> SquadList => Squads.Select(s => s.Value).ToList();
+        public List<SquadModel> Squads { get; set; } = new List<SquadModel>();
     }
 }
