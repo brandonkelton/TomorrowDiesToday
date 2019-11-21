@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
              xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
+             xmlns:local="clr-namespace:TomorrowDiesToday.Views"
              mc:Ignorable="d"
              x:Class="TomorrowDiesToday.Views.MainPage"
              Style="{StaticResource PageStyle}"
@@ -100,9 +101,11 @@
             <Frame.GestureRecognizers>
                 <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
             </Frame.GestureRecognizers>
+            <!--
             <StackLayout 
                 Spacing="5"
                 Padding="10,5">
+            -->
                 <StackLayout Orientation="Vertical">
                     <Button 
                         Text="Refresh"
@@ -111,23 +114,29 @@
                         BorderColor="#000000"
                         HorizontalOptions="Center"
                         Command="{Binding RefreshPlayerListCommand}"/>
-                    <ListView ItemsSource="{Binding Players}" VerticalOptions="Start" Margin="20,0,0,0">
+                    <ListView ItemsSource="{Binding Players}" VerticalOptions="FillAndExpand" Margin="10,0,0,0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <StackLayout Orientation="Vertical" VerticalOptions="Start">
-                                        <Label Text="{Binding PlayerName}"/>
-                                        <ListView ItemsSource="{Binding Squads}" VerticalOptions="Start" RowHeight="30">
+                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
+                                        <Label Text="{Binding PlayerName}" Padding="0,5,0,0"/>
+                                        <ListView ItemsSource="{Binding Squads}" VerticalOptions="FillAndExpand">
                                             <ListView.ItemTemplate>
                                                 <DataTemplate>
                                                     <ViewCell>
-                                                        <StackLayout Orientation="Horizontal">
-                                                            <Button Text="+" />
-                                                            <Label Text="{Binding SquadId}"/>
-                                                            <Label Text="{Binding Stats.Combat.Value}"/>
-                                                            <Label Text="{Binding Stats.Cunning.Value}"/>
-                                                            <Label Text="{Binding Stats.Diplomacy.Value}"/>
-                                                            <Label Text="{Binding Stats.Stealth.Value}"/>
+                                                        <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand" Padding="5">
+                                                            <Button Text="+" Command="{Binding ToggleSelectedSquadCommand}" CommandParameter="{Binding SquadId}">
+                                                                <Button.Triggers>
+                                                                    <EventTrigger Event="Clicked">
+                                                                        <local:ToggleSelectedSquadButtonTrigger/>
+                                                                    </EventTrigger>
+                                                                </Button.Triggers>
+                                                            </Button>
+                                                            <Label Text="{Binding SquadId}" Padding="0,5,0,0"/>
+                                                            <Label Text="{Binding Stats.Combat.Value}" Padding="0,5,0,0"/>
+                                                            <Label Text="{Binding Stats.Cunning.Value}" Padding="0,5,0,0"/>
+                                                            <Label Text="{Binding Stats.Diplomacy.Value}" Padding="0,5,0,0"/>
+                                                            <Label Text="{Binding Stats.Stealth.Value}" Padding="0,5,0,0"/>
                                                         </StackLayout>
                                                     </ViewCell>
                                                 </DataTemplate>
@@ -139,7 +148,7 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </StackLayout>
-            </StackLayout>
+            <!-- </StackLayout> -->
         </Frame>
 
     </RelativeLayout>
