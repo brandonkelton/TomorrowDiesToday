@@ -106,13 +106,12 @@
                 <StackLayout Orientation="Vertical">
                     <Button 
                         Text="Refresh"
-                        BackgroundColor="#ffffff"
                         BorderRadius="10"
                         BorderWidth="2"
                         BorderColor="#000000"
                         HorizontalOptions="Center"
                         Command="{Binding RefreshPlayerListCommand}"/>
-                    <ListView ItemsSource="{Binding Players}" VerticalOptions="Start">
+                    <ListView ItemsSource="{Binding Players}" VerticalOptions="Start" Margin="20,0,0,0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
@@ -123,8 +122,12 @@
                                                 <DataTemplate>
                                                     <ViewCell>
                                                         <StackLayout Orientation="Horizontal">
-                                                            <CheckBox IsChecked="{Binding IsSelected}"/>
+                                                            <Button Text="+" />
                                                             <Label Text="{Binding SquadId}"/>
+                                                            <Label Text="{Binding Stats.Combat.Value}"/>
+                                                            <Label Text="{Binding Stats.Cunning.Value}"/>
+                                                            <Label Text="{Binding Stats.Diplomacy.Value}"/>
+                                                            <Label Text="{Binding Stats.Stealth.Value}"/>
                                                         </StackLayout>
                                                     </ViewCell>
                                                 </DataTemplate>
