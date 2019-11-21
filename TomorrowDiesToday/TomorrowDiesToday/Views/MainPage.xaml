@@ -116,7 +116,8 @@
                         Command="{Binding RefreshPlayerListCommand}"/>
                 <ListView ItemsSource="{Binding Players}" 
                           HasUnevenRows="True" 
-                          Margin="5,0,0,0">
+                          Margin="5,0,0,0" 
+                          SelectionMode="None">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
