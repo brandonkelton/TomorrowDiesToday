@@ -17,10 +17,11 @@ namespace TomorrowDiesToday.Navigation
         public NavigationPage Navigation { get; private set; }
 
         public NavigationService(ILocalStorageService localStorage)
-        { // circular dependency between navservice and startpage init
-            var startPage = IoC.Container.Resolve<StartPage>();
-            Navigation = new NavigationPage(startPage);
+        {
             _localStorage = localStorage;
+
+            var rootPage = new RootPage();
+            Navigation = new NavigationPage(rootPage);
         }
 
         public async Task NavigateTo<T>() where T : Page
@@ -31,14 +32,14 @@ namespace TomorrowDiesToday.Navigation
 
         public async Task OnInitAsync()
         {
-            //if (await _localStorage.GetGameExists().ConfigureAwait(true))
-            //{
-            //    await NavigateTo<ResumeGamePage>().ConfigureAwait(true);
-            //}
-            //else
-            //{
-            //    await NavigateTo<StartPage>().ConfigureAwait(true);
-            //}
+            if (await _localStorage.GetGameExists().ConfigureAwait(true))
+            {
+                await NavigateTo<ResumeGamePage>().ConfigureAwait(true);
+            }
+            else
+            {
+                await NavigateTo<StartPage>().ConfigureAwait(true);
+            }
         }
     }
 }
