@@ -31,7 +31,7 @@ namespace TomorrowDiesToday.Tests
         [Fact]
         public void CalculateSquadStats()
         {
-            var squadService = Container.Resolve<ISquadService>();
+            var squadService = new SquadService();
 
             var inputSquadModel = new SquadModel
             {
@@ -42,12 +42,12 @@ namespace TomorrowDiesToday.Tests
             playerArmament.SetCount(1);
             inputSquadModel.Armaments.Add(playerArmament);
 
-            squadService.CalculateSquadStats(inputSquadModel);
+            var result = squadService.CalculateSquadStats(inputSquadModel);
 
-            var combatResult = inputSquadModel.Stats.Combat.Value;
-            var stealthResult = inputSquadModel.Stats.Stealth.Value;
-            var cunningResult = inputSquadModel.Stats.Cunning.Value;
-            var diplomacyResult = inputSquadModel.Stats.Diplomacy.Value;
+            var combatResult = result.Stats.Combat.Value;
+            var stealthResult = result.Stats.Stealth.Value;
+            var cunningResult = result.Stats.Cunning.Value;
+            var diplomacyResult = result.Stats.Diplomacy.Value;
 
             Assert.True(combatResult == 0 && stealthResult == 1 && cunningResult == 3 && diplomacyResult == 1);
         }

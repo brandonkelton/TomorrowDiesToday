@@ -15,7 +15,7 @@ namespace TomorrowDiesToday.Services.Game
 
         IObservable<SquadModel> SquadUpdate { get; }
 
-        void CalculateSquadStats(SquadModel squadModel);
+        SquadModel CalculateSquadStats(SquadModel squadModel);
 
         void ToggleSelected(SquadModel squadModel);
     }
