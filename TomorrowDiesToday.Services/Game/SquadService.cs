@@ -254,17 +254,9 @@ namespace TomorrowDiesToday.Services.Game
                 {
                     if (!targetItemArmament.Equals(existingItemArmament))
                     {
-                        if (targetItemArmament.ArmamentType == ArmamentType.ExplosiveRounds)
-                        {
-                            existingItemArmament.SetCount(0);
-                            targetItemArmament.SetCount(1);
-                            CalculateSquadStats(squadModel);
-                        }
-                        else
-                        {
-                            targetItemArmament.SetCount(1);
-                            CalculateSquadStats(squadModel);
-                        }
+                        existingItemArmament.SetCount(0);
+                        targetItemArmament.SetCount(1);
+                        CalculateSquadStats(squadModel);
                     }
                     else
                     {

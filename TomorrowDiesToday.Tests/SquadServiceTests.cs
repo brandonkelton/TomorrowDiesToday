@@ -251,7 +251,7 @@ namespace TomorrowDiesToday.Tests
             squadService.IncrementItemCount(hypnoticSpray, thisSquad);
 
             var successfulExplosiveRoundsIncrement = thisSquadExplosiveRounds.Count == 1 && otherSquadExplosiveRounds.Count == 0;
-            var successfulHypnoticSprayIncrement = thisSquadHypnoticSpray.Count == 1 && otherSquadHypnoticSpray.Count == 1;
+            var successfulHypnoticSprayIncrement = thisSquadHypnoticSpray.Count == 1 && otherSquadHypnoticSpray.Count == 0;
 
             Assert.True(successfulExplosiveRoundsIncrement && successfulHypnoticSprayIncrement);
         }
