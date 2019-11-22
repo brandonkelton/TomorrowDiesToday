@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 using TomorrowDiesToday.Models;
@@ -16,7 +17,6 @@ namespace TomorrowDiesToday.Tests
         public static IContainer Container;
 
         private Mock<IGameService> _mockGameService = new Mock<IGameService>();
-
 
         public SquadServiceTests()
         {

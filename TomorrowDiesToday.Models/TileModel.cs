@@ -97,10 +97,32 @@ namespace TomorrowDiesToday.Models
 
         public TileModel(TileType tileType)
         {
+            if (tileType == TileType.CIABuilding)
+            {
+                IsAgentCIA = true;
+                IsAgentInterpol = false;
+                IsHQ = true;
+                IsDoomsday = false;
+                IsActive = true;
+            }
+            else if (tileType == TileType.InterpolHQ)
+            {
+                IsAgentCIA = false;
+                IsAgentInterpol = true;
+                IsHQ = true;
+                IsDoomsday = false;
+                IsActive = true;
+            }
+            else
+            {
+                IsAgentCIA = false;
+                IsAgentInterpol = false;
+                IsDoomsday = true;
+                IsHQ = false;
+                IsActive = false;
+            }
             _missionStats = new TileStats();
             _flippedMissionStats = new TileStats();
-            IsActive = false;
-            IsDoomsday = false;
             IsFlipped = false;
             AlertTokens = 0;
             ImageLocation = "";
@@ -133,7 +155,6 @@ namespace TomorrowDiesToday.Models
                 IsActive = false;
             }
             _missionStats = missionStats;
-            IsActive = false;
             IsFlipped = false;
             AlertTokens = 0;
             ImageLocation = "";
