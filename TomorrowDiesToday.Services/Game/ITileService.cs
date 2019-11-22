@@ -14,12 +14,20 @@ namespace TomorrowDiesToday.Services.Game
 
         IObservable<string> ErrorMessage { get; }
 
-        Task SendActiveTiles();
+        void DecrementAlertTokens(TileModel tileModel);
+
+        public void IncrementAlertTokens(TileModel tileModel);
 
         Task RequestActiveTilesUpdate();
 
+        Task SendActiveTiles();
+
         void ToggleActive(TileModel tileModel);
 
+        void ToggleAgent(TileModel tileModel);
+
         void ToggleFlipped(TileModel tileModel);
+
+        void ToggleGlobalSecurityEvent();
     }
 }

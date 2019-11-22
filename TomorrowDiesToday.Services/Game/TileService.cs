@@ -54,10 +54,12 @@ namespace TomorrowDiesToday.Services.Game
             if (tileModel.AlertTokens - 1 >= 0)
             {
                 tileModel.AlertTokens -= 1;
+
                 if (tileModel.IsActive)
                 {
                     _activeTilesUpdate.OnNext(_activeTiles);
                 }
+
                 _allTilesUpdate.OnNext(_allTiles);
             }
             else
@@ -69,62 +71,6 @@ namespace TomorrowDiesToday.Services.Game
         public void IncrementAlertTokens(TileModel tileModel)
         {
             tileModel.AlertTokens += 1;
-            if (tileModel.IsActive)
-            {
-                _activeTilesUpdate.OnNext(_activeTiles);
-            }
-            _allTilesUpdate.OnNext(_allTiles);
-        }
-
-        public void ToggleAgentCIA(TileModel tileModel)
-        {
-            var previousAgentTile = _gameService.Game.Tiles.Where(tile => tile.IsAgentCIA).FirstOrDefault();
-
-            if (previousAgentTile != null)
-            { // Agent is currently on a tile
-                if (tileModel.Equals(previousAgentTile))
-                { // The Agent is on this tile, so remove it.
-                    tileModel.IsAgentCIA = false;
-                }
-                else
-                { // Agent is not on this tile, so remove it from previous tile and add to this tile
-                    previousAgentTile.IsAgentCIA = false;
-                    tileModel.IsAgentCIA = true;
-                }
-            }
-            else
-            { // No tile contained the CIA Agent, so add it to this tile
-                tileModel.IsAgentCIA = true;
-            }
-
-            if (tileModel.IsActive)
-            {
-                _activeTilesUpdate.OnNext(_activeTiles);
-            }
-
-            _allTilesUpdate.OnNext(_allTiles);
-        }
-
-        public void ToggleAgentInterpol(TileModel tileModel)
-        {
-            var previousAgentTile = _gameService.Game.Tiles.Where(tile => tile.IsAgentInterpol).FirstOrDefault();
-
-            if (previousAgentTile != null)
-            { // Agent is currently on a tile
-                if (tileModel.Equals(previousAgentTile))
-                { // The Agent is on this tile, so remove it.
-                    tileModel.IsAgentInterpol = false;
-                }
-                else
-                { // Agent is not on this tile, so remove it from previous tile and add to this tile
-                    previousAgentTile.IsAgentInterpol = false;
-                    tileModel.IsAgentInterpol = true;
-                }
-            }
-            else
-            { // No tile contained the CIA Agent, so add it to this tile
-                tileModel.IsAgentInterpol = true;
-            }
 
             if (tileModel.IsActive)
             {
@@ -137,6 +83,7 @@ namespace TomorrowDiesToday.Services.Game
         public async Task RequestActiveTilesUpdate()
         {
             GameRequest gameRequest = new GameRequest { GameId = _gameService.Game.GameId };
+
             await _gameDataService.RequestUpdate(gameRequest);
         }
 
@@ -151,6 +98,7 @@ namespace TomorrowDiesToday.Services.Game
             {
                 tileModel.IsActive = !tileModel.IsActive;
                 var activeTiles = _gameService.Game.Tiles.Where(tile => tile.IsActive).ToList();
+
                 _activeTilesUpdate.OnNext(activeTiles);
                 _allTilesUpdate.OnNext(_gameService.Game.Tiles);
             }
@@ -160,11 +108,55 @@ namespace TomorrowDiesToday.Services.Game
             }
         }
 
-        public void ToggleGlobalSecurityEvent()
+        public void ToggleAgent(TileModel tileModel)
         {
-            _allTiles.ForEach(t => t.IsGlobalSecurityEvent = !t.IsGlobalSecurityEvent);
+            if (tileModel.IsDoomsday || tileModel.TileType == TileType.CIABuilding)
+            { // Toggle CIA Agent
+                var existingAgentTile = _gameService.Game.Tiles.Where(tile => tile.IsAgentCIA).FirstOrDefault();
+                if (existingAgentTile != null)
+                { // Agent is currently on a tile
+                    if (tileModel.Equals(existingAgentTile))
+                    { // The Agent is on this tile, so remove it.
+                        tileModel.IsAgentCIA = false;
+                    }
+                    else
+                    { // Agent is not on this tile, so remove it from previous tile and add to this tile
+                        existingAgentTile.IsAgentCIA = false;
+                        tileModel.IsAgentCIA = true;
+                    }
+                }
+                else
+                { // No tile contained the CIA Agent, so add it to this tile
+                    tileModel.IsAgentCIA = true;
+                }
+            }
+            else
+            { // Toggle Interpol Agent
+                var existingAgentTile = _gameService.Game.Tiles.Where(tile => tile.IsAgentInterpol).FirstOrDefault();
+                if (existingAgentTile != null)
+                { // Agent is currently on a tile
+                    if (tileModel.Equals(existingAgentTile))
+                    { // The Agent is on this tile, so remove it.
+                        tileModel.IsAgentInterpol = false;
+                    }
+                    else
+                    { // Agent is not on this tile, so remove it from previous tile and add to this tile
+                        existingAgentTile.IsAgentInterpol = false;
+                        tileModel.IsAgentInterpol = true;
+                    }
+                }
+                else
+                { // No tile contained the CIA Agent, so add it to this tile
+                    tileModel.IsAgentInterpol = true;
+                }
+            }
+
+            if (tileModel.IsActive)
+            {
+                _activeTilesUpdate.OnNext(_activeTiles);
+            }
+
             _allTilesUpdate.OnNext(_allTiles);
-            _activeTilesUpdate.OnNext(_activeTiles);
         }
 
         public void ToggleFlipped(TileModel tileModel)
@@ -183,6 +175,13 @@ namespace TomorrowDiesToday.Services.Game
             {
                 _errorMessage.OnNext(ErrorType.InvalidTileFlip.ToDescription());
             }
+        }
+
+        public void ToggleGlobalSecurityEvent()
+        {
+            _allTiles.ForEach(t => t.IsGlobalSecurityEvent = !t.IsGlobalSecurityEvent);
+            _allTilesUpdate.OnNext(_allTiles);
+            _activeTilesUpdate.OnNext(_activeTiles);
         }
 
         #endregion
