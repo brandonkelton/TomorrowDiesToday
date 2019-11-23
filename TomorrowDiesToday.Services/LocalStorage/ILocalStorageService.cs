@@ -8,6 +8,6 @@ namespace TomorrowDiesToday.Services.LocalStorage
         Task<bool> GetGameExists();
         Task<string> GetGameId();
         Task LoadGame();
-        Task StoreGame();
+        Task SaveGame();
     }
 }

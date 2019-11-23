@@ -21,24 +21,34 @@
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" 
+                       FontSize="18"
+                       HorizontalTextAlignment="Center"
                        Text="Resume Previous Game?"/>
                 <Label Grid.Row="1" 
                        Text="{Binding GameId}" 
                        FontSize="35" 
                        FontAttributes="Bold" 
                        HorizontalOptions="CenterAndExpand"/>
-                <Button Grid.Row="2" 
-                        Text="Next" 
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" 
+                        Text="Yes" 
                         Command="{Binding YesCommand}"/>
-                <Button Grid.Row="2" 
-                        Text="Next" 
+                    <Button Grid.Column="1"
+                        Text="No" 
                         Command="{Binding NoCommand}"/>
+                </Grid>
             </Grid>
         </StackLayout>
     </ContentPage.Content>
