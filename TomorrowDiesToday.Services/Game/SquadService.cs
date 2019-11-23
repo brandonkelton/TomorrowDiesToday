@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday.Services.Game
 {
@@ -24,6 +25,7 @@ namespace TomorrowDiesToday.Services.Game
 
         // Requred Service(s)
         private IGameService _gameService;
+        private ILocalStorageService _storage;
 
         // Constants
         private const int MAX_SQUAD_SIZE = 6;
@@ -33,6 +35,11 @@ namespace TomorrowDiesToday.Services.Game
         List<SquadModel> _selectedSquads => _gameService.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
 
         #endregion
+
+        public SquadService(ILocalStorageService storage)
+        {
+            _storage = storage;
+        }
 
         #region Public Methods
 

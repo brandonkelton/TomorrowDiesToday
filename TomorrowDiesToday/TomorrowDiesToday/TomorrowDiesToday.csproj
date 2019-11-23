@@ -26,6 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\ResumeGamePage.xaml.cs">
+      <DependentUpon>ResumeGamePage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\TDTNavigationPage.xaml.cs">
       <DependentUpon>TDTNavigationPage.xaml</DependentUpon>
     </Compile>
@@ -36,6 +39,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\JoinGamePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\RootPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\SelectCharacterPage.xaml">
