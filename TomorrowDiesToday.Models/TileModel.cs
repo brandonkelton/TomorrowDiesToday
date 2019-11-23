@@ -21,11 +21,11 @@ namespace TomorrowDiesToday.Models
 
         public bool IsDoomsday { get; set; }
 
+        public bool IsFlipped { get; set; }
+
         public bool IsGlobalSecurityEvent { get; set; }
 
         public bool IsHQ { get; set; }
-
-        public bool IsFlipped { get; set; }
 
         public TileStats Stats
         {

@@ -95,15 +95,38 @@ namespace TomorrowDiesToday.Tests
         }
 
         [Fact]
-        public async Task RequestActiveTilesUpdate()
+        public async Task RequestTilesUpdate()
         {
-            throw new NotImplementedException();
+            var game = new GameModel
+            {
+                GameId = "ABCDEF"
+            };
+
+            _mockGameService.Setup(c => c.Game).Returns(game);
+            _mockSquadService.Setup(c => c.SelectedSquadStatsUpdate).Returns(SelectedSquadStatsUpdate);
+            _mockGameDataService.Setup(c => c.DataReceived).Returns(dataReceived);
+            var tileService = Container.Resolve<ITileService>();
+            await tileService.RequestTilesUpdate();
+
+            Assert.True(true);
         }
 
         [Fact]
-        public async Task SendActiveTiles()
+        public async Task SendTiles()
         {
-            throw new NotImplementedException();
+            var game = new GameModel
+            {
+                GameId = "ABCDEF",
+                Tiles = new List<TileModel>()
+            };
+
+            _mockGameService.Setup(c => c.Game).Returns(game);
+            _mockSquadService.Setup(c => c.SelectedSquadStatsUpdate).Returns(SelectedSquadStatsUpdate);
+            _mockGameDataService.Setup(c => c.DataReceived).Returns(dataReceived);
+            var tileService = Container.Resolve<ITileService>();
+            await tileService.SendTiles();
+
+            Assert.True(true);
         }
 
         [Fact]
@@ -146,7 +169,23 @@ namespace TomorrowDiesToday.Tests
         [Fact]
         public void ToggleAgent()
         {
-            throw new NotImplementedException();
+            var game = new GameModel
+            {
+                Tiles = new List<TileModel>()
+            };
+
+            _mockGameService.Setup(c => c.Game).Returns(game);
+            _mockSquadService.Setup(c => c.SelectedSquadStatsUpdate).Returns(SelectedSquadStatsUpdate);
+            _mockGameDataService.Setup(c => c.DataReceived).Returns(dataReceived);
+            var tileService = Container.Resolve<ITileService>();
+
+            var doomsdayTile = game.Tiles.Where(t => t.TileType == TileType.CrashWallStreet).FirstOrDefault();
+            var resourceTile = game.Tiles.Where(t => t.TileType == TileType.ArmsDealing).FirstOrDefault();
+
+            tileService.ToggleAgent(doomsdayTile);
+            tileService.ToggleAgent(resourceTile);
+
+            Assert.True(doomsdayTile.IsAgentCIA && resourceTile.IsAgentInterpol);
         }
 
         [Fact]

@@ -106,7 +106,7 @@ namespace TomorrowDiesToday.Tests
             };
             var game = new GameModel 
             { 
-                GameId = "TEST",
+                GameId = "ABCDEF",
                 PlayerId = ugoPlayerId,
                 PlayerType = ArmamentType.UgoDottore,
                 Players = new List<PlayerModel>
@@ -156,7 +156,7 @@ namespace TomorrowDiesToday.Tests
             thisSquad.Armaments.Add(new Armament(playerArmamentType, new ArmamentStats(0, 1, 3, 1)));
             var game = new GameModel
             {
-                GameId = "TEST",
+                GameId = "ABCDEF",
                 PlayerId = playerId,
                 PlayerType = playerArmamentType,
                 Players = new List<PlayerModel>
@@ -213,7 +213,7 @@ namespace TomorrowDiesToday.Tests
             };
             var game = new GameModel
             {
-                GameId = "TEST",
+                GameId = "ABCDEF",
                 PlayerId = playerId,
                 PlayerType = playerArmamentType,
                 Players = new List<PlayerModel>
@@ -271,7 +271,7 @@ namespace TomorrowDiesToday.Tests
             };
             var game = new GameModel
             {
-                GameId = "TEST",
+                GameId = "ABCDEF",
                 Players = new List<PlayerModel>
                 {
                    new PlayerModel

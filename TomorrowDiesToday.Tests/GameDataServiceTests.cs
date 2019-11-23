@@ -46,7 +46,7 @@ namespace TomorrowDiesToday.Tests
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
             var gameModel = new GameModel
             {
-                GameId = "TestGame",
+                GameId = "ABCDEF",
                 PlayerId = "0",
                 PlayerType = ArmamentType.GeneralGoodman,
                 Players = new List<PlayerModel>(),
@@ -60,7 +60,7 @@ namespace TomorrowDiesToday.Tests
         [Fact]
         public async Task ExistsIsTrue()
         {
-            var gameId = "TestGame";
+            var gameId = "ABCDEF";
             var gameRequest = new GameRequest { GameId = gameId };
             _mockClient.Setup(c => c.GameExists(gameId)).Returns(Task.FromResult(true));
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
@@ -71,7 +71,7 @@ namespace TomorrowDiesToday.Tests
         [Fact]
         public async Task ExistsIsFalse()
         {
-            var gameId = "TestGame";
+            var gameId = "ABCDEF";
             var gameRequest = new GameRequest { GameId = gameId };
             _mockClient.Setup(c => c.GameExists(gameId)).Returns(Task.FromResult(false));
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
@@ -82,7 +82,7 @@ namespace TomorrowDiesToday.Tests
         [Fact]
         public async Task RequestUpdate()
         {
-            var gameId = "TestGame";
+            var gameId = "ABCDEF";
             var gameDTO = new GameDTO
             {
                 GameId = gameId,
@@ -99,10 +99,10 @@ namespace TomorrowDiesToday.Tests
         public async Task Update()
         {
             var gameDataService = Container.Resolve<IDataService<GameModel, GameRequest>>();
-            var thisPlayer = new PlayerModel { PlayerId = "TestGame" };
+            var thisPlayer = new PlayerModel { PlayerId = "0" };
             var gameModel = new GameModel
             {
-                GameId = "TestGame",
+                GameId = "ABCDEF",
                 PlayerId = "0",
                 PlayerType = ArmamentType.GeneralGoodman,
                 Players = new List<PlayerModel>() { thisPlayer },

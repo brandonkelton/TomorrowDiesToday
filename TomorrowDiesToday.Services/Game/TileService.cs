@@ -80,14 +80,14 @@ namespace TomorrowDiesToday.Services.Game
             _allTilesUpdate.OnNext(_allTiles);
         }
 
-        public async Task RequestActiveTilesUpdate()
+        public async Task RequestTilesUpdate()
         {
             GameRequest gameRequest = new GameRequest { GameId = _gameService.Game.GameId };
 
             await _gameDataService.RequestUpdate(gameRequest);
         }
 
-        public async Task SendActiveTiles()
+        public async Task SendTiles()
         {
             await _gameDataService.Update(_gameService.Game);
         }
@@ -245,9 +245,20 @@ namespace TomorrowDiesToday.Services.Game
 
             _tilesUpdateSubscription = _gameDataService.DataReceived.Subscribe(gameModel =>
             {
-                var tiles = gameModel.Tiles;
-                _gameService.Game.Tiles = tiles;
-                _allTilesUpdate.OnNext(tiles);
+                var receivedTiles = gameModel.Tiles;
+                _gameService.Game.Tiles.ForEach(tile =>
+                {
+                    var receivedTile = receivedTiles.Where(t => t.TileId == tile.TileId).FirstOrDefault();
+                    tile.AlertTokens = receivedTile.AlertTokens;
+                    tile.IsActive = receivedTile.IsActive;
+                    tile.IsAgentCIA = receivedTile.IsAgentCIA;
+                    tile.IsAgentInterpol = receivedTile.IsAgentInterpol;
+                    tile.IsDoomsday = receivedTile.IsDoomsday;
+                    tile.IsFlipped = receivedTile.IsFlipped;
+                    tile.IsGlobalSecurityEvent = receivedTile.IsGlobalSecurityEvent;
+                    tile.IsHQ = receivedTile.IsHQ;
+                });
+                _allTilesUpdate.OnNext(_allTiles);
             });
         }
 

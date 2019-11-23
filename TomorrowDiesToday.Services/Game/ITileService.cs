@@ -18,9 +18,9 @@ namespace TomorrowDiesToday.Services.Game
 
         public void IncrementAlertTokens(TileModel tileModel);
 
-        Task RequestActiveTilesUpdate();
+        Task RequestTilesUpdate();
 
-        Task SendActiveTiles();
+        Task SendTiles();
 
         void ToggleActive(TileModel tileModel);
 
