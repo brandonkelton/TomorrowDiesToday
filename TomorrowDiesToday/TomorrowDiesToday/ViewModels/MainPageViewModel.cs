@@ -14,6 +14,7 @@ namespace TomorrowDiesToday.ViewModels
     public class MainPageViewModel : BaseViewModel, IMainPageViewModel
     {
         public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
+
         public ObservableCollection<object> Items { get; }
 
         public ICommand RefreshPlayerListCommand { get; private set; }
@@ -29,7 +30,7 @@ namespace TomorrowDiesToday.ViewModels
         private IPlayerService _playerService;
 
         private IDisposable _gameSubscription = null;
-        private IDisposable _playerDictSubscription = null;
+        private IDisposable _playerListSubscription = null;
 
         public MainPageViewModel(IGameService gameService, IPlayerService playerService)
         {
@@ -49,18 +50,17 @@ namespace TomorrowDiesToday.ViewModels
         public void Dispose()
         {
             if (_gameSubscription != null) _gameSubscription.Dispose();
-            if (_playerDictSubscription != null) _playerDictSubscription.Dispose();
+            if (_playerListSubscription != null) _playerListSubscription.Dispose();
         }
 
         private void ConfigureCommands()
         {
-            //NextStepCommand = new Command(() => NextAfterGameCreated());
-            RefreshPlayerListCommand = new Command(() => RefreshPlayers());
+            RefreshPlayerListCommand = new Command(async () => await RefreshPlayers());
         }
 
-        private void RefreshPlayers()
+        private async Task RefreshPlayers()
         {
-            _playerService.RequestPlayersUpdate();
+            await _playerService.RequestPlayersUpdate();
         }
 
         private void SubscribeToUpdates()
@@ -69,11 +69,16 @@ namespace TomorrowDiesToday.ViewModels
             {
                 GameId = gameModel.GameId;
             });
-            _playerDictSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
+
+            _playerListSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {
                 Players.Clear();
-                playerModels.ForEach(item => Players.Add(item));
+                playerModels.ForEach(playerModel =>
+                {
+                    Players.Add(playerModel);
+                });
             });
+
         }
     }
 }
