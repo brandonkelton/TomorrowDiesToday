@@ -12,6 +12,7 @@ using TomorrowDiesToday.Models.Enums;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using System.Reactive.Subjects;
+using System.Linq;
 
 namespace TomorrowDiesToday.Tests
 {
@@ -108,18 +109,9 @@ namespace TomorrowDiesToday.Tests
         [Fact]
         public void ToggleActive()
         {
-            var activeTile = new TileModel(TileType.ArmsDealing) { IsActive = true };
-            var inactiveTile = new TileModel(TileType.HackerCell) { IsActive = false };
-            var hqTile = new TileModel(TileType.CIABuilding);
-
             var game = new GameModel
             {
-                Tiles = new List<TileModel>
-                {
-                    activeTile,
-                    inactiveTile,
-                    hqTile
-                }
+                Tiles = new List<TileModel>()
             };
 
             _mockGameService.Setup(c => c.Game).Returns(game);
@@ -127,13 +119,30 @@ namespace TomorrowDiesToday.Tests
             _mockGameDataService.Setup(c => c.DataReceived).Returns(dataReceived);
             var tileService = Container.Resolve<ITileService>();
 
-            tileService.ToggleActive(activeTile);
-            tileService.ToggleActive(inactiveTile);
+            var activeResourceTile = game.Tiles.Where(t => t.TileType == TileType.ArmsDealing).FirstOrDefault();
+            activeResourceTile.IsActive = true;
+            var inactiveResourceTile = game.Tiles.Where(t => t.TileType == TileType.HackerCell).FirstOrDefault();
+            var activeDoomsdayTile = game.Tiles.Where(t => t.TileType == TileType.CrashWallStreet).FirstOrDefault();
+            activeDoomsdayTile.IsActive = true;
+            var inactiveDoomsdayTile = game.Tiles.Where(t => t.TileType == TileType.BringDownSatellites).FirstOrDefault();
+            var hqTile = game.Tiles.Where(t => t.TileType == TileType.InterpolHQ).FirstOrDefault();
+
+            tileService.ToggleActive(activeResourceTile);
+            tileService.ToggleActive(inactiveResourceTile);
+            tileService.ToggleActive(activeDoomsdayTile);
+            tileService.ToggleActive(inactiveDoomsdayTile);
             tileService.ToggleActive(hqTile);
 
-            Assert.True(!activeTile.IsActive && inactiveTile.IsActive && hqTile.IsActive);
-        }
+            // Resource missions - toggle IsActive bool
+            var resourceTileSuccess = !activeResourceTile.IsActive && inactiveResourceTile.IsActive;
+            // Doomsday missions - toggle IsActive bool
+            var doomsdayTileSuccess = !activeDoomsdayTile.IsActive && inactiveDoomsdayTile.IsActive;
+            // Agent HQs - can not set IsActive to false
+            var hqTileSuccess = hqTile.IsActive;
 
+            Assert.True(resourceTileSuccess && doomsdayTileSuccess && hqTileSuccess);
+        }
+        
         [Fact]
         public void ToggleAgent()
         {
@@ -143,26 +152,9 @@ namespace TomorrowDiesToday.Tests
         [Fact]
         public void ToggleFlipped()
         {
-            var flippedResourceTile = new TileModel(TileType.ArmsDealing, new TileStats(3, 1, 1, 1), new TileStats(1, 3, 1, 0))
-            { 
-                IsFlipped = true 
-            };
-            var unFlippedResourceTile = new TileModel(TileType.HackerCell, new TileStats(0, 3, 3, 0), new TileStats(0, 3, 4, 0))
-            { 
-                IsFlipped = false
-            };
-            var hqTile = new TileModel(TileType.CIABuilding, new TileStats(2, 2, 2, 2));
-            var doomsdayTile = new TileModel(TileType.CrashWallStreet, new TileStats(0, 6, 8, 1));
-
             var game = new GameModel
             {
-                Tiles = new List<TileModel>
-                {
-                    flippedResourceTile,
-                    unFlippedResourceTile,
-                    hqTile,
-                    doomsdayTile
-                }
+                Tiles = new List<TileModel>()
             };
 
             _mockGameService.Setup(c => c.Game).Returns(game);
@@ -170,18 +162,58 @@ namespace TomorrowDiesToday.Tests
             _mockGameDataService.Setup(c => c.DataReceived).Returns(dataReceived);
             var tileService = Container.Resolve<ITileService>();
 
+            var flippedResourceTile = game.Tiles.Where(t => t.TileType == TileType.ArmsDealing).FirstOrDefault();
+            flippedResourceTile.IsFlipped = true;
+            var unflippedResourceTile = game.Tiles.Where(t => t.TileType == TileType.HackerCell).FirstOrDefault();
+            var doomsdayTile = game.Tiles.Where(t => t.TileType == TileType.CrashWallStreet).FirstOrDefault();
+            var hqTile = game.Tiles.Where(t => t.TileType == TileType.InterpolHQ).FirstOrDefault();
+            
             tileService.ToggleFlipped(flippedResourceTile);
-            tileService.ToggleFlipped(unFlippedResourceTile);
+            tileService.ToggleFlipped(unflippedResourceTile);
             tileService.ToggleFlipped(hqTile);
             tileService.ToggleFlipped(doomsdayTile);
 
-            Assert.True(!flippedResourceTile.IsFlipped && unFlippedResourceTile.IsFlipped && !hqTile.IsFlipped && !doomsdayTile.IsFlipped);
+            Assert.True(!flippedResourceTile.IsFlipped && unflippedResourceTile.IsFlipped && !hqTile.IsFlipped && !doomsdayTile.IsFlipped);
         }
 
         [Fact]
         public void ToggleGlobalSecurityEvent()
         {
-            throw new NotImplementedException();
+            var game = new GameModel
+            {
+                Tiles = new List<TileModel>()
+            };
+
+            _mockGameService.Setup(c => c.Game).Returns(game);
+            _mockSquadService.Setup(c => c.SelectedSquadStatsUpdate).Returns(SelectedSquadStatsUpdate);
+            _mockGameDataService.Setup(c => c.DataReceived).Returns(dataReceived);
+            var tileService = Container.Resolve<ITileService>();
+
+            var doomsdayTile = game.Tiles.Where(t => t.TileType == TileType.CrashWallStreet).FirstOrDefault();
+            var hqTile = game.Tiles.Where(t => t.TileType == TileType.CIABuilding).FirstOrDefault();
+            hqTile.IsAgentCIA = false;
+            var resourceTile = game.Tiles.Where(t => t.TileType == TileType.ArmsDealing).FirstOrDefault();
+            resourceTile.IsActive = true;
+            
+            tileService.ToggleGlobalSecurityEvent();
+
+            // Resource missions - all Stats increase by 1
+            var resourceTileSuccess = resourceTile.Stats.Combat.Value == 4
+                                   && resourceTile.Stats.Stealth.Value == 2
+                                   && resourceTile.Stats.Cunning.Value == 2
+                                   && resourceTile.Stats.Diplomacy.Value == 2;
+            // Doomsday missions - Stats do not change
+            var doomsdayTileSuccess = doomsdayTile.Stats.Combat.Value == 0
+                                   && doomsdayTile.Stats.Stealth.Value == 6
+                                   && doomsdayTile.Stats.Cunning.Value == 8
+                                   && doomsdayTile.Stats.Diplomacy.Value == 1;
+            // Agent HQs - Stats do not change
+            var hqTileSuccess = hqTile.Stats.Combat.Value == 2
+                             && hqTile.Stats.Stealth.Value == 2
+                             && hqTile.Stats.Cunning.Value == 2
+                             && hqTile.Stats.Diplomacy.Value == 2;
+
+            Assert.True(resourceTileSuccess && doomsdayTileSuccess && hqTileSuccess);
         }
     }
 }

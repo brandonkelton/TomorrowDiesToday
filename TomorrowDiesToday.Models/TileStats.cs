@@ -36,7 +36,7 @@ namespace TomorrowDiesToday.Models
 
         public TileStats IncreaseAll(int modifier)
         {
-            return new TileStats(Combat.Value + 1, Stealth.Value + 1, Cunning.Value + 1, Diplomacy.Value + 1);
+            return new TileStats(Combat.Value + modifier, Stealth.Value + modifier, Cunning.Value + modifier, Diplomacy.Value + modifier);
         }
 
         public TileStats MultiplyAll(int multiplier)

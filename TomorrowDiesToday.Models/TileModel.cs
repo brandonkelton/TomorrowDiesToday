@@ -63,7 +63,10 @@ namespace TomorrowDiesToday.Models
 
                 if (IsHQ)
                 {
-                    stats = stats.MultiplyAll(AlertTokens);
+                    if (AlertTokens > 0)
+                    {
+                        stats = stats.MultiplyAll(AlertTokens);
+                    }
                 }
 
                 if (IsDoomsday) 
@@ -126,6 +129,7 @@ namespace TomorrowDiesToday.Models
             IsFlipped = false;
             AlertTokens = 0;
             ImageLocation = "";
+            TileType = tileType;
         }
 
         public TileModel(TileType tileType, TileStats missionStats)
@@ -158,6 +162,7 @@ namespace TomorrowDiesToday.Models
             IsFlipped = false;
             AlertTokens = 0;
             ImageLocation = "";
+            TileType = tileType;
         }
 
         public TileModel(TileType tileType, TileStats missionStats, TileStats flippedMissionStats)
@@ -169,6 +174,7 @@ namespace TomorrowDiesToday.Models
             IsFlipped = false;
             AlertTokens = 0;
             ImageLocation = "";
+            TileType = tileType;
         }
 
         #endregion
