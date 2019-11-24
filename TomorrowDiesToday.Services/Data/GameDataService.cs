@@ -65,10 +65,15 @@ namespace TomorrowDiesToday.Services.Data
             {
                 var tileDTO = new TileDTO
                 {
-                    TileId = tileModel.TileId,
+                    AlertTokens = tileModel.AlertTokens,
                     IsActive = tileModel.IsActive,
+                    IsAgentCIA = tileModel.IsAgentCIA,
+                    IsAgentInterpol = tileModel.IsAgentInterpol,
+                    IsDoomsday = tileModel.IsDoomsday,
                     IsFlipped = tileModel.IsFlipped,
-                    AlertTokens = tileModel.AlertTokens
+                    IsGlobalSecurityEvent = tileModel.IsGlobalSecurityEvent,
+                    IsHQ = tileModel.IsHQ,
+                    TileId = tileModel.TileId
                 };
                 tileDTOs.Add(tileDTO);
             }
@@ -87,10 +92,15 @@ namespace TomorrowDiesToday.Services.Data
             {
                 var tileModel = new TileModel((TileType) int.Parse(tileDTO.TileId))
                 {
-                    TileId = tileDTO.TileId,
+                    AlertTokens = tileDTO.AlertTokens,
                     IsActive = tileDTO.IsActive,
+                    IsAgentCIA = tileDTO.IsAgentCIA,
+                    IsAgentInterpol = tileDTO.IsAgentInterpol,
+                    IsDoomsday = tileDTO.IsDoomsday,
                     IsFlipped = tileDTO.IsFlipped,
-                    AlertTokens = tileDTO.AlertTokens
+                    IsGlobalSecurityEvent = tileDTO.IsGlobalSecurityEvent,
+                    IsHQ = tileDTO.IsHQ,
+                    TileId = tileDTO.TileId
                 };
                 tileModels.Add(tileModel);
             }

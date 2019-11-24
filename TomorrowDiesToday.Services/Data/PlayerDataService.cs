@@ -98,15 +98,19 @@ namespace TomorrowDiesToday.Services.Data
             {
                 var squadModel = new SquadModel
                 {
+                    PlayerId = playerDTO.PlayerId,
                     SquadId = squadDTO.SquadId,
                     Armaments = squadDTO.Armaments,
                     Stats = squadDTO.Stats
                 };
                 squadModels.Add(squadModel);
             }
+            var playerArmamentType = ((ArmamentType)int.Parse(playerDTO.PlayerId));
             var playerModel = new PlayerModel
             {
                 PlayerId = playerDTO.PlayerId,
+                PlayerName = playerArmamentType.ToDescription(),
+                PlayerType = playerArmamentType,
                 Squads = squadModels
             };
             return playerModel;

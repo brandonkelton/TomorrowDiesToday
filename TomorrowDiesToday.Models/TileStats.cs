@@ -33,5 +33,15 @@ namespace TomorrowDiesToday.Models
             Diplomacy = new Stat(StatType.Diplomacy, diplomacy);
             Stealth = new Stat(StatType.Stealth, stealth);
         }
+
+        public TileStats IncreaseAll(int modifier)
+        {
+            return new TileStats(Combat.Value + modifier, Stealth.Value + modifier, Cunning.Value + modifier, Diplomacy.Value + modifier);
+        }
+
+        public TileStats MultiplyAll(int multiplier)
+        {
+            return new TileStats(Combat.Value * multiplier, Stealth.Value * multiplier, Cunning.Value * multiplier, Diplomacy.Value * multiplier);
+        }
     }
 }
