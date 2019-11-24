@@ -5,6 +5,7 @@ using System.Reactive.Subjects;
 using System.Text;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Models.Enums;
+using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday.Services.Game
 {
@@ -25,17 +26,9 @@ namespace TomorrowDiesToday.Services.Game
 
         // Required Service(s)
         private IGameService _gameService;
+        private ILocalStorageService _storage;
 
         List<SquadModel> _selectedSquads => _gameService.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
-
-        #endregion
-
-        #region Constructor
-
-        public SquadService(IGameService gameService)
-        {
-            _gameService = gameService;
-        }
 
         #endregion
 

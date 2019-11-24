@@ -112,15 +112,25 @@
                         BorderColor="#000000"
                         HorizontalOptions="Center"
                         Command="{Binding RefreshPlayerListCommand}"/>
-                    <ListView
-                            ItemsSource="{Binding Players}">
+                    <ListView ItemsSource="{Binding Players}" VerticalOptions="Start">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <Label
-                                        TextColor="Black"
-                                        FontSize="20"
-                                        Text="{Binding PlayerName}"/>
+                                    <StackLayout Orientation="Vertical" VerticalOptions="Start">
+                                        <Label Text="{Binding PlayerName}"/>
+                                        <ListView ItemsSource="{Binding Squads}" VerticalOptions="Start" RowHeight="30">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ViewCell>
+                                                        <StackLayout Orientation="Horizontal">
+                                                            <CheckBox IsChecked="{Binding IsSelected}"/>
+                                                            <Label Text="{Binding SquadId}"/>
+                                                        </StackLayout>
+                                                    </ViewCell>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </StackLayout>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>

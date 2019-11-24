@@ -14,5 +14,6 @@ namespace TomorrowDiesToday
         public IJoinGameViewModel JoinGameViewModel => IoC.Container.Resolve<IJoinGameViewModel>();
         public ISelectCharacterViewModel SelectCharacterViewModel => IoC.Container.Resolve<ISelectCharacterViewModel>();
         public IWaitForPlayersViewModel WaitForPlayersViewModel => IoC.Container.Resolve<IWaitForPlayersViewModel>();
+        public IResumeGameViewModel ResumeGameViewModel => IoC.Container.Resolve<IResumeGameViewModel>();
     }
 }
