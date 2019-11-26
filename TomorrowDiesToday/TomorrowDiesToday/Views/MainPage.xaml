@@ -124,7 +124,8 @@
                                 <StackLayout Orientation="Vertical">
                                     <Label Text="{Binding PlayerName}" 
                                            Padding="0,5,0,0"/>
-                                    <ListView ItemsSource="{Binding Squads}" 
+                                    <ListView x:Name="Squads" 
+                                              ItemsSource="{Binding Squads}" 
                                               SelectionMode="None" 
                                               RowHeight="40">
                                         <ListView.ItemTemplate>
@@ -132,15 +133,7 @@
                                                 <ViewCell>
                                                     <StackLayout Orientation="Horizontal"
                                                                  Padding="5">
-                                                        <Button Padding="0" 
-                                                                FontSize="12" 
-                                                                HeightRequest="30" 
-                                                                WidthRequest="30" 
-                                                                Text="+" 
-                                                                Command="{Binding ToggleSelectedSquadCommand}" 
-                                                                CommandParameter="{Binding SquadId}"/>
-                                                        <CheckBox IsEnabled="False" 
-                                                                  IsChecked="{Binding IsSelected}"/>
+                                                        <CheckBox IsChecked="{Binding IsSelected}"/>
                                                         <Label Text="{Binding SquadId}" 
                                                                Padding="0,5,0,0"/>
                                                         <Label Text="{Binding Stats.Combat.Value}" 
@@ -151,6 +144,13 @@
                                                                Padding="0,5,0,0"/>
                                                         <Label Text="{Binding Stats.Stealth.Value}" 
                                                                Padding="0,5,0,0"/>
+                                                        <Button Padding="0" 
+                                                                FontSize="12" 
+                                                                HeightRequest="30" 
+                                                                WidthRequest="30" 
+                                                                Text="+" 
+                                                                CommandParameter="{Binding SquadId}"
+                                                                Command="{Binding ToggleSelectedSquadCommand}" />
                                                     </StackLayout>
                                                 </ViewCell>
                                             </DataTemplate>
