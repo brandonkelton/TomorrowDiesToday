@@ -65,6 +65,12 @@ namespace TomorrowDiesToday.Services.Game
             _thisGame.OnNext(Game);
         }
 
+        public void SetGame(GameModel game)
+        {
+            _game = game;
+            _thisGame.OnNext(Game);
+        }
+
         public async Task<bool> JoinGame(string gameId)
         {
             GameRequest request = new GameRequest { GameId = gameId };

@@ -8,6 +8,7 @@ using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Data;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Models.Enums;
+using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday.Services.Game
 {
@@ -25,6 +26,7 @@ namespace TomorrowDiesToday.Services.Game
 
         // Requred Service(s)
         private IGameService _gameService;
+        private ILocalStorageService _storage;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
         private ISquadService _squadService;
 
@@ -40,11 +42,13 @@ namespace TomorrowDiesToday.Services.Game
         #endregion
 
         #region Constructor
-        public PlayerService(IDataService<PlayerModel, PlayerRequest> playerDataService, IGameService gameService, ISquadService squadService)
+        public PlayerService(IDataService<PlayerModel, PlayerRequest> playerDataService, IGameService gameService, ISquadService squadService, ILocalStorageService storage)
         {
             _gameService = gameService;
             _playerDataService = playerDataService;
             _squadService = squadService;
+            _storage = storage;
+
             SubscribeToUpdates();
         }
         #endregion
@@ -61,7 +65,7 @@ namespace TomorrowDiesToday.Services.Game
             {
                 var playerModel = GeneratePlayer(playerId);
                 await _playerDataService.Create(playerModel);
-                
+                await _storage.SaveGame();
                 return true;
             }
             else
@@ -102,10 +106,14 @@ namespace TomorrowDiesToday.Services.Game
 
         private PlayerModel GeneratePlayer(string playerId)
         {
+            ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
+
             PlayerModel playerModel = new PlayerModel
             {
                 GameId = _gameService.Game.GameId,
                 PlayerId = playerId,
+                PlayerName = playerArmamentType.ToDescription(),
+                PlayerType = playerArmamentType,
                 Squads = new List<SquadModel>
                 {
                     new SquadModel
@@ -125,8 +133,6 @@ namespace TomorrowDiesToday.Services.Game
                     }
                 }
             };
-
-            ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
 
             foreach(SquadModel squad in playerModel.Squads)
             {

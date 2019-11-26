@@ -10,6 +10,7 @@ using Xunit;
 using TomorrowDiesToday.Services.Game;
 using System.Threading.Tasks;
 using Moq;
+using TomorrowDiesToday.Services.Database.DTOs;
 
 namespace TomorrowDiesToday.Tests
 {
@@ -43,8 +44,8 @@ namespace TomorrowDiesToday.Tests
         public async Task Create()
         {
             var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
-            var gameId = "TestGame";
-            var playerId = "TestPlayer";
+            var gameId = "ABCDEF";
+            var playerId = "0";
             var playerModel = new PlayerModel
             {
                 GameId = gameId,
@@ -55,15 +56,64 @@ namespace TomorrowDiesToday.Tests
         }
 
         [Fact]
-        public async Task ExistsIsTrue()
+        public async Task ExistsIsFalse()
         {
-            throw new NotImplementedException();
+            var gameId = "ABCDEF";
+            var playerId = "0";
+            var playerRequest = new PlayerRequest
+            {
+                GameId = gameId,
+                PlayerId = playerId
+            };
+            _mockClient.Setup(c => c.PlayerExists(gameId, playerId)).Returns(Task.FromResult(false));
+            var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
+            var result = await playerDataService.Exists(playerRequest);
+            Assert.False(result);
         }
 
         [Fact]
-        public async Task ExistsIsFalse()
+        public async Task ExistsIsTrue()
         {
-            throw new NotImplementedException();
+            var gameId = "ABCDEF";
+            var playerId = "0";
+            var playerRequest = new PlayerRequest
+            {
+                GameId = gameId,
+                PlayerId = playerId
+            };
+            _mockClient.Setup(c => c.PlayerExists(gameId, playerId)).Returns(Task.FromResult(true));
+            var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
+            var result = await playerDataService.Exists(playerRequest);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task RequestUpdate()
+        {
+            var gameId = "ABCDEF";
+            var playerId = "0";
+            var singlePlayerRequest = new PlayerRequest
+            {
+                GameId = gameId,
+                PlayerId = playerId
+            };
+            var allPlayerRequest = new PlayerRequest { GameId = gameId };
+            var playerDTO = new PlayerDTO
+            {
+                GameId = gameId,
+                PlayerId = playerId,
+                Squads = new List<SquadDTO>()
+            };
+            var playerDTOs = new List<PlayerDTO> { playerDTO };
+
+            _mockClient.Setup(c => c.RequestPlayer(gameId, playerId)).Returns(Task.FromResult(playerDTO));
+            _mockClient.Setup(c => c.RequestPlayerList(gameId)).Returns(Task.FromResult(playerDTOs));
+            var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
+            
+            await playerDataService.RequestUpdate(singlePlayerRequest);
+            await playerDataService.RequestUpdate(allPlayerRequest);
+
+            Assert.True(true); // pass if no exceptions thrown
         }
 
         [Fact]
@@ -72,18 +122,12 @@ namespace TomorrowDiesToday.Tests
             var playerDataService = Container.Resolve<IDataService<PlayerModel, PlayerRequest>>();
             var playerModel = new PlayerModel
             {
-                GameId = "TestGame",
-                PlayerId = "TestPlayer",
+                GameId = "ABCDEF",
+                PlayerId = "0",
                 Squads = new List<SquadModel>()
             };
             await playerDataService.Update(playerModel);
             Assert.True(true); // pass if no exceptions thrown
-        }
-
-        [Fact]
-        public async Task RequestUpdate()
-        {
-            throw new NotImplementedException();
         }
     }
 }

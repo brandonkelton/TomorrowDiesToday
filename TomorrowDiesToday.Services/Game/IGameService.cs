@@ -14,6 +14,7 @@ namespace TomorrowDiesToday.Services.Game
         IObservable<GameModel> ThisGame { get; }
 
         Task CreateGame();
+        void SetGame(GameModel game);
         Task<bool> JoinGame(string gameId);
     }
 }

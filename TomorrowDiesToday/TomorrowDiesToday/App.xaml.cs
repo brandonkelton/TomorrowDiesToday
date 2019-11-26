@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using System;
+using System.Threading.Tasks;
 using TomorrowDiesToday.Navigation;
 using TomorrowDiesToday.Services;
+using TomorrowDiesToday.Services.LocalStorage;
 using TomorrowDiesToday.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -15,20 +17,18 @@ namespace TomorrowDiesToday
         {
             InitializeComponent();
             IoC.Initialize();
-            MainPage = IoC.Container.Resolve<NavigationPage>();
-            
-            // Hack to activate nav service - I need to work this out
-            IoC.Container.Resolve<INavigationService>();
+            var navigationService = IoC.Container.Resolve<INavigationService>();
+            MainPage = navigationService.Navigation;
         }
 
         protected override void OnStart()
         {
-            // Handle when your app starts
+            
         }
 
         protected override void OnSleep()
         {
-            // Handle when your app sleeps
+
         }
 
         protected override void OnResume()
@@ -38,8 +38,8 @@ namespace TomorrowDiesToday
 
         protected override void CleanUp()
         {
-            base.CleanUp();
             IoC.Destroy();
+            base.CleanUp();
         }
     }
 }

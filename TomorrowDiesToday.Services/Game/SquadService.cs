@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Models.Enums;
+using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday.Services.Game
 {
@@ -22,13 +24,9 @@ namespace TomorrowDiesToday.Services.Game
         private readonly ReplaySubject<SquadStats> _selectedSquadStatsUpdate = new ReplaySubject<SquadStats>(1);
         private readonly ReplaySubject<SquadModel> _squadUpdate = new ReplaySubject<SquadModel>(1);
 
-        // Requred Service(s)
+        // Required Service(s)
         private IGameService _gameService;
-
-        // Constants
-        private const int MAX_SQUAD_SIZE = 6;
-        private const int NUMBER_OF_FACED_HENCHMAN = 9;
-        private const int DATA_STRIP_LENGTH = 13;
+        private ILocalStorageService _storage;
 
         List<SquadModel> _selectedSquads => _gameService.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
 
@@ -38,10 +36,24 @@ namespace TomorrowDiesToday.Services.Game
 
         public void CalculateSquadStats(SquadModel squadModel)
         {
+            // Named and Faceless Henchmen
             squadModel.Stats.Combat.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
             squadModel.Stats.Stealth.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Stealth.Value));
             squadModel.Stats.Cunning.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Cunning.Value));
             squadModel.Stats.Diplomacy.SetValue(squadModel.Armaments.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Diplomacy.Value));
+
+            //Abilities
+            squadModel.Stats.Combat.SetValue(squadModel.Stats.Combat.Value + squadModel.Abilities.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Stealth.SetValue(squadModel.Stats.Stealth.Value + squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Stealth.Value));
+            squadModel.Stats.Cunning.SetValue(squadModel.Stats.Cunning.Value + squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Cunning.Value));
+            squadModel.Stats.Diplomacy.SetValue(squadModel.Stats.Diplomacy.Value + squadModel.Abilities.Where(a => a.Count > 0).Sum(a => a.Count * a.Stats.Diplomacy.Value));
+
+            //Items
+            squadModel.Stats.Combat.SetValue(squadModel.Stats.Combat.Value + squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Combat.Value));
+            squadModel.Stats.Stealth.SetValue(squadModel.Stats.Stealth.Value + squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Stealth.Value));
+            squadModel.Stats.Cunning.SetValue(squadModel.Stats.Cunning.Value + squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Cunning.Value));
+            squadModel.Stats.Diplomacy.SetValue(squadModel.Stats.Diplomacy.Value + squadModel.Items.Where(a =>a.Count > 0).Sum(a => a.Count * a.Stats.Diplomacy.Value));
+
 
             if (squadModel.IsSelected)
             {
@@ -50,6 +62,206 @@ namespace TomorrowDiesToday.Services.Game
             }
 
             _squadUpdate.OnNext(squadModel);
+
+            if (squadModel.IsSelected)
+            {
+                _selectedSquadsUpdate.OnNext(_selectedSquads);
+                SumSelectedSquadStats();
+            }
+        }
+
+        public void DecrementAbilityCount(ArmamentType abilityType, SquadModel squadModel)
+        {
+            var ability = squadModel.Abilities.Where(a => a.ArmamentType == abilityType).FirstOrDefault();
+            if (ability != null)
+            {
+                if (ability.Count - 1 >= 0)
+                {
+                    ability.SetCount(ability.Count - 1);
+                    CalculateSquadStats(squadModel);
+                }
+                else
+                {
+                    _errorMessage.OnNext(ErrorType.InvalidAbilityCount.ToDescription());
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidAbilityType.ToDescription());
+            }
+        }
+
+        public void DecrementArmamentCount(ArmamentType armamentType, SquadModel squadModel)
+        {
+            var armament = squadModel.Armaments.Where(a => a.ArmamentType == armamentType).FirstOrDefault();
+            if (armament != null)
+            {
+                if (armament.Count - 1 >= 0)
+                {
+                    armament.SetCount(armament.Count - 1);
+                    CalculateSquadStats(squadModel);
+                }
+                else
+                {
+                    if (armament.ArmamentType == _gameService.Game.PlayerType)
+                    {
+                        _errorMessage.OnNext(ErrorType.InvalidNamedHenchmanCount.ToDescription());
+                    }
+                    else
+                    {
+                        _errorMessage.OnNext(ErrorType.InvalidArmamentCount.ToDescription());
+                    }
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidArmamentType.ToDescription());
+            }
+        }
+
+        public void DecrementItemCount(ArmamentType itemType, SquadModel squadModel)
+        {
+            var item = squadModel.Items.Where(a => a.ArmamentType == itemType).FirstOrDefault();
+            if (item != null)
+            {
+                if (item.Count - 1 >= 0)
+                {
+                    item.SetCount(item.Count - 1);
+                    CalculateSquadStats(squadModel);
+                }
+                else
+                {
+                    _errorMessage.OnNext(ErrorType.InvalidAbilityCount.ToDescription());
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidItemType.ToDescription());
+            }
+        }
+
+        public void IncrementAbilityCount(ArmamentType abilityType, SquadModel squadModel)
+        {
+            ArmamentType playerArmamentType = _gameService.Game.PlayerType;
+            if (playerArmamentType == ArmamentType.UgoDottore)
+            {
+                var targetAbilityArmament = squadModel.Abilities.Where(a => a.ArmamentType == abilityType).FirstOrDefault();
+
+                if (targetAbilityArmament != null)
+                {
+                    var squads = _gameService.Game.Players.Where(p => p.PlayerId == squadModel.PlayerId).FirstOrDefault().Squads;
+                    var abilityArmamentList = squads.SelectMany(s => s.Abilities.Where(a => a.ArmamentType == abilityType).ToList());
+                    var existingAbilityArmament = abilityArmamentList.Where(a => a.Count > 0).FirstOrDefault();
+
+                    if (existingAbilityArmament != null)
+                    {
+                        if (!targetAbilityArmament.Equals(existingAbilityArmament))
+                        {
+                            existingAbilityArmament.SetCount(0);
+                            targetAbilityArmament.SetCount(1);
+                            CalculateSquadStats(squadModel);
+                        }
+                        else
+                        {
+                            _errorMessage.OnNext(ErrorType.InvalidAbilityCount.ToDescription());
+                        }
+                    }
+                    else
+                    {
+                        targetAbilityArmament.SetCount(1);
+                        CalculateSquadStats(squadModel);
+                    }
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidNamedHenchmanType.ToDescription());
+            }
+        }
+
+        public void IncrementArmamentCount(ArmamentType armamentType, SquadModel squadModel)
+        {
+            var targetArmament = squadModel.Armaments.Where(a => a.ArmamentType == armamentType).FirstOrDefault();
+            var validTotalArmamentCount = 6;
+            var totalArmamentCount = squadModel.Armaments.Sum(a => a.Count);
+            if (targetArmament != null)
+            {
+                if (totalArmamentCount + 1 <= validTotalArmamentCount)
+                {
+                    var playerArmamentType = _gameService.Game.PlayerType;
+
+                    if (targetArmament.ArmamentType == _gameService.Game.PlayerType)
+                    {
+                        var playerId = _gameService.Game.PlayerId;
+                        var squads = _gameService.Game.Players.Where(p => p.PlayerId == playerId).FirstOrDefault().Squads;
+                        var playerArmamentList = squads.SelectMany(s => s.Armaments.Where(a => a.ArmamentType == armamentType).ToList());
+                        var existingNamedHenchmanArmament = playerArmamentList.Where(a => a.Count > 0).FirstOrDefault();
+
+                        if (existingNamedHenchmanArmament != null)
+                        {
+                            if (!targetArmament.Equals(existingNamedHenchmanArmament))
+                            {
+                                existingNamedHenchmanArmament.SetCount(0);
+                                targetArmament.SetCount(1);
+                                CalculateSquadStats(squadModel);
+                            }
+                            else
+                            {
+                                _errorMessage.OnNext(ErrorType.InvalidNamedHenchmanCount.ToDescription());
+                            }
+                        }
+                        else
+                        {
+                            targetArmament.SetCount(1);
+                            CalculateSquadStats(squadModel);
+                        }
+                    }
+                    else
+                    {
+                        targetArmament.SetCount(targetArmament.Count + 1);
+                        CalculateSquadStats(squadModel);
+                    }
+                }
+                else
+                {
+                    _errorMessage.OnNext(ErrorType.InvalidSquadSize.ToDescription());
+                }
+            }
+            else
+            {
+                _errorMessage.OnNext(ErrorType.InvalidArmamentType.ToDescription());
+            }
+        }
+
+        public void IncrementItemCount(ArmamentType itemType, SquadModel squadModel)
+        {
+            var targetItemArmament = squadModel.Items.Where(a => a.ArmamentType == itemType).FirstOrDefault();
+
+            if (targetItemArmament != null)
+            {
+                var squads = _gameService.Game.Players.Where(p => p.PlayerId == squadModel.PlayerId).FirstOrDefault().Squads;
+                var itemArmamentList = squads.SelectMany(s => s.Items.Where(a => a.ArmamentType == itemType).ToList());
+                var existingItemArmament = itemArmamentList.Where(a => a.Count > 0).FirstOrDefault();
+
+                if (existingItemArmament != null)
+                {
+                    if (!targetItemArmament.Equals(existingItemArmament))
+                    {
+                        existingItemArmament.SetCount(0);
+                        targetItemArmament.SetCount(1);
+                        CalculateSquadStats(squadModel);
+                    }
+                    else
+                    {
+                        _errorMessage.OnNext(ErrorType.InvalidAbilityCount.ToDescription());
+                    }
+                }
+                else
+                {
+                    targetItemArmament.SetCount(1);
+                    CalculateSquadStats(squadModel);
+                }
+            }
         }
 
         public void ToggleSelected(SquadModel squadModel)
@@ -75,46 +287,6 @@ namespace TomorrowDiesToday.Services.Game
 
             _selectedSquadStatsUpdate.OnNext(stats);
         }
-
-        //private bool ValidateSquad(SquadModel squadModel)
-        //{
-        //    var squadData = squadModel.Data;
-        //    int unitTotal = squadData["Thief"] + squadData["Hacker"] + squadData["Soldier"]
-        //        + squadData["Assassin"] + squadData["Fixer"] + squadData["Scientist"];
-        //    int ugoTotal = squadData["Ugo Combat"] + squadData["Ugo Stealth"] + squadData["Ugo Cunning"] + squadData["Ugo Diplomacy"];
-
-        //    string validationError = "";
-
-        //    if (unitTotal > MAX_SQUAD_SIZE || unitTotal < 0)
-        //    {
-        //        validationError += "Invalid squad size\n";
-        //    }
-        //    if (squadData["Named Henchman"] > NUMBER_OF_FACED_HENCHMAN || squadData["Named Henchman"] < 0)
-        //    {
-        //        validationError += "Invalid number of named henchmen\n";
-        //    }
-        //    if (squadData["Hypnotic Spray"] > 1 || squadData["Hypnotic Spray"] < 0)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    if (squadData["Explosive Rounds"] > 1 || squadData["Explosive Rounds"] < 0)
-        //    {
-        //        validationError += "\n";
-        //    }
-        //    if (ugoTotal > MAX_SQUAD_SIZE || ugoTotal < 0)
-        //    {
-        //        validationError += "\n";
-        //    }
-        //    if (validationError != "")
-        //    {
-        //        _errorMessage.OnNext(validationError);
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        return true;
-        //    }
-        //}
 
         #endregion
     }

@@ -8,6 +8,8 @@ namespace TomorrowDiesToday.Navigation
 {
     public interface INavigationService
     {
+        NavigationPage Navigation { get; }
+
         Task NavigateTo<T>() where T : Page;
     }
 }

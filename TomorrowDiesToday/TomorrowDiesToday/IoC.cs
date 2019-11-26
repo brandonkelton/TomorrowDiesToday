@@ -18,6 +18,7 @@ using TomorrowDiesToday.Views;
 using TomorrowDiesToday.Navigation;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms;
+using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday
 {
@@ -42,18 +43,13 @@ namespace TomorrowDiesToday
             var registeredComponents = Container.ComponentRegistry.Registrations;
             foreach (var c in registeredComponents)
             {
-                c.Activated += ComponentActivated;
+                c.Activating += ProcessOnInit;
             }
 
             DependencyResolver.ResolveUsing(type => Container.IsRegistered(type) ? Container.Resolve(type) : null);
         }
 
-        public static void Destroy()
-        {
-            Container.Dispose();
-        }
-
-        private static async void ComponentActivated(object sender, ActivatedEventArgs<object> e)
+        private static async void ProcessOnInit(object sender, ActivatingEventArgs<object> e)
         {
             if (e.Instance is IOnInit)
             {
@@ -62,12 +58,18 @@ namespace TomorrowDiesToday
 
             if (e.Instance is IOnInitAsync)
             {
-                await (e.Instance as IOnInitAsync).OnInitAsync();
+                await (e.Instance as IOnInitAsync).OnInitAsync().ConfigureAwait(true);
             }
+        }
+
+        public static void Destroy()
+        {
+            Container.Dispose();
         }
 
         private static void RegisterServices(ContainerBuilder builder)
         {
+            builder.RegisterType<LocalStorageService>().As<ILocalStorageService>().SingleInstance();
             builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
             builder.RegisterType<GameService>().As<IGameService>().SingleInstance();
             builder.RegisterType<PlayerService>().As<IPlayerService>().SingleInstance();
@@ -86,6 +88,7 @@ namespace TomorrowDiesToday
             builder.RegisterType<JoinGameViewModel>().As<IJoinGameViewModel>().SingleInstance();
             builder.RegisterType<SelectCharacterViewModel>().As<ISelectCharacterViewModel>().SingleInstance();
             builder.RegisterType<WaitForPlayersViewModel>().As<IWaitForPlayersViewModel>().SingleInstance();
+            builder.RegisterType<ResumeGameViewModel>().As<IResumeGameViewModel>().SingleInstance();
         }
 
         private static void RegisterViews(ContainerBuilder builder)
@@ -98,6 +101,7 @@ namespace TomorrowDiesToday
             builder.RegisterType<JoinGamePage>().SingleInstance();
             builder.RegisterType<SelectCharacterPage>().SingleInstance();
             builder.RegisterType<WaitForPlayersPage>().SingleInstance();
+            builder.RegisterType<ResumeGamePage>().SingleInstance();
         }
 
         private static void RegisterAndConfigureDB(ContainerBuilder builder)

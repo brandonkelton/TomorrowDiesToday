@@ -9,6 +9,8 @@ namespace TomorrowDiesToday.Models
 
         public string PlayerId { get; set; }
 
+        public ArmamentType PlayerType { get; set; }
+
         public List<PlayerModel> Players { get; set; }
 
         public List<TileModel> Tiles { get; set; }
