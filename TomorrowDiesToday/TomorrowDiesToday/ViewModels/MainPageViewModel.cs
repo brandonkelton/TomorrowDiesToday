@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,6 +80,8 @@ namespace TomorrowDiesToday.ViewModels
                 Players.Clear();
                 playerModels.ForEach(playerModel =>
                 {
+                    List<SquadModel> sortedSquads = playerModel.Squads.OrderBy(squad => squad.SquadId).ToList();
+                    playerModel.Squads = sortedSquads;
                     Players.Add(playerModel);
                 });
             });
