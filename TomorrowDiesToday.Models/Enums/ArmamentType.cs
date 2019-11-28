@@ -83,6 +83,9 @@ namespace TomorrowDiesToday.Models
         [Description("Ugo Diplomacy")]
         UgoDiplomacy,
 
+        [Description("Hack the Planet")]
+        HackThePlanet,
+
         #endregion
 
         [Description("No Armament Selected")]

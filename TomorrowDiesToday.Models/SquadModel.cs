@@ -38,7 +38,7 @@ namespace TomorrowDiesToday.Models
             Abilities.Add(new Armament(ArmamentType.UgoStealth, new ArmamentStats(0, 1, 0, 0)));
             Abilities.Add(new Armament(ArmamentType.UgoCunning, new ArmamentStats(0, 0, 1, 0)));
             Abilities.Add(new Armament(ArmamentType.UgoDiplomacy, new ArmamentStats(0, 0, 0, 1)));
-            Abilities.Add(new Armament(ArmamentType.HackTheWorld, new ArmamentStats(0, 2, 2, 1)));
+            Abilities.Add(new Armament(ArmamentType.HackThePlanet, new ArmamentStats(0, 2, 2, 1)));
         }
     }
 }
