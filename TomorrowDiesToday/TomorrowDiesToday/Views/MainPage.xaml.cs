@@ -12,6 +12,22 @@ namespace TomorrowDiesToday.Views
     // Learn more about making custom code visible in the Xamarin.Forms previewer
     // by visiting https://aka.ms/xamarinforms-previewer
     [DesignTimeVisible(false)]
+
+    public class ToggleSelectedSquadButtonTrigger : TriggerAction<Button>
+    {
+        protected override void Invoke(Button sender)
+        {
+            if(sender.Text == "+")
+            {
+                sender.Text = "-";
+            }
+            else
+            {
+                sender.Text = "+";
+            }
+        }
+    }
+
     public partial class MainPage : ContentPage
     {
         public MainPage()

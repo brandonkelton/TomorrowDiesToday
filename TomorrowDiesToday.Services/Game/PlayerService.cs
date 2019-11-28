@@ -39,6 +39,8 @@ namespace TomorrowDiesToday.Services.Game
         private string _gameId => _gameService.Game.GameId;
         private string _playerId => _gameService.Game.PlayerId;
         private List<PlayerModel> _players => _gameService.Game.Players;
+        private List<PlayerModel> _otherPlayers => _players.Where(player => player.PlayerId != _playerId).ToList();
+
         #endregion
 
         #region Constructor
@@ -223,11 +225,17 @@ namespace TomorrowDiesToday.Services.Game
 
             _squadUpdateSubscription = _squadService.SquadUpdate.Subscribe(squadModel =>
             {
-                var thisPlayer = _players.Where(player => player.PlayerId == _playerId).FirstOrDefault();
-                var thisSquad = thisPlayer.Squads.Where(squad => squad.SquadId == squadModel.SquadId).FirstOrDefault();
-                thisPlayer.Squads.Remove(thisSquad);
-                thisPlayer.Squads.Add(squadModel);
-                _thisPlayerUpdate.OnNext(thisPlayer);
+                var targetPlayer = _players.Where(player => player.PlayerId == squadModel.PlayerId).FirstOrDefault();
+                var targetSquad = targetPlayer.Squads.Where(squad => squad.SquadId == squadModel.SquadId).FirstOrDefault();
+                targetPlayer.Squads.Remove(targetSquad);
+                targetPlayer.Squads.Add(squadModel);
+
+                if (squadModel.PlayerId == _playerId)
+                {
+                    _thisPlayerUpdate.OnNext(targetPlayer);
+                }
+
+                 _otherPlayersUpdate.OnNext(_otherPlayers);
             });
         }
 
