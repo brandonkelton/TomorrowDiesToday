@@ -92,7 +92,7 @@ namespace TomorrowDiesToday.ViewModels
 
         private void ToggleSelectedSquad(string squadId)
         {
-            SquadModel squadModel = Players.Select(player => player.Squads.Where(squad => squad.SquadId == squadId).FirstOrDefault()).FirstOrDefault();
+            SquadModel squadModel = Players.SelectMany(player => player.Squads.Where(squad => squad.SquadId == squadId)).FirstOrDefault();
             _squadService.ToggleSelected(squadModel);            
         }
         #endregion

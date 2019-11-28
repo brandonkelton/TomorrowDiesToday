@@ -59,7 +59,8 @@ namespace TomorrowDiesToday.Services.Game
             {
                 GameId = gameId,
                 Players = new List<PlayerModel>(),
-                Tiles = new List<TileModel>()
+                Tiles = new List<TileModel>(),
+                SelectedSquadStats = new SquadStats()
             };
             await _gameDataService.Create(_game);
             _thisGame.OnNext(Game);
@@ -80,7 +81,8 @@ namespace TomorrowDiesToday.Services.Game
                 {
                     GameId = gameId,
                     Players = new List<PlayerModel>(),
-                    Tiles = new List<TileModel>()
+                    Tiles = new List<TileModel>(),
+                    SelectedSquadStats = new SquadStats()
                 };
                 _thisGame.OnNext(Game);
                 return true;

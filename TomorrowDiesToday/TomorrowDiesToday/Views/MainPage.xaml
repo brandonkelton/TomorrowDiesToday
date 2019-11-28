@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
              xmlns:local="clr-namespace:TomorrowDiesToday.Views"
              mc:Ignorable="d"
+             x:Name="Main"
              x:Class="TomorrowDiesToday.Views.MainPage"
              Style="{StaticResource PageStyle}"
              Title="{Binding Title}">    
@@ -150,7 +151,7 @@
                                                                 WidthRequest="30" 
                                                                 Text="+" 
                                                                 CommandParameter="{Binding SquadId}"
-                                                                Command="{Binding ToggleSelectedSquadCommand}" />
+                                                                Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
                                                     </StackLayout>
                                                 </ViewCell>
                                             </DataTemplate>

@@ -32,6 +32,16 @@ namespace TomorrowDiesToday.Services.Game
 
         #endregion
 
+        #region Constructor
+
+        public SquadService(IGameService gameService)
+        {
+            _gameService = gameService;
+        }
+
+        #endregion
+
+
         #region Public Methods
 
         public void CalculateSquadStats(SquadModel squadModel)
