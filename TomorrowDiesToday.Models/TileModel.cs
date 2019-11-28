@@ -27,6 +27,8 @@ namespace TomorrowDiesToday.Models
 
         public bool IsHQ { get; set; }
 
+        public bool IsHacked { get; set; }
+
         public TileStats Stats
         {
             get
@@ -46,6 +48,11 @@ namespace TomorrowDiesToday.Models
                     stats.Stealth.SetValue(_missionStats.Stealth.Value);
                     stats.Cunning.SetValue(_missionStats.Cunning.Value);
                     stats.Diplomacy.SetValue(_missionStats.Diplomacy.Value);
+                }
+
+                if (IsHacked)
+                {
+                    stats.Cunning.SetValue(stats.Cunning.Value + 2);
                 }
 
                 if (IsAgentCIA)
