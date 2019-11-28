@@ -17,6 +17,8 @@ namespace TomorrowDiesToday.Models
 
         public SquadStats Stats { get; set; } = new SquadStats();
 
+        public bool IsSelectable => !IsSelected;
+
         public bool IsSelected { get; set; }
 
         public SquadModel()

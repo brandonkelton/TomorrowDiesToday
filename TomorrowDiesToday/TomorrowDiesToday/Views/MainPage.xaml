@@ -145,11 +145,20 @@
                                                                Padding="0,5,0,0"/>
                                                         <Label Text="{Binding Stats.Stealth.Value}" 
                                                                Padding="0,5,0,0"/>
-                                                        <Button Padding="0" 
+                                                        <Button IsVisible="{Binding IsSelectable}"
+                                                                Padding="0" 
                                                                 FontSize="12" 
                                                                 HeightRequest="30" 
                                                                 WidthRequest="30" 
                                                                 Text="+" 
+                                                                CommandParameter="{Binding SquadId}"
+                                                                Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
+                                                        <Button IsVisible="{Binding IsSelected}"
+                                                                Padding="0" 
+                                                                FontSize="12" 
+                                                                HeightRequest="30" 
+                                                                WidthRequest="30" 
+                                                                Text="-" 
                                                                 CommandParameter="{Binding SquadId}"
                                                                 Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
                                                     </StackLayout>
