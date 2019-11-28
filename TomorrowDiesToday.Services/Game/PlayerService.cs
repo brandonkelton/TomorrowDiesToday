@@ -39,6 +39,7 @@ namespace TomorrowDiesToday.Services.Game
         private string _gameId => _gameService.Game.GameId;
         private string _playerId => _gameService.Game.PlayerId;
         private List<PlayerModel> _players => _gameService.Game.Players;
+        private List<PlayerModel> _otherPlayers => _players.Where(player => player.PlayerId != _playerId).ToList();
 
         #endregion
 
@@ -234,7 +235,7 @@ namespace TomorrowDiesToday.Services.Game
                     _thisPlayerUpdate.OnNext(targetPlayer);
                 }
 
-                 _otherPlayersUpdate.OnNext(_players);
+                 _otherPlayersUpdate.OnNext(_otherPlayers);
             });
         }
 
