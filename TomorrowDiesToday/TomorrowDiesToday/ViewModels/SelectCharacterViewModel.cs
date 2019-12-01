@@ -13,6 +13,7 @@ using Xamarin.Forms;
 using TomorrowDiesToday.Navigation;
 using TomorrowDiesToday.Views;
 using TomorrowDiesToday.Models.Enums;
+using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday.ViewModels
 {
@@ -22,15 +23,17 @@ namespace TomorrowDiesToday.ViewModels
         private IGameService _gameService;
         private IPlayerService _playerService;
         private INavigationService _navService;
+        private ILocalStorageService _storageService;
         private IDisposable _gameSubscription = null;
 
         public ICommand SelectPlayerCommand { get; private set; }
 
-        public SelectCharacterViewModel(IGameService gameService, IPlayerService playerService, INavigationService navService)
+        public SelectCharacterViewModel(IGameService gameService, IPlayerService playerService, INavigationService navService, ILocalStorageService storageService)
         {
             _gameService = gameService;
             _playerService = playerService;
             _navService = navService;
+            _storageService = storageService;
 
             SelectPlayerCommand = new Command<string>(async playerId => await SelectPlayer(playerId));
             SubscribeToUpdates();
@@ -76,10 +79,11 @@ namespace TomorrowDiesToday.ViewModels
             IsLoadingData = true;
             if (! await _playerService.ChoosePlayer(playerId))
             {
-                PlayerAlreadySelected = $"{playerId} Has Already Been Sdelected";
+                PlayerAlreadySelected = $"{playerId} Has Already Been Selected";
                 IsLoadingData = false;
                 return;
             }
+            await _storageService.SaveGame();
             IsLoadingData = false;
 
             await _navService.NavigateTo<MainPage>();
