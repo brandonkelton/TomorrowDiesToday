@@ -29,23 +29,23 @@ namespace TomorrowDiesToday
             var dbClient = IoC.Container.Resolve<IDBClient>();
             var gameService = IoC.Container.Resolve<IGameService>();
 
-            var task = Task.Run(async () =>
+            Task.Run(async () =>
             {
                 if (gameService.Game.GameId != null && gameService.Game.PlayerId != null)
                 {
                     await storageService.SaveGame();
                     await dbClient.DeleteGame(gameService.Game.GameId, gameService.Game.PlayerId);
                 }
-            });
+            }).Wait();
         }
 
         protected override void OnResume()
         {
             var storageService = IoC.Container.Resolve<ILocalStorageService>();
-            var task = Task.Run(async () =>
+            Task.Run(async () =>
             {
                 await storageService.LoadGame();
-            });
+            }).Wait();
         }
 
         protected override void CleanUp()
