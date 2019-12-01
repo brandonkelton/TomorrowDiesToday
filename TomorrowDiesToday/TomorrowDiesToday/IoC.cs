@@ -129,7 +129,7 @@ namespace TomorrowDiesToday
                 builder.RegisterType<AmazonDynamoDBClient>().OnPreparing(args =>
                 {
                     var credentialsParam = new NamedParameter("credentials", credentials);
-                    var regionParam = new NamedParameter("region", RegionEndpoint.USEast2);
+                    var regionParam = new NamedParameter("region", RegionEndpoint.USWest2);
                     args.Parameters = new[] { credentialsParam, regionParam };
                 }).As<IAmazonDynamoDB>().SingleInstance();
             }
