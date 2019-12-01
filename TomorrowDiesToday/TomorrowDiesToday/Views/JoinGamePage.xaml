@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="TomorrowDiesToday.Views.JoinGamePage"
+             Style="{StaticResource PageStyle}"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <Binding Path="JoinGameViewModel" Source="{StaticResource ViewModelLocator}"/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Grid.Row="2" Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="Center">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <Entry Grid.Row="0" Text="{Binding GameId}" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                <Button Grid.Row="1" Text="Next" Command="{Binding JoinGameCommand}"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

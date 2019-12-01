@@ -13,17 +13,17 @@ namespace TomorrowDiesToday.Services.Database
 
         Task<bool> PlayerExists(string gameId, string playerId);
 
-        Task CreateGame(string gameId);
-
-        Task CreatePlayer(string gameId, string playerId);
-
         Task DeleteGame(string gameId, string playerId);
+
+        Task<GameDTO> RequestGame(string gameId);
 
         Task<PlayerDTO> RequestPlayer(string gameId, string playerId);
 
         Task<List<PlayerDTO>> RequestPlayerList(string gameId);
 
-        Task Update(PlayerDTO player);
+        Task UpdateGame(GameDTO game);
+
+        Task UpdatePlayer(PlayerDTO player);
 
         //Temporary
         Task InitializeGameTable();

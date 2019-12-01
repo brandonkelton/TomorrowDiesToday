@@ -11,7 +11,11 @@
     <item name="windowActionBar">false</item>
     <!-- Set theme colors from http://www.google.com/design/spec/style/color.html#color-color-palette -->
     <!-- colorPrimary is used for the default action bar background -->
-    <item name="colorPrimary">#2196F3</item>
+    <!-- <item name="colorPrimary">#2196F3</item> -->
+    
+    <item name="colorPrimary">#222222</item>
+    <!-- <item name="android:textColorPrimary">#FF0000</item> -->
+    
     <!-- colorPrimaryDark is used for the status bar -->
     <item name="colorPrimaryDark">#1976D2</item>
     <!-- colorAccent is used as the default value for colorControlActivated
@@ -27,4 +31,12 @@
   <style name="AppCompatDialogStyle" parent="Theme.AppCompat.Light.Dialog">
     <item name="colorAccent">#FF4081</item>
   </style>
+  
+  <!-- ToolBar -->
+  <style name="ToolBarStyle" parent="Theme.AppCompat">
+      <item name="android:textColorPrimary">#FF0000</item>
+      <item name="android:textColorSecondary">#FF0000</item>
+      <item name="actionMenuTextColor">#FF0000</item>      
+  </style>
+  
 </resources>

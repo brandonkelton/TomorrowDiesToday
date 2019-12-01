@@ -1,10 +1,10 @@
 ﻿using Autofac;
-using System;
-using TomorrowDiesToday.Services;
-using TomorrowDiesToday.Views;
+using System.Threading.Tasks;
+using TomorrowDiesToday.Navigation;
+using TomorrowDiesToday.Services.Database;
+using TomorrowDiesToday.Services.Game;
+using TomorrowDiesToday.Services.LocalStorage;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
-using Xamarin.Forms.Xaml;
 
 namespace TomorrowDiesToday
 {
@@ -14,22 +14,44 @@ namespace TomorrowDiesToday
         {
             InitializeComponent();
             IoC.Initialize();
-            MainPage = new StartPage();
+            var navigationService = IoC.Container.Resolve<INavigationService>();
+            MainPage = navigationService.Navigation;
         }
 
         protected override void OnStart()
         {
-            // Handle when your app starts
+            
         }
 
         protected override void OnSleep()
         {
-            // Handle when your app sleeps
+            var storageService = IoC.Container.Resolve<ILocalStorageService>();
+            var dbClient = IoC.Container.Resolve<IDBClient>();
+            var gameService = IoC.Container.Resolve<IGameService>();
+
+            var task = Task.Run(async () =>
+            {
+                if (gameService.Game.GameId != null && gameService.Game.PlayerId != null)
+                {
+                    await storageService.SaveGame();
+                    await dbClient.DeleteGame(gameService.Game.GameId, gameService.Game.PlayerId);
+                }
+            });
         }
 
         protected override void OnResume()
         {
-            // Handle when your app resumes
+            var storageService = IoC.Container.Resolve<ILocalStorageService>();
+            var task = Task.Run(async () =>
+            {
+                await storageService.LoadGame();
+            });
+        }
+
+        protected override void CleanUp()
+        {
+            IoC.Destroy();
+            base.CleanUp();
         }
     }
 }

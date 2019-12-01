@@ -4,11 +4,56 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="TomorrowDiesToday.Views.StartPage">
+             x:Class="TomorrowDiesToday.Views.StartPage"
+             Style="{StaticResource PageStyle}"
+             Title="{Binding Title}">
     <ContentPage.BindingContext>
-        <Binding Path="StartPageViewModel" Source="{StaticResource ViewModelLocator}"/>
+        <Binding Path="StartPageViewModel" 
+                 Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0"
+                   Text="Tomorrow Dies Today"
+                   TextColor="Red" 
+                   FontSize="36" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="LayoutOptions.Center"/>
+            <StackLayout Grid.Row="1" 
+                         Orientation="Vertical" 
+                         VerticalOptions="Center" 
+                         HorizontalOptions="Center">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Row="0" 
+                            Text="Create Game" 
+                            Command="{Binding CreateGameCommand}"/>
+                    <Button Grid.Row="1" 
+                            Text="Join Game" 
+                            Command="{Binding JoinGameCommand}"/>
+                </Grid>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
+
+
+
+<!--
+    <ContentPage.Content>
+    -->
+        
+        <!--
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
@@ -22,17 +67,25 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
+        -->
+                        
                         <!--<RowDefinition Height="100"/>
                     <RowDefinition Height="40"/>-->
+        
+        <!--
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
                     <Button Grid.Row="0" Text="Create Game" Command="{Binding CreateGameCommand}"/>
                     <Button Grid.Row="1" Text="Join Game" Command="{Binding SetIsJoiningGameCommand}"/>
+        -->   
+    
                     <!--<Editor Grid.Row="2" Text="{Binding Text}"/>
                 <Button Grid.Row="3" Text="Encrypt" Command="{Binding EncryptCommand}"/>-->
                     <!--<Button Grid.Row="2" Text="Configure" Command="{Binding ConfigureTableCommand}"/>-->
+        
+        <!--
                 </Grid>
                 <Grid IsVisible="{Binding IsCreatingOrJoiningGame}">
                     <Grid.RowDefinitions>
@@ -100,5 +153,9 @@
                 </Grid>
             </StackLayout>
         </Grid>
+        -->
+
+    <!--
     </ContentPage.Content>
 </ContentPage>
+    -->

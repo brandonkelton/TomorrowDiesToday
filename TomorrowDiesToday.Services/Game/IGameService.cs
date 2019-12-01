@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using TomorrowDiesToday.Models;
 
 namespace TomorrowDiesToday.Services.Game
 {
     public interface IGameService
     {
-        string GameId { get; set; }
+        GameModel Game { get; }
 
-        string PlayerId { get; set; }
+        IObservable<string> ErrorMessage { get; }
+        IObservable<GameModel> ThisGame { get; }
 
-        string GenerateGameId();
+        Task CreateGame();
+        void SetGame(GameModel game);
+        Task<bool> JoinGame(string gameId);
     }
 }

@@ -7,8 +7,14 @@ namespace TomorrowDiesToday.Models
     {
         public string GameId { get; set; }
 
-        public PlayerModel MyPlayer { get; set; }
+        public string PlayerId { get; set; }
 
-        public List<PlayerModel> OtherPlayers { get; set; }
+        public ArmamentType PlayerType { get; set; }
+
+        public List<PlayerModel> Players { get; set; }
+
+        public List<TileModel> Tiles { get; set; }
+
+        public SquadStats SelectedSquadStats { get; set; }
     }
 }

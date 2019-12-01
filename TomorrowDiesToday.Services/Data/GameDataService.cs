@@ -7,22 +7,22 @@ using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Services.Database.DTOs;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Services.Game;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Services.Data
 {
     public class GameDataService : IDataService<GameModel, GameRequest>
     {
+        public IObservable<GameModel> DataReceived => _update;
+        public IObservable<List<GameModel>> DataListReceived => _updateListReceived;
 
         private readonly ReplaySubject<GameModel> _update = new ReplaySubject<GameModel>(1);
-        private readonly ReplaySubject<List<GameModel>> _updateList = new ReplaySubject<List<GameModel>>(1);
-
+        private readonly ReplaySubject<List<GameModel>> _updateListReceived = new ReplaySubject<List<GameModel>>(1);
         private IDBClient _client;
-        private IGameService _game;
 
-        public GameDataService(IDBClient client, IGameService game)
+        public GameDataService(IDBClient client)
         {
             _client = client;
-            _game = game;
         }
 
         public async Task ConfigureTable()
@@ -30,47 +30,85 @@ namespace TomorrowDiesToday.Services.Data
             await _client.InitializeGameTable();
         }
 
-        public IObservable<GameModel> DataReceived => _update;
-        public IObservable<List<GameModel>> DataListReceived => _updateList;
-
-        public async Task Create(string id)
+        public async Task Create(GameModel gameModel)
         {
-            await _client.CreateGame(id);
+            var gameDTO = GameToDTO(gameModel);
+            await _client.UpdateGame(gameDTO);
         }
 
-        public async Task<bool> Exists(string id)
+        public async Task<bool> Exists(GameRequest request)
         {
-            return await _client.GameExists(_game.GameId);
+            bool result = await _client.GameExists(request.GameId);
+            return result;
         }
 
         public async Task RequestUpdate(GameRequest request)
         {
-            await _client.RequestPlayerList(_game.GameId);
+            var gameDTO = await _client.RequestGame(request.GameId);
+            var gameModel = GameToModel(gameDTO);
+            _update.OnNext(gameModel);
         }
 
-        public async Task Update(GameModel model)
+        public async Task Update(GameModel gameModel)
         {
-            var squadDTOs = new List<SquadDTO>();
-            if (model.MyPlayer?.Squads != null)
+            if (gameModel.Tiles.Count > 0)
             {
-                foreach (Squad squad in model.MyPlayer.Squads)
-                {
-                    var squadDTO = new SquadDTO
-                    {
-                        Id = squad.Id,
-                        Count = squad.Count
-                    };
-                    squadDTOs.Add(squadDTO);
-                }
+                var gameDTO = GameToDTO(gameModel);
+                await _client.UpdateGame(gameDTO);
             }
-            var player = new PlayerDTO
-            {
-                GameId = _game.GameId,
-                PlayerId = model.MyPlayer.PlayerId,
-                Squads = squadDTOs
-            };
+        }
 
-            await _client.Update(player);
+        private GameDTO GameToDTO(GameModel gameModel)
+        {
+            var tileDTOs = new List<TileDTO>();
+            foreach (TileModel tileModel in gameModel.Tiles)
+            {
+                var tileDTO = new TileDTO
+                {
+                    AlertTokens = tileModel.AlertTokens,
+                    IsActive = tileModel.IsActive,
+                    IsAgentCIA = tileModel.IsAgentCIA,
+                    IsAgentInterpol = tileModel.IsAgentInterpol,
+                    IsDoomsday = tileModel.IsDoomsday,
+                    IsFlipped = tileModel.IsFlipped,
+                    IsGlobalSecurityEvent = tileModel.IsGlobalSecurityEvent,
+                    IsHQ = tileModel.IsHQ,
+                    TileId = tileModel.TileId
+                };
+                tileDTOs.Add(tileDTO);
+            }
+            var gameDTO = new GameDTO
+            {
+                GameId = gameModel.GameId,
+                Tiles = tileDTOs
+            };
+            return gameDTO;
+        }
+
+        private GameModel GameToModel(GameDTO gameDTO)
+        {
+            var tileModels = new List<TileModel>();
+            foreach (TileDTO tileDTO in gameDTO.Tiles)
+            {
+                var tileModel = new TileModel((TileType) int.Parse(tileDTO.TileId))
+                {
+                    AlertTokens = tileDTO.AlertTokens,
+                    IsActive = tileDTO.IsActive,
+                    IsAgentCIA = tileDTO.IsAgentCIA,
+                    IsAgentInterpol = tileDTO.IsAgentInterpol,
+                    IsDoomsday = tileDTO.IsDoomsday,
+                    IsFlipped = tileDTO.IsFlipped,
+                    IsGlobalSecurityEvent = tileDTO.IsGlobalSecurityEvent,
+                    IsHQ = tileDTO.IsHQ,
+                    TileId = tileDTO.TileId
+                };
+                tileModels.Add(tileModel);
+            }
+            var gameModel = new GameModel
+            {
+                Tiles = tileModels
+            };
+            return gameModel;
         }
     }
 }
