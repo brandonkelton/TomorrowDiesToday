@@ -12,14 +12,10 @@ namespace TomorrowDiesToday.Navigation
 {
     public class NavigationService : INavigationService, IOnInitAsync
     {
-        private ILocalStorageService _localStorage;
-
         public NavigationPage Navigation { get; private set; }
 
-        public NavigationService(ILocalStorageService localStorage)
+        public NavigationService()
         {
-            _localStorage = localStorage;
-
             var rootPage = new RootPage();
             Navigation = new NavigationPage(rootPage);
         }
@@ -32,7 +28,9 @@ namespace TomorrowDiesToday.Navigation
 
         public async Task OnInitAsync()
         {
-            if (await _localStorage.GetGameExists().ConfigureAwait(true))
+            var localStorage = IoC.Container.Resolve<ILocalStorageService>();
+
+            if (await localStorage.GetGameExists().ConfigureAwait(true))
             {
                 await NavigateTo<ResumeGamePage>().ConfigureAwait(true);
             }

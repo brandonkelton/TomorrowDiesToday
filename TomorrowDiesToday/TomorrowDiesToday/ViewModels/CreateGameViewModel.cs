@@ -13,6 +13,7 @@ using Xamarin.Forms;
 using TomorrowDiesToday.Models.Templates;
 using TomorrowDiesToday.Navigation;
 using TomorrowDiesToday.Views;
+using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday.ViewModels
 {
@@ -20,14 +21,16 @@ namespace TomorrowDiesToday.ViewModels
     {
         public string Title => "Tomorrow Dies Today";
         private IGameService _gameService;
+        private ILocalStorageService _storageService;
         private INavigationService _navService;
         private IDisposable _gameSubscription = null;
 
         public ICommand NextStepCommand { get; private set; }
 
-        public CreateGameViewModel(IGameService gameService, INavigationService navService)
+        public CreateGameViewModel(IGameService gameService, INavigationService navService, ILocalStorageService storageService)
         {
             _gameService = gameService;
+            _storageService = storageService;
             _navService = navService;
 
             NextStepCommand = new Command(async () => await GoToCharacterPage());
@@ -70,11 +73,9 @@ namespace TomorrowDiesToday.ViewModels
         {
             IsLoadingData = true;
 
-            while (!GameCreated)
-            {
-                await _gameService.CreateGame();
-                GameCreated = true;
-            }
+            await _gameService.CreateGame();
+            await _storageService.SaveGame();
+            GameCreated = true;
 
             IsLoadingData = false;
         }

@@ -8,7 +8,7 @@
              BackgroundColor="Black">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Tomorrow Never Dies!"
+            <Label Text="Tomorrow Dies Today!"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand"
                 FontSize="32"
