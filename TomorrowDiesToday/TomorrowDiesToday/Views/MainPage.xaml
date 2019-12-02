@@ -5,12 +5,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cards="clr-namespace:PanCardView;assembly=PanCardView"
              xmlns:controls="clr-namespace:PanCardView.Controls;assembly=PanCardView"
-             xmlns:local="clr-namespace:TomorrowDiesToday.Views"
              mc:Ignorable="d"
              x:Name="Main"
              x:Class="TomorrowDiesToday.Views.MainPage"
              Style="{StaticResource PageStyle}"
-             Title="{Binding Title}">    
+             Title="{Binding Title}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Name="addPlayer" 
                      Order="Primary" 
@@ -21,16 +20,30 @@
         <Binding Path="MainPageViewModel" 
                  Source="{StaticResource ViewModelLocator}"/>
     </ContentPage.BindingContext>
-    <RelativeLayout>
-        <!-- Mission Tiles -->
-        <cards:CarouselView x:Name="tiles"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="Sync" Margin="10, 0, 0, 0" Command="{Binding SyncGameCommand}"/>
+            <Button Grid.Column="2" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="Exit" Margin="0, 0, 10, 0" Command="{Binding ExitGameCommand}"/>
+        </Grid>
+        <RelativeLayout Grid.Row="1">
+            <!-- Mission Tiles -->
+            <cards:CarouselView x:Name="tiles"
             ItemsSource="{Binding Items}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=.55,Constant=0}">
-            <cards:CarouselView.ItemTemplate>
-                <DataTemplate>
-                    <ContentView>
-                        <Frame VerticalOptions="Center" 
+                <cards:CarouselView.ItemTemplate>
+                    <DataTemplate>
+                        <ContentView>
+                            <Frame VerticalOptions="Center" 
                                HorizontalOptions="Center" 
                                HeightRequest="300" 
                                WidthRequest="300" 
@@ -39,16 +52,16 @@
                                IsClippedToBounds="true" 
                                CornerRadius="10" 
                                BackgroundColor="#4b4c4c">
-                            <StackLayout Spacing="5">
-                                <Button Text="{Binding Title}"/>
-                            </StackLayout>
-                        </Frame>                        
-                    </ContentView>
-                </DataTemplate>
-            </cards:CarouselView.ItemTemplate>
-        </cards:CarouselView>
-        <!-- Player -->
-        <Frame x:Name="bottomSheet" 
+                                <StackLayout Spacing="5">
+                                    <Button Text="{Binding Title}"/>
+                                </StackLayout>
+                            </Frame>
+                        </ContentView>
+                    </DataTemplate>
+                </cards:CarouselView.ItemTemplate>
+            </cards:CarouselView>
+            <!-- Player -->
+            <Frame x:Name="bottomSheet" 
                HasShadow="true" 
                CornerRadius="8" 
                Padding="1,4,1,0" 
@@ -56,50 +69,50 @@
                RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=.6,Constant=0}"
                RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
                RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-            <Frame.GestureRecognizers>
-                <SwipeGestureRecognizer Direction="Up,Down" 
+                <Frame.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Up,Down" 
                                         Swiped="SwipeBottom"/>
-                <PanGestureRecognizer PanUpdated="OnPanUpdated" />
-            </Frame.GestureRecognizers>
-            <StackLayout Spacing="5">
-                <BoxView HeightRequest="5" 
+                    <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+                </Frame.GestureRecognizers>
+                <StackLayout Spacing="5">
+                    <BoxView HeightRequest="5" 
                          CornerRadius="2" 
                          WidthRequest="50" 
                          BackgroundColor="Gray" 
                          HorizontalOptions="Center"/>
-                <StackLayout Orientation="Horizontal">
-                    <Button Text="Squad 1"
+                    <StackLayout Orientation="Horizontal">
+                        <Button Text="Squad 1"
                             BackgroundColor="#ffffff"
                             BorderRadius="10"
                             BorderWidth="2"
                             BorderColor="#000000"
                             HorizontalOptions="StartAndExpand"/>
-                    <Button Text="Squad 2"
+                        <Button Text="Squad 2"
                             BackgroundColor="#ffffff"
                             BorderRadius="10" 
                             BorderWidth="2" 
                             BorderColor="#000000" 
                             HorizontalOptions="CenterAndExpand"/>
-                    <Button Text="Squad 3" 
+                        <Button Text="Squad 3" 
                             BackgroundColor="#ffffff" 
                             BorderRadius="10" 
                             BorderWidth="2" 
                             BorderColor="#000000" 
                             HorizontalOptions="EndAndExpand"/>
+                    </StackLayout>
                 </StackLayout>
-            </StackLayout>
-        </Frame>
-        <!-- Other Players -->
-        <BoxView x:Name="swiper" 
+            </Frame>
+            <!-- Other Players -->
+            <BoxView x:Name="swiper" 
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0,Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.05,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-            <BoxView.GestureRecognizers>
-                <SwipeGestureRecognizer Direction="Right" 
+                <BoxView.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Right" 
                                         Swiped="OnPlayerClicked"/>
-            </BoxView.GestureRecognizers>
-        </BoxView>
-        <Frame x:Name="sideSheet" 
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <Frame x:Name="sideSheet" 
                HasShadow="true" 
                CornerRadius="8" 
                Padding="1,4,1,0" 
@@ -107,45 +120,45 @@
                RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=-.76,Constant=0}"
                RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=.75,Constant=0}"
                RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-            <Frame.GestureRecognizers>
-                <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
-            </Frame.GestureRecognizers>
-            <StackLayout Orientation="Vertical" 
+                <Frame.GestureRecognizers>
+                    <PanGestureRecognizer PanUpdated="OnPanUpdatedSide" />
+                </Frame.GestureRecognizers>
+                <StackLayout Orientation="Vertical" 
                          Margin="10,0,0,0">
-                <Button Text="Refresh"
+                    <!--<Button Text="Refresh"
                         HorizontalOptions="Center"
-                        Command="{Binding RefreshPlayerListCommand}"/>
-                <ListView ItemsSource="{Binding Players}" 
+                        Command="{Binding RefreshPlayerListCommand}"/>-->
+                    <ListView ItemsSource="{Binding Players}" 
                           HasUnevenRows="True" 
                           Margin="5,0,0,0" 
                           SelectionMode="None">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout Orientation="Vertical">
-                                    <Label Text="{Binding PlayerName}" 
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <StackLayout Orientation="Vertical">
+                                        <Label Text="{Binding PlayerName}" 
                                            Padding="0,5,0,0"/>
-                                    <ListView x:Name="Squads" 
+                                        <ListView x:Name="Squads" 
                                               ItemsSource="{Binding Squads}" 
                                               SelectionMode="None" 
                                               RowHeight="40">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <ViewCell>
-                                                    <StackLayout Orientation="Horizontal"
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ViewCell>
+                                                        <StackLayout Orientation="Horizontal"
                                                                  Padding="5">
-                                                        <CheckBox IsChecked="{Binding IsSelected}"/>
-                                                        <Label Text="{Binding SquadId}" 
+                                                            <CheckBox IsChecked="{Binding IsSelected}"/>
+                                                            <Label Text="{Binding SquadId}" 
                                                                Padding="0,5,0,0"/>
-                                                        <Label Text="{Binding Stats.Combat.Value}" 
+                                                            <Label Text="{Binding Stats.Combat.Value}" 
                                                                Padding="0,5,0,0"/>
-                                                        <Label Text="{Binding Stats.Cunning.Value}" 
+                                                            <Label Text="{Binding Stats.Cunning.Value}" 
                                                                Padding="0,5,0,0"/>
-                                                        <Label Text="{Binding Stats.Diplomacy.Value}" 
+                                                            <Label Text="{Binding Stats.Diplomacy.Value}" 
                                                                Padding="0,5,0,0"/>
-                                                        <Label Text="{Binding Stats.Stealth.Value}" 
+                                                            <Label Text="{Binding Stats.Stealth.Value}" 
                                                                Padding="0,5,0,0"/>
-                                                        <Button IsVisible="{Binding IsSelectable}"
+                                                            <Button IsVisible="{Binding IsSelectable}"
                                                                 Padding="0" 
                                                                 FontSize="12" 
                                                                 HeightRequest="30" 
@@ -153,7 +166,7 @@
                                                                 Text="+" 
                                                                 CommandParameter="{Binding SquadId}"
                                                                 Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
-                                                        <Button IsVisible="{Binding IsSelected}"
+                                                            <Button IsVisible="{Binding IsSelected}"
                                                                 Padding="0" 
                                                                 FontSize="12" 
                                                                 HeightRequest="30" 
@@ -161,17 +174,18 @@
                                                                 Text="-" 
                                                                 CommandParameter="{Binding SquadId}"
                                                                 Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
-                                                    </StackLayout>
-                                                </ViewCell>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
-                                </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackLayout>
-        </Frame>
-    </RelativeLayout>
+                                                        </StackLayout>
+                                                    </ViewCell>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+            </Frame>
+        </RelativeLayout>
+    </Grid>
 </ContentPage>

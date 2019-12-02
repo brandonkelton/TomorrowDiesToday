@@ -8,12 +8,12 @@ namespace TomorrowDiesToday
 {
     public class ViewModelLocator
     {
-        public IMainPageViewModel MainPageViewModel => IoC.Container.Resolve<IMainPageViewModel>();
-        public IStartPageViewModel StartPageViewModel => IoC.Container.Resolve<IStartPageViewModel>();
-        public ICreateGameViewModel CreateGameViewModel => IoC.Container.Resolve<ICreateGameViewModel>();
-        public IJoinGameViewModel JoinGameViewModel => IoC.Container.Resolve<IJoinGameViewModel>();
-        public ISelectCharacterViewModel SelectCharacterViewModel => IoC.Container.Resolve<ISelectCharacterViewModel>();
-        public IWaitForPlayersViewModel WaitForPlayersViewModel => IoC.Container.Resolve<IWaitForPlayersViewModel>();
-        public IResumeGameViewModel ResumeGameViewModel => IoC.Container.Resolve<IResumeGameViewModel>();
+        public MainPageViewModel MainPageViewModel => IoC.Container.Resolve<MainPageViewModel>();
+        public StartPageViewModel StartPageViewModel => IoC.Container.Resolve<StartPageViewModel>();
+        public CreateGameViewModel CreateGameViewModel => IoC.Container.Resolve<CreateGameViewModel>();
+        public JoinGameViewModel JoinGameViewModel => IoC.Container.Resolve<JoinGameViewModel>();
+        public SelectCharacterViewModel SelectCharacterViewModel => IoC.Container.Resolve<SelectCharacterViewModel>();
+        public WaitForPlayersViewModel WaitForPlayersViewModel => IoC.Container.Resolve<WaitForPlayersViewModel>();
+        public ResumeGameViewModel ResumeGameViewModel => IoC.Container.Resolve<ResumeGameViewModel>();
     }
 }

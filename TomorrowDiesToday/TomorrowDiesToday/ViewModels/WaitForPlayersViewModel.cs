@@ -15,7 +15,7 @@ using TomorrowDiesToday.Views;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class WaitForPlayersViewModel : BaseViewModel, IWaitForPlayersViewModel, IDisposable
+    public sealed class WaitForPlayersViewModel : BaseViewModel, IDisposable
     {
         private IGameService _gameService;
         private IPlayerService _playerService;

@@ -82,19 +82,17 @@ namespace TomorrowDiesToday
 
         private static void RegisterViewModels(ContainerBuilder builder)
         {
-            builder.RegisterType<MainPageViewModel>().As<IMainPageViewModel>().SingleInstance();
-            builder.RegisterType<StartPageViewModel>().As<IStartPageViewModel>().SingleInstance();
-            builder.RegisterType<CreateGameViewModel>().As<ICreateGameViewModel>().SingleInstance();
-            builder.RegisterType<JoinGameViewModel>().As<IJoinGameViewModel>().SingleInstance();
-            builder.RegisterType<SelectCharacterViewModel>().As<ISelectCharacterViewModel>().SingleInstance();
-            builder.RegisterType<WaitForPlayersViewModel>().As<IWaitForPlayersViewModel>().SingleInstance();
-            builder.RegisterType<ResumeGameViewModel>().As<IResumeGameViewModel>().SingleInstance();
+            builder.RegisterType<MainPageViewModel>().SingleInstance();
+            builder.RegisterType<StartPageViewModel>().SingleInstance();
+            builder.RegisterType<CreateGameViewModel>().SingleInstance();
+            builder.RegisterType<JoinGameViewModel>().SingleInstance();
+            builder.RegisterType<SelectCharacterViewModel>().SingleInstance();
+            builder.RegisterType<WaitForPlayersViewModel>().SingleInstance();
+            builder.RegisterType<ResumeGameViewModel>().SingleInstance();
         }
 
         private static void RegisterViews(ContainerBuilder builder)
         {
-            builder.RegisterType<TDTNavigationPage>().As<NavigationPage>().SingleInstance();
-
             builder.RegisterType<StartPage>().SingleInstance();
             builder.RegisterType<MainPage>().SingleInstance();
             builder.RegisterType<CreateGamePage>().SingleInstance();
