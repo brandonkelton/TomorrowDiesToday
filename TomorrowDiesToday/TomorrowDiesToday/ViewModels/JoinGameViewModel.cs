@@ -36,7 +36,11 @@ namespace TomorrowDiesToday.ViewModels
         public string GameId
         {
             get => _gameId;
-            set => SetProperty(ref _gameId, value);
+            set
+            {
+                var upperCasedValue = value.ToUpper();
+                SetProperty(ref _gameId, upperCasedValue);
+            }
         }
 
         private bool _invalidGameId;
