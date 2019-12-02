@@ -16,7 +16,7 @@ namespace TomorrowDiesToday.Services.Game
 
         // Observables
         public IObservable<string> ErrorMessage => _errorMessage;
-        public IObservable<GameModel> ThisGame => _thisGame;
+        public IObservable<GameModel> ThisGameUpdate => _thisGame;
 
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<GameModel> _thisGame = new ReplaySubject<GameModel>(1);

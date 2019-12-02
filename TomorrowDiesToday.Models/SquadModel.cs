@@ -21,6 +21,7 @@ namespace TomorrowDiesToday.Models
 
         public bool IsSelected { get; set; }
 
+
         public SquadModel()
         {
             // Initialize Armaments

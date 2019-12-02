@@ -91,7 +91,7 @@ namespace TomorrowDiesToday.ViewModels
 
         private void SubscribeToUpdates()
         {
-            _gameSubscription = _gameService.ThisGame.Subscribe(thisGame =>
+            _gameSubscription = _gameService.ThisGameUpdate.Subscribe(thisGame =>
             {
                 _gameId = thisGame.GameId;
             });

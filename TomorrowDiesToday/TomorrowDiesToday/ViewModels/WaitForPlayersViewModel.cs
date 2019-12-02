@@ -83,7 +83,7 @@ namespace TomorrowDiesToday.ViewModels
 
         private void SubscribeToUpdates()
         {
-            _gameSubscription = _gameService.ThisGame.Subscribe(gameModel =>
+            _gameSubscription = _gameService.ThisGameUpdate.Subscribe(gameModel =>
             {
                 GameId = gameModel.GameId;
                 var playerArmamentType = ((ArmamentType) int.Parse(gameModel.PlayerId));

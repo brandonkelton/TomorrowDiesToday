@@ -226,16 +226,15 @@ namespace TomorrowDiesToday.Services.Game
             _squadUpdateSubscription = _squadService.SquadUpdate.Subscribe(squadModel =>
             {
                 var targetPlayer = _players.Where(player => player.PlayerId == squadModel.PlayerId).FirstOrDefault();
-                var targetSquad = targetPlayer.Squads.Where(squad => squad.SquadId == squadModel.SquadId).FirstOrDefault();
-                targetPlayer.Squads.Remove(targetSquad);
-                targetPlayer.Squads.Add(squadModel);
 
                 if (squadModel.PlayerId == _playerId)
                 {
                     _thisPlayerUpdate.OnNext(targetPlayer);
                 }
-
-                 _otherPlayersUpdate.OnNext(_otherPlayers);
+                else
+                {
+                    _otherPlayersUpdate.OnNext(_otherPlayers);
+                }
             });
         }
 

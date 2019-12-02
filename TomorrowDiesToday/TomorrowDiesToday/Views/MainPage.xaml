@@ -67,26 +67,146 @@
                          WidthRequest="50" 
                          BackgroundColor="Gray" 
                          HorizontalOptions="Center"/>
+
+                <!-- Squad Selection Buttons -->
                 <StackLayout Orientation="Horizontal">
-                    <Button Text="Squad 1"
+                    <Button IsVisible="{Binding Squad1Selected}"
+                            Text="Squad 1"
                             BackgroundColor="#ffffff"
                             BorderRadius="10"
                             BorderWidth="2"
                             BorderColor="#000000"
                             HorizontalOptions="StartAndExpand"/>
-                    <Button Text="Squad 2"
+                    <Button IsVisible="{Binding Squad1Selectable}"
+                            Text="Squad 1"
+                            BackgroundColor="#555555"
+                            BorderRadius="10"
+                            BorderWidth="2"
+                            BorderColor="#000000"
+                            HorizontalOptions="StartAndExpand"
+                            Command="{Binding SelectSquad1Command}"/>
+                    <Button IsVisible="{Binding Squad2Selected}"
+                            Text="Squad 2"
                             BackgroundColor="#ffffff"
                             BorderRadius="10" 
                             BorderWidth="2" 
                             BorderColor="#000000" 
                             HorizontalOptions="CenterAndExpand"/>
-                    <Button Text="Squad 3" 
+                    <Button IsVisible="{Binding Squad2Selectable}"
+                            Text="Squad 2"
+                            BackgroundColor="#555555"
+                            BorderRadius="10" 
+                            BorderWidth="2" 
+                            BorderColor="#000000" 
+                            HorizontalOptions="CenterAndExpand"
+                            Command="{Binding SelectSquad2Command}"/>
+                    <Button IsVisible="{Binding Squad3Selected}"
+                            Text="Squad 3" 
                             BackgroundColor="#ffffff" 
                             BorderRadius="10" 
                             BorderWidth="2" 
                             BorderColor="#000000" 
                             HorizontalOptions="EndAndExpand"/>
+                    <Button IsVisible="{Binding Squad3Selectable}"
+                            Text="Squad 3" 
+                            BackgroundColor="#555555" 
+                            BorderRadius="10" 
+                            BorderWidth="2" 
+                            BorderColor="#000000" 
+                            HorizontalOptions="EndAndExpand"
+                            Command="{Binding SelectSquad3Command}"/>
                 </StackLayout>
+
+                <StackLayout IsVisible="{Binding Squad1Selected}" Orientation="Horizontal">
+                    <Button 
+                        IsVisible="{Binding ThisPlayer[0].Squads[0].IsSelectable}"
+                        Padding="0" 
+                        FontSize="12" 
+                        HeightRequest="30" 
+                        WidthRequest="30" 
+                        Text="+" 
+                        CommandParameter="{Binding ThisPlayer[0].Squads[0].SquadId}"
+                        Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
+                    <Label 
+                        IsVisible="{Binding ThisPlayer[0].Squads[0].IsSelectable}"
+                        Text="Select" 
+                        FontSize="26"/>
+                    <Button 
+                            IsVisible="{Binding ThisPlayer[0].Squads[0].IsSelected}"
+                            Padding="0" 
+                            FontSize="12" 
+                            HeightRequest="30" 
+                            WidthRequest="30" 
+                            Text="-" 
+                            CommandParameter="{Binding ThisPlayer[0].Squads[0].SquadId}"
+                            Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
+                        <Label 
+                            IsVisible="{Binding ThisPlayer[0].Squads[0].IsSelected}" 
+                            Text="Deselect" 
+                            FontSize="26"/>
+                </StackLayout>
+
+                <StackLayout IsVisible="{Binding Squad2Selected}" Orientation="Horizontal">
+                    <Button 
+                        IsVisible="{Binding ThisPlayer[0].Squads[1].IsSelectable}"
+                        Padding="0" 
+                        FontSize="12" 
+                        HeightRequest="30" 
+                        WidthRequest="30" 
+                        Text="+" 
+                        CommandParameter="{Binding ThisPlayer[0].Squads[1].SquadId}"
+                        Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
+                    <Label 
+                        IsVisible="{Binding ThisPlayer[0].Squads[1].IsSelectable}"
+                        Text="Select" 
+                        FontSize="26"/>
+                    <Button 
+                        IsVisible="{Binding ThisPlayer[0].Squads[1].IsSelected}"
+                        Padding="0" 
+                        FontSize="12" 
+                        HeightRequest="30" 
+                        WidthRequest="30" 
+                        Text="-" 
+                        CommandParameter="{Binding ThisPlayer[0].Squads[1].SquadId}"
+                        Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
+                    <Label 
+                        IsVisible="{Binding ThisPlayer[0].Squads[1].IsSelected}"
+                        Text="Deselect" 
+                        FontSize="26"/>
+                </StackLayout>
+
+                <StackLayout IsVisible="{Binding Squad3Selected}" Orientation="Horizontal">
+                <Button 
+                        IsVisible="{Binding ThisPlayer[0].Squads[2].IsSelectable}"
+                        Padding="0" 
+                        FontSize="12" 
+                        HeightRequest="30" 
+                        WidthRequest="30" 
+                        Text="+" 
+                        CommandParameter="{Binding ThisPlayer[0].Squads[2].SquadId}"
+                        Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
+                    <Label 
+                        IsVisible="{Binding ThisPlayer[0].Squads[2].IsSelectable}"
+                        Text="Select" 
+                        FontSize="26"/>
+                    <Button 
+                        IsVisible="{Binding ThisPlayer[0].Squads[2].IsSelected}"
+                        Padding="0" 
+                        FontSize="12" 
+                        HeightRequest="30" 
+                        WidthRequest="30" 
+                        Text="-" 
+                        CommandParameter="{Binding ThisPlayer[0].Squads[2].SquadId}"
+                        Command="{Binding Source={x:Reference Main}, Path=BindingContext.ToggleSelectedSquadCommand}"/>
+                    <Label 
+                        IsVisible="{Binding ThisPlayer[0].Squads[2].IsSelected}"
+                        Text="Deselect" 
+                        FontSize="26"/>
+                </StackLayout>
+
+                <Label IsVisible="{Binding Squad1Selected}" Text="{Binding ThisPlayer[0].Squads[0].SquadId}" FontSize="30" Padding="0,5,0,0"/>
+                <Label IsVisible="{Binding Squad2Selected}" Text="{Binding ThisPlayer[0].Squads[1].SquadId}" FontSize="30" Padding="0,5,0,0"/>
+                <Label IsVisible="{Binding Squad3Selected}" Text="{Binding ThisPlayer[0].Squads[2].SquadId}" FontSize="30" Padding="0,5,0,0"/>
             </StackLayout>
         </Frame>
         <!-- Other Players -->

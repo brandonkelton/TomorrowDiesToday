@@ -11,7 +11,7 @@ namespace TomorrowDiesToday.Services.Game
         GameModel Game { get; }
 
         IObservable<string> ErrorMessage { get; }
-        IObservable<GameModel> ThisGame { get; }
+        IObservable<GameModel> ThisGameUpdate { get; }
 
         Task CreateGame();
         void SetGame(GameModel game);
