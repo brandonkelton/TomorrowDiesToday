@@ -31,7 +31,7 @@ namespace TomorrowDiesToday
 
             Task.Run(async () =>
             {
-                if (gameService.Game.GameId != null && gameService.Game.PlayerId != null)
+                if (gameService.Game != null && gameService.Game.GameId != null && gameService.Game.PlayerId != null)
                 {
                     await storageService.SaveGame();
                     await dbClient.DeleteGame(gameService.Game.GameId, gameService.Game.PlayerId);
