@@ -13,14 +13,14 @@ namespace TomorrowDiesToday
         public App()
         {
             InitializeComponent();
-            IoC.Initialize();
-            var navigationService = IoC.Container.Resolve<INavigationService>();
-            MainPage = navigationService.Navigation;
+            
         }
 
         protected override void OnStart()
         {
-            
+            IoC.Initialize();
+            var navigationService = IoC.Container.Resolve<INavigationService>();
+            MainPage = navigationService.Navigation;
         }
 
         protected override void OnSleep()

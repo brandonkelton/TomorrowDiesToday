@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TomorrowDiesToday.Models;
 using TomorrowDiesToday.Services.Game;
+using TomorrowDiesToday.Services.LocalStorage;
 using Xamarin.Forms;
 
 namespace TomorrowDiesToday.ViewModels
 {
-
-
-    public class MainPageViewModel : BaseViewModel, IMainPageViewModel
+    public sealed class MainPageViewModel : BaseViewModel
     {
         #region Observable Collections
         public ObservableCollection<PlayerModel> Players { get; private set; } = new ObservableCollection<PlayerModel>();
@@ -22,12 +22,15 @@ namespace TomorrowDiesToday.ViewModels
         #region ICommands
         public ICommand RefreshPlayerListCommand { get; private set; }
         public ICommand ToggleSelectedSquadCommand { get; private set; }
+        public ICommand SyncGameCommand { get; private set; }
+        public ICommand ExitGameCommand { get; private set; }
         #endregion
 
         #region Services
         private IGameService _gameService;
         private IPlayerService _playerService;
         private ISquadService _squadService;
+        private ILocalStorageService _storageService;
         #endregion
 
         #region Subscriptions
@@ -45,11 +48,12 @@ namespace TomorrowDiesToday.ViewModels
         #endregion
 
         #region Constructor
-        public MainPageViewModel(IGameService gameService, IPlayerService playerService, ISquadService squadService)
+        public MainPageViewModel(IGameService gameService, IPlayerService playerService, ISquadService squadService, ILocalStorageService storageService)
         {
             _gameService = gameService;
             _playerService = playerService;
             _squadService = squadService;
+            _storageService = storageService;
 
             Items = new ObservableCollection<object>
             {
@@ -66,6 +70,8 @@ namespace TomorrowDiesToday.ViewModels
         {
             RefreshPlayerListCommand = new Command(async () => await RefreshPlayers());
             ToggleSelectedSquadCommand = new Command<string>(squadId => ToggleSelectedSquad(squadId));
+            SyncGameCommand = new Command(async () => await SyncGame());
+            ExitGameCommand = new Command(() => ExitGame());
         }
 
         private void SubscribeToUpdates()
@@ -97,6 +103,18 @@ namespace TomorrowDiesToday.ViewModels
         {
             SquadModel squadModel = Players.SelectMany(player => player.Squads.Where(squad => squad.SquadId == squadId)).FirstOrDefault();
             _squadService.ToggleSelected(squadModel);            
+        }
+
+        private async Task SyncGame()
+        {
+            await _playerService.SendThisPlayer();
+            await _playerService.RequestPlayersUpdate();
+            await _storageService.SaveGame();
+        }
+
+        private void ExitGame()
+        {
+            Process.GetCurrentProcess().Kill();
         }
         #endregion
 
