@@ -10,7 +10,7 @@ using TomorrowDiesToday.Services.Data.Models;
 
 namespace TomorrowDiesToday.Services.Game
 {
-    public class GameService : IGameService
+    public class GameService : IGameService, IDisposable
     {
         #region Properties
 
@@ -20,6 +20,8 @@ namespace TomorrowDiesToday.Services.Game
 
         private readonly ReplaySubject<string> _errorMessage = new ReplaySubject<string>(1);
         private readonly ReplaySubject<GameModel> _thisGame = new ReplaySubject<GameModel>(1);
+
+        private IDisposable _dataSubscription = null;
 
         // Main GameModel instance
         public GameModel Game => _game;
@@ -38,6 +40,7 @@ namespace TomorrowDiesToday.Services.Game
         public GameService(IDataService<GameModel, GameRequest> gameDataService)
         {
             _gameDataService = gameDataService;
+            SubscribeToUpdates();
         }
 
         #endregion
@@ -48,11 +51,10 @@ namespace TomorrowDiesToday.Services.Game
         {
             bool gameExists = true;
             string gameId = "";
-            GameRequest request = new GameRequest();
             while (gameExists)
             {
                 gameId = GenerateGameId();
-                request = new GameRequest { GameId = gameId };
+                var request = new GameRequest { GameId = gameId };
                 gameExists = await _gameDataService.Exists(request);
             }
             _game = new GameModel
@@ -64,6 +66,11 @@ namespace TomorrowDiesToday.Services.Game
             };
             await _gameDataService.Create(_game);
             _thisGame.OnNext(Game);
+        }
+
+        public async Task SendGame()
+        {
+            await _gameDataService.Update(_game);
         }
 
         public void SetGame(GameModel game)
@@ -94,6 +101,12 @@ namespace TomorrowDiesToday.Services.Game
             }
         }
 
+        public async Task RequestGameUpdate()
+        {
+            var request = new GameRequest { GameId = Game.GameId };
+            await _gameDataService.RequestUpdate(request);
+        }
+
         #endregion
 
         #region Helper Methods
@@ -106,6 +119,19 @@ namespace TomorrowDiesToday.Services.Game
               .Select(s => s[_random.Next(s.Length)]).Take(6).ToArray());
 
             return gameId;
+        }
+
+        private void SubscribeToUpdates()
+        {
+            _dataSubscription = _gameDataService.DataReceived.Subscribe(game =>
+            {
+                _thisGame.OnNext(game);
+            });
+        }
+
+        public void Dispose()
+        {
+            if (_dataSubscription != null) _dataSubscription.Dispose();
         }
 
         #endregion

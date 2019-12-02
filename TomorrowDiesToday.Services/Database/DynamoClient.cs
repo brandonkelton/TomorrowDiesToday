@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TomorrowDiesToday.Models.Templates;
 using TomorrowDiesToday.Services.Database.DTOs;
-using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday.Services.Database
 {

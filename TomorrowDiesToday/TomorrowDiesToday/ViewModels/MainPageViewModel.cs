@@ -107,8 +107,12 @@ namespace TomorrowDiesToday.ViewModels
 
         private async Task SyncGame()
         {
+            await _gameService.SendGame();
             await _playerService.SendThisPlayer();
+
+            await _gameService.RequestGameUpdate();
             await _playerService.RequestPlayersUpdate();
+
             await _storageService.SaveGame();
         }
 
