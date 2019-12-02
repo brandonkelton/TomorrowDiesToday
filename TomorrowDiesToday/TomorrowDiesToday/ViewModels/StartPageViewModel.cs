@@ -11,15 +11,16 @@ using TomorrowDiesToday.Navigation;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class StartPageViewModel : BaseViewModel, IStartPageViewModel
+    public sealed class StartPageViewModel : BaseViewModel
     {
-        public string Title => "Tomorrow Dies Today (Prototype)";
         private INavigationService _navigationService;
         public ICommand CreateGameCommand { get; private set; }
         public ICommand JoinGameCommand { get; private set; }
 
         public StartPageViewModel(INavigationService navigationService)
         {
+            Title = "Tomorrow Dies Today";
+
             _navigationService = navigationService;
 
             CreateGameCommand = new Command(async () => await CreateGame());

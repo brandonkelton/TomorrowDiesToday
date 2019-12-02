@@ -17,9 +17,8 @@ using TomorrowDiesToday.Services.LocalStorage;
 
 namespace TomorrowDiesToday.ViewModels
 {
-    public class CreateGameViewModel : BaseViewModel, ICreateGameViewModel, IOnInitAsync, IDisposable
+    public sealed class CreateGameViewModel : BaseViewModel, IOnInitAsync, IDisposable
     {
-        public string Title => "Tomorrow Dies Today";
         private IGameService _gameService;
         private ILocalStorageService _storageService;
         private INavigationService _navService;
@@ -29,6 +28,8 @@ namespace TomorrowDiesToday.ViewModels
 
         public CreateGameViewModel(IGameService gameService, INavigationService navService, ILocalStorageService storageService)
         {
+            Title = "Tomorrow Dies Today";
+
             _gameService = gameService;
             _storageService = storageService;
             _navService = navService;
