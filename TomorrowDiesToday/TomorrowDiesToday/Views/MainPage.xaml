@@ -37,7 +37,10 @@
                     IsClippedToBounds="true"
                     CornerRadius="10"
                     BackgroundColor="#4b4c4c">
-                            <StackLayout Spacing="5">
+                        <RelativeLayout>
+                            <Image Source="{Binding TileImg}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+
+                            <StackLayout Spacing="5" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                                 <Button Text="{Binding Title}"/>
                                 <StackLayout Spacing="5" Orientation="Horizontal" VerticalOptions="CenterAndExpand">
                                     <StackLayout Spacing="5" HorizontalOptions="StartAndExpand">
@@ -69,6 +72,7 @@
 
                                 </StackLayout>
                             </StackLayout>
+                        </RelativeLayout>
                         </Frame>
                         
                     </ContentView>
