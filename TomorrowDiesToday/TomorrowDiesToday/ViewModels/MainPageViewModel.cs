@@ -38,9 +38,9 @@ namespace TomorrowDiesToday.ViewModels
 
             Items = new ObservableCollection<object>
             {
-                new {Title="First", ComReq=5, SteReq=6,CunReq=1,DipReq=2 },
-                new {Title="second", ComReq=5, SteReq=6,CunReq=1,DipReq=2 },
-                new {Title="third", ComReq=5, SteReq=6,CunReq=1,DipReq=2}
+                new {Title="First", ComReq=5, SteReq=6,CunReq=1,DipReq=2, TileImg= ImageSource.FromResource("TomorrowDiesToday.TileImages.Art_Thievery.png")},
+                new {Title="second", ComReq=5, SteReq=6,CunReq=1,DipReq=2, TileImg= ImageSource.FromResource("TomorrowDiesToday.TileImages.Art_Thievery.png")},
+                new {Title="third", ComReq=5, SteReq=6,CunReq=1,DipReq=2, TileImg= ImageSource.FromResource("TomorrowDiesToday.TileImages.Art_Thievery.png")}
             };
             ConfigureCommands();
             SubscribeToUpdates();
