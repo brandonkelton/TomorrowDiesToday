@@ -12,11 +12,13 @@ namespace TomorrowDiesToday.Services.LocalStorage
 {
     public class LocalStorageService : ILocalStorageService
     {
+        private IGameState _gameState;
         private IGameService _gameService;
         const string GAME_STATE_FILENAME = "GameState.TomorrowNeverDies";
 
-        public LocalStorageService(IGameService gameService)
+        public LocalStorageService(IGameService gameService, IGameState gameState)
         {
+            _gameState = gameState;
             _gameService = gameService;
         }
 
@@ -48,10 +50,17 @@ namespace TomorrowDiesToday.Services.LocalStorage
                 var serializedGame = await file.ReadAllTextAsync();
                 if (serializedGame != null)
                 {
-                    var gameState = JsonConvert.DeserializeObject<GameModel>(serializedGame);
-                    if (gameState != null)
+                    try
                     {
-                        return gameState.GameId;
+                        var gameState = JsonConvert.DeserializeObject<GameModel>(serializedGame);
+                        if (gameState != null)
+                        {
+                            return gameState.GameId;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        await file.DeleteAsync();
                     }
                 }
             }
@@ -61,14 +70,14 @@ namespace TomorrowDiesToday.Services.LocalStorage
 
         public async Task SaveGame()
         {
-            if (_gameService.Game == null)
+            if (_gameState.Game == null)
             {
                 return;
             }
 
             IFolder folder = FileSystem.Current.LocalStorage;
             IFile file = await folder.CreateFileAsync(GAME_STATE_FILENAME, CreationCollisionOption.ReplaceExisting);
-            var serializedGame = JsonConvert.SerializeObject(_gameService.Game);
+            var serializedGame = JsonConvert.SerializeObject(_gameState.Game);
             await file.WriteAllTextAsync(serializedGame);
         }
 
@@ -82,8 +91,16 @@ namespace TomorrowDiesToday.Services.LocalStorage
                 var serializedGame = await file.ReadAllTextAsync();
                 if (serializedGame != null)
                 {
-                    var gameState = JsonConvert.DeserializeObject<GameModel>(serializedGame);
-                    _gameService.SetGame(gameState);
+                    try
+                    {
+                        var gameState = JsonConvert.DeserializeObject<GameModel>(serializedGame);
+                        _gameState.SetGame(gameState);
+                        _gameService.PushGame();
+                    }
+                    catch (Exception e)
+                    {
+                        await file.DeleteAsync();
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TomorrowDiesToday.Models;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Services.Game
 {

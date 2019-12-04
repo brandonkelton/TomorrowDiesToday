@@ -23,20 +23,20 @@ namespace TomorrowDiesToday.Navigation
         public async Task NavigateTo<T>() where T : Page
         {
             var page = IoC.Container.Resolve<T>();
-            await Navigation.PushAsync(page).ConfigureAwait(true);
+            await Navigation.PushAsync(page);
         }
 
         public async Task OnInitAsync()
         {
             var localStorage = IoC.Container.Resolve<ILocalStorageService>();
 
-            if (await localStorage.GetGameExists().ConfigureAwait(true))
+            if (await localStorage.GetGameId() != null)
             {
-                await NavigateTo<ResumeGamePage>().ConfigureAwait(true);
+                await NavigateTo<ResumeGamePage>();
             }
             else
             {
-                await NavigateTo<StartPage>().ConfigureAwait(true);
+                await NavigateTo<StartPage>();
             }
         }
     }

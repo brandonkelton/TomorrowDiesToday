@@ -57,9 +57,9 @@ namespace TomorrowDiesToday.ViewModels
 
             Items = new ObservableCollection<object>
             {
-                new {Title="First"},
-                new {Title="second"},
-                new {Title="third"}
+                new {Title="First", ComReq=5, SteReq=6,CunReq=1,DipReq=2, TileImg= ImageSource.FromResource("TomorrowDiesToday.TileImages.Art_Thievery.png")},
+                new {Title="second", ComReq=5, SteReq=6,CunReq=1,DipReq=2, TileImg= ImageSource.FromResource("TomorrowDiesToday.TileImages.Art_Thievery.png")},
+                new {Title="third", ComReq=5, SteReq=6,CunReq=1,DipReq=2, TileImg= ImageSource.FromResource("TomorrowDiesToday.TileImages.Art_Thievery.png")}
             };
             ConfigureCommands();
             SubscribeToUpdates();
@@ -110,7 +110,6 @@ namespace TomorrowDiesToday.ViewModels
             await _gameService.SendGame();
             await _playerService.SendThisPlayer();
 
-            await _gameService.RequestGameUpdate();
             await _playerService.RequestPlayersUpdate();
 
             await _storageService.SaveGame();
