@@ -44,7 +44,7 @@
                                 <StackLayout Spacing="5"
                                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}" 
                                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-                                    <Button Text="{Binding Title}"/>
+                                    <Label Text="{Binding Title}"/>
                                     <StackLayout Spacing="5" Orientation="Horizontal" VerticalOptions="CenterAndExpand">
                                         <StackLayout Spacing="5" HorizontalOptions="StartAndExpand">
                                             <StackLayout Spacing="5" Orientation="Horizontal">
@@ -76,22 +76,21 @@
                                 </StackLayout>
                             </RelativeLayout>
                         </Frame>
-                        
                     </ContentView>
                 </DataTemplate>
             </cards:CarouselView.ItemTemplate>
 
         </cards:CarouselView>
-        
+
         <Frame x:Name="bottomSheet" HasShadow="true" CornerRadius="8" Padding="1,4,1,0" BackgroundColor="#4b4c4c" 
             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=.6,Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-            
+
             <Frame.GestureRecognizers>
                 <SwipeGestureRecognizer Direction="Up,Down" Swiped="SwipeBottom"/>
                 <PanGestureRecognizer PanUpdated="OnPanUpdated" />
-                
+
             </Frame.GestureRecognizers>
 
             <StackLayout Spacing="5">
@@ -163,7 +162,5 @@
                 </StackLayout>
             </StackLayout>
         </Frame>
-
     </RelativeLayout>
-    
 </ContentPage>
