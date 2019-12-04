@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Services.Database.DTOs
 {
@@ -12,7 +13,7 @@ namespace TomorrowDiesToday.Services.Database.DTOs
         public string GameId { get; set; }
 
         [DynamoDBRangeKey]
-        public string PlayerId { get; set; }
+        public ArmamentType PlayerId { get; set; }
 
         public List<SquadDTO> Squads { get; set; }
     }

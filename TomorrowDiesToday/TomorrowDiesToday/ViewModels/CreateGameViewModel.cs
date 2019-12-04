@@ -20,18 +20,16 @@ namespace TomorrowDiesToday.ViewModels
     public sealed class CreateGameViewModel : BaseViewModel, IOnInitAsync, IDisposable
     {
         private IGameService _gameService;
-        private ILocalStorageService _storageService;
         private INavigationService _navService;
         private IDisposable _gameSubscription = null;
 
         public ICommand NextStepCommand { get; private set; }
 
-        public CreateGameViewModel(IGameService gameService, INavigationService navService, ILocalStorageService storageService)
+        public CreateGameViewModel(IGameService gameService, INavigationService navService)
         {
             Title = "Tomorrow Dies Today";
 
             _gameService = gameService;
-            _storageService = storageService;
             _navService = navService;
 
             NextStepCommand = new Command(async () => await GoToCharacterPage());
@@ -75,7 +73,6 @@ namespace TomorrowDiesToday.ViewModels
             IsLoadingData = true;
 
             await _gameService.CreateGame();
-            await _storageService.SaveGame();
             GameCreated = true;
 
             IsLoadingData = false;

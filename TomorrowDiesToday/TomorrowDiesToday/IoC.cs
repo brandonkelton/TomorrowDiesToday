@@ -69,6 +69,7 @@ namespace TomorrowDiesToday
 
         private static void RegisterServices(ContainerBuilder builder)
         {
+            builder.RegisterType<GameState>().As<IGameState>().SingleInstance();
             builder.RegisterType<LocalStorageService>().As<ILocalStorageService>().SingleInstance();
             builder.RegisterType<DynamoClient>().As<IDBClient>().SingleInstance();
             builder.RegisterType<GameService>().As<IGameService>().SingleInstance();

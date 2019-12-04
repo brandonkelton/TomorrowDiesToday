@@ -7,6 +7,7 @@ using TomorrowDiesToday.Services.Database;
 using TomorrowDiesToday.Services.Database.DTOs;
 using TomorrowDiesToday.Services.Data.Models;
 using TomorrowDiesToday.Services.Game;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Services.Data
 {
@@ -42,7 +43,7 @@ namespace TomorrowDiesToday.Services.Data
 
         public async Task RequestUpdate(PlayerRequest request)
         {
-            if (request.PlayerId != null)
+            if (request.PlayerId != ArmamentType.None)
             {
                 PlayerDTO playerDTO = await _client.RequestPlayer(request.GameId, request.PlayerId);
                 PlayerModel playerModel = PlayerToModel(playerDTO);
@@ -105,12 +106,10 @@ namespace TomorrowDiesToday.Services.Data
                 };
                 squadModels.Add(squadModel);
             }
-            var playerArmamentType = ((ArmamentType)int.Parse(playerDTO.PlayerId));
+
             var playerModel = new PlayerModel
             {
                 PlayerId = playerDTO.PlayerId,
-                PlayerName = playerArmamentType.ToDescription(),
-                PlayerType = playerArmamentType,
                 Squads = squadModels
             };
             return playerModel;

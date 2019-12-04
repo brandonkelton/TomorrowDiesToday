@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Models
 {
@@ -9,11 +10,9 @@ namespace TomorrowDiesToday.Models
     {
         public string GameId { get; set; }
 
-        public string PlayerId { get; set; }
+        public ArmamentType PlayerId { get; set; } = ArmamentType.None;
 
-        public string PlayerName { get; set; }
-
-        public ArmamentType PlayerType { get; set; }
+        public string PlayerName => PlayerId.ToDescription();
 
         public List<SquadModel> Squads { get; set; } = new List<SquadModel>();
     }

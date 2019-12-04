@@ -8,14 +8,12 @@ namespace TomorrowDiesToday.Services.Game
 {
     public interface IGameService
     {
-        GameModel Game { get; }
-
         IObservable<string> ErrorMessage { get; }
         IObservable<GameModel> ThisGame { get; }
 
         Task CreateGame();
         Task SendGame();
-        void SetGame(GameModel game);
+        void PushGame();
         Task<bool> JoinGame(string gameId);
         Task RequestGameUpdate();
     }

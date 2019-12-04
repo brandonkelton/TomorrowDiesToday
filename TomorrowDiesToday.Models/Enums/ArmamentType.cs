@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace TomorrowDiesToday.Models
+namespace TomorrowDiesToday.Models.Enums
 {
     public enum ArmamentType
     {
+        [Description("No Armament Selected")]
+        None = 0,
+
         #region Named Henchmen
 
         [Description("General Goodman")]
@@ -84,8 +87,5 @@ namespace TomorrowDiesToday.Models
         UgoDiplomacy,
 
         #endregion
-
-        [Description("No Armament Selected")]
-        None,
     }
 }

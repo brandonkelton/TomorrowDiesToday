@@ -25,8 +25,7 @@ namespace TomorrowDiesToday.Services.Game
         private readonly ReplaySubject<PlayerModel> _thisPlayerUpdate = new ReplaySubject<PlayerModel>(1);
 
         // Requred Service(s)
-        private IGameService _gameService;
-        private ILocalStorageService _storage;
+        private IGameState _gameState;
         private IDataService<PlayerModel, PlayerRequest> _playerDataService;
         private ISquadService _squadService;
 
@@ -36,38 +35,36 @@ namespace TomorrowDiesToday.Services.Game
         private IDisposable _squadUpdateSubscription = null;
 
         // Miscellaneous
-        private string _gameId => _gameService.Game.GameId;
-        private string _playerId => _gameService.Game.PlayerId;
-        private List<PlayerModel> _players => _gameService.Game.Players;
+        private string _gameId => _gameState.Game.GameId;
+        private ArmamentType _playerId => _gameState.Game.PlayerId;
+        private List<PlayerModel> _players => _gameState.Game.Players;
         private List<PlayerModel> _otherPlayers => _players.Where(player => player.PlayerId != _playerId).ToList();
 
         #endregion
 
         #region Constructor
-        public PlayerService(IDataService<PlayerModel, PlayerRequest> playerDataService, IGameService gameService, ISquadService squadService, ILocalStorageService storage)
+        public PlayerService(IDataService<PlayerModel, PlayerRequest> playerDataService, IGameState gameState, ISquadService squadService)
         {
-            _gameService = gameService;
+            _gameState = gameState;
             _playerDataService = playerDataService;
             _squadService = squadService;
-            _storage = storage;
 
             SubscribeToUpdates();
         }
         #endregion
 
         #region Public Methods
-        public async Task<bool> ChoosePlayer(string playerId)
+        public async Task<bool> ChoosePlayer(ArmamentType playerId)
         {
             PlayerRequest request = new PlayerRequest
             {
-                GameId = _gameService.Game.GameId,
+                GameId = _gameState.Game.GameId,
                 PlayerId = playerId
             };
             if (!await _playerDataService.Exists(request))
             {
                 var playerModel = GeneratePlayer(playerId);
                 await _playerDataService.Create(playerModel);
-                await _storage.SaveGame();
                 return true;
             }
             else
@@ -85,16 +82,32 @@ namespace TomorrowDiesToday.Services.Game
 
         public async Task RequestPlayersUpdate()
         {
-            var gameId = _gameService.Game.GameId;
+            var gameId = _gameState.Game.GameId;
             PlayerRequest playerRequest = new PlayerRequest { GameId = gameId };
             await _playerDataService.RequestUpdate(playerRequest);
         }
 
         public async Task SendThisPlayer()
         {
-            var playerId = _gameService.Game.PlayerId;
-            var thisPlayer = _gameService.Game.Players.Where(player => player.PlayerId == playerId).FirstOrDefault();
-            await _playerDataService.Update(thisPlayer);
+            var playerId = _gameState.Game.PlayerId;
+            var thisPlayer = _gameState.Game.Players.Where(player => player.PlayerId == playerId).FirstOrDefault();
+
+            var request = new PlayerRequest { GameId = _gameState.Game.GameId, PlayerId = playerId };
+            if (!await _playerDataService.Exists(request))
+            {
+                await _playerDataService.Create(thisPlayer);
+            } else
+            {
+                await _playerDataService.Update(thisPlayer);
+            }
+        }
+
+        public void PushCurrentPlayer()
+        {
+            var playerId = _gameState.Game.PlayerId;
+            var thisPlayer = _gameState.Game.Players.Where(player => player.PlayerId == playerId).FirstOrDefault();
+
+            _thisPlayerUpdate.OnNext(thisPlayer);
         }
         #endregion
 
@@ -106,16 +119,12 @@ namespace TomorrowDiesToday.Services.Game
             if (_squadUpdateSubscription != null) _squadUpdateSubscription.Dispose();
         }
 
-        private PlayerModel GeneratePlayer(string playerId)
+        private PlayerModel GeneratePlayer(ArmamentType playerId)
         {
-            ArmamentType playerArmamentType = ((ArmamentType)int.Parse(playerId));
-
             PlayerModel playerModel = new PlayerModel
             {
-                GameId = _gameService.Game.GameId,
+                GameId = _gameState.Game.GameId,
                 PlayerId = playerId,
-                PlayerName = playerArmamentType.ToDescription(),
-                PlayerType = playerArmamentType,
                 Squads = new List<SquadModel>
                 {
                     new SquadModel
@@ -139,7 +148,7 @@ namespace TomorrowDiesToday.Services.Game
             foreach(SquadModel squad in playerModel.Squads)
             {
                 ArmamentStats stats = new ArmamentStats();
-                switch (playerArmamentType)
+                switch (playerId)
                 {
                     case ArmamentType.GeneralGoodman:
                         stats = new ArmamentStats(2, 2, 2, 2);
@@ -172,15 +181,15 @@ namespace TomorrowDiesToday.Services.Game
                         stats = new ArmamentStats(1, 0, 3, 1);
                         break;
                 }
-                squad.Armaments.Add(new Armament(playerArmamentType, stats));
+                squad.Armaments.Add(new Armament(playerId, stats));
             }
 
-            _gameService.Game.Players.Add(playerModel);
-            _gameService.Game.PlayerId = playerId;;
+            _gameState.Game.Players.Add(playerModel);
+            _gameState.Game.PlayerId = playerId;;
 
             // Add chosen Named Henchman to first squad
             var firstSquad = playerModel.Squads.Where(squad => squad.SquadId == string.Format("{0}-1", playerId)).FirstOrDefault();
-            var playerArmament = firstSquad.Armaments.Where(armament => armament.ArmamentType == playerArmamentType).FirstOrDefault();
+            var playerArmament = firstSquad.Armaments.Where(armament => armament.ArmamentType == playerId).FirstOrDefault();
             playerArmament.SetCount(1);
 
             // Calculate stats for first squad
@@ -217,7 +226,7 @@ namespace TomorrowDiesToday.Services.Game
                     }
                     else
                     {
-                        _gameService.Game.Players.Add(otherPlayer);
+                        _gameState.Game.Players.Add(otherPlayer);
                     }
                 }
                 _otherPlayersUpdate.OnNext(_players.Where(player => player.PlayerId != _playerId).ToList());

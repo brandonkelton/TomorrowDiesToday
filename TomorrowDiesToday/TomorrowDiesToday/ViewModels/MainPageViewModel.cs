@@ -110,7 +110,6 @@ namespace TomorrowDiesToday.ViewModels
             await _gameService.SendGame();
             await _playerService.SendThisPlayer();
 
-            await _gameService.RequestGameUpdate();
             await _playerService.RequestPlayersUpdate();
 
             await _storageService.SaveGame();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.Models
 {
@@ -7,9 +8,7 @@ namespace TomorrowDiesToday.Models
     {
         public string GameId { get; set; }
 
-        public string PlayerId { get; set; }
-
-        public ArmamentType PlayerType { get; set; }
+        public ArmamentType PlayerId { get; set; }
 
         public List<PlayerModel> Players { get; set; }
 
