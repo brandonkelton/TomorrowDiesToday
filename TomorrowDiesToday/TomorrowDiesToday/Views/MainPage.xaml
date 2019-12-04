@@ -28,51 +28,53 @@
                 <DataTemplate>
                     <ContentView>
                         <Frame 
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    HeightRequest="300"
-                    WidthRequest="300"
-                    Padding="0" 
-                    HasShadow="false"
-                    IsClippedToBounds="true"
-                    CornerRadius="10"
-                    BackgroundColor="#4b4c4c">
-                        <RelativeLayout>
-                            <Image Source="{Binding TileImg}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        HeightRequest="350"
+                        WidthRequest="350"
+                        Padding="0" 
+                        HasShadow="false"
+                        IsClippedToBounds="true"
+                        BackgroundColor=" #000000">
+                            <RelativeLayout>
+                                <Image Source="{Binding TileImg}" 
+                                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}" 
+                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}"/>
 
-                            <StackLayout Spacing="5" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-                                <Button Text="{Binding Title}"/>
-                                <StackLayout Spacing="5" Orientation="Horizontal" VerticalOptions="CenterAndExpand">
-                                    <StackLayout Spacing="5" HorizontalOptions="StartAndExpand">
-                                        <StackLayout Spacing="5" Orientation="Horizontal">
-                                            <Label Text="Co"></Label>
-                                            <Label Text="{Binding ComReq}"></Label>
+                                <StackLayout Spacing="5"
+                                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}" 
+                                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+                                    <Button Text="{Binding Title}"/>
+                                    <StackLayout Spacing="5" Orientation="Horizontal" VerticalOptions="CenterAndExpand">
+                                        <StackLayout Spacing="5" HorizontalOptions="StartAndExpand">
+                                            <StackLayout Spacing="5" Orientation="Horizontal">
+                                                <Label Text="Co"></Label>
+                                                <Label Text="{Binding ComReq}"></Label>
+                                            </StackLayout>
+                                            <StackLayout Spacing="5" Orientation="Horizontal">
+                                                <Label Text="St"></Label>
+                                                <Label Text="{Binding SteReq}"></Label>
+
+                                            </StackLayout>
+                                            <StackLayout Spacing="5" Orientation="Horizontal">
+                                                <Label Text="Cu"></Label>
+                                                <Label Text="{Binding CunReq}"></Label>
+
+                                            </StackLayout>
+                                            <StackLayout Spacing="5" Orientation="Horizontal">
+                                                <Label Text="Di"></Label>
+                                                <Label Text="{Binding DipReq}"></Label>
+
+                                            </StackLayout>
+                                        </StackLayout>
+
+                                        <StackLayout Spacing="5" HorizontalOptions="EndAndExpand">
 
                                         </StackLayout>
-                                        <StackLayout Spacing="5" Orientation="Horizontal">
-                                            <Label Text="St"></Label>
-                                            <Label Text="{Binding SteReq}"></Label>
 
-                                        </StackLayout>
-                                        <StackLayout Spacing="5" Orientation="Horizontal">
-                                            <Label Text="Cu"></Label>
-                                            <Label Text="{Binding CunReq}"></Label>
-
-                                        </StackLayout>
-                                        <StackLayout Spacing="5" Orientation="Horizontal">
-                                            <Label Text="Di"></Label>
-                                            <Label Text="{Binding DipReq}"></Label>
-
-                                        </StackLayout>
                                     </StackLayout>
-
-                                    <StackLayout Spacing="5" HorizontalOptions="EndAndExpand">
-
-                                    </StackLayout>
-
                                 </StackLayout>
-                            </StackLayout>
-                        </RelativeLayout>
+                            </RelativeLayout>
                         </Frame>
                         
                     </ContentView>
