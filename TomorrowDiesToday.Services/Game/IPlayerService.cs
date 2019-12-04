@@ -14,9 +14,10 @@ namespace TomorrowDiesToday.Services.Game
         IObservable<List<PlayerModel>> OtherPlayersUpdate { get; }
         IObservable<PlayerModel> ThisPlayerUpdate { get; }
 
-        Task<bool> ChoosePlayer(string playerId);
+        Task<bool> ChoosePlayer(ArmamentType playerId);
         Task RequestPlayerUpdate(PlayerModel playerModel);
         Task RequestPlayersUpdate();
         Task SendThisPlayer();
+        void PushCurrentPlayer();
     }
 }

@@ -23,12 +23,10 @@ namespace TomorrowDiesToday.Services.Game
 
         private IDisposable _dataSubscription = null;
 
-        // Main GameModel instance
-        public GameModel Game => _game;
-        private GameModel _game { get; set; }
-
         // Requred Service(s)
+        private IGameState _gameState;
         private IDataService<GameModel, GameRequest> _gameDataService;
+        private IPlayerService _playerService;
 
         // Miscellaneous
         private static Random _random = new Random();
@@ -37,9 +35,12 @@ namespace TomorrowDiesToday.Services.Game
 
         #region Constructor
 
-        public GameService(IDataService<GameModel, GameRequest> gameDataService)
+        public GameService(IGameState gameState, IDataService<GameModel, GameRequest> gameDataService, IPlayerService playerService)
         {
+            _gameState = gameState;
             _gameDataService = gameDataService;
+            _playerService = playerService;
+
             SubscribeToUpdates();
         }
 
@@ -57,26 +58,33 @@ namespace TomorrowDiesToday.Services.Game
                 var request = new GameRequest { GameId = gameId };
                 gameExists = await _gameDataService.Exists(request);
             }
-            _game = new GameModel
+            _gameState.SetGame(new GameModel
             {
                 GameId = gameId,
                 Players = new List<PlayerModel>(),
                 Tiles = new List<TileModel>(),
                 SelectedSquadStats = new SquadStats()
-            };
-            await _gameDataService.Create(_game);
-            _thisGame.OnNext(Game);
+            });
+            await _gameDataService.Create(_gameState.Game);
+            _thisGame.OnNext(_gameState.Game);
         }
 
         public async Task SendGame()
         {
-            await _gameDataService.Update(_game);
+            var request = new GameRequest { GameId = _gameState.Game.GameId };
+            if (!await _gameDataService.Exists(request))
+            {
+                await _gameDataService.Create(_gameState.Game);
+            } else
+            {
+                await _gameDataService.Update(_gameState.Game);
+            }
         }
 
-        public void SetGame(GameModel game)
+        public void PushGame()
         {
-            _game = game;
-            _thisGame.OnNext(Game);
+            _thisGame.OnNext(_gameState.Game);
+            _playerService.PushCurrentPlayer();
         }
 
         public async Task<bool> JoinGame(string gameId)
@@ -84,14 +92,14 @@ namespace TomorrowDiesToday.Services.Game
             GameRequest request = new GameRequest { GameId = gameId };
             if (await _gameDataService.Exists(request))
             {
-                _game = new GameModel
+                _gameState.SetGame(new GameModel
                 {
                     GameId = gameId,
                     Players = new List<PlayerModel>(),
                     Tiles = new List<TileModel>(),
                     SelectedSquadStats = new SquadStats()
-                };
-                _thisGame.OnNext(Game);
+                });
+                _thisGame.OnNext(_gameState.Game);
                 return true;
             }
             else
@@ -103,7 +111,7 @@ namespace TomorrowDiesToday.Services.Game
 
         public async Task RequestGameUpdate()
         {
-            var request = new GameRequest { GameId = Game.GameId };
+            var request = new GameRequest { GameId = _gameState.Game.GameId };
             await _gameDataService.RequestUpdate(request);
         }
 

@@ -12,6 +12,7 @@ using TomorrowDiesToday.Services.Data.Models;
 using Xamarin.Forms;
 using TomorrowDiesToday.Navigation;
 using TomorrowDiesToday.Views;
+using TomorrowDiesToday.Models.Enums;
 
 namespace TomorrowDiesToday.ViewModels
 {
@@ -86,8 +87,7 @@ namespace TomorrowDiesToday.ViewModels
             _gameSubscription = _gameService.ThisGame.Subscribe(gameModel =>
             {
                 GameId = gameModel.GameId;
-                var playerArmamentType = ((ArmamentType) int.Parse(gameModel.PlayerId));
-                CurrentPlayer = playerArmamentType.ToDescription();
+                CurrentPlayer = gameModel.PlayerId.ToDescription();
             });
             _playerDictSubscription = _playerService.OtherPlayersUpdate.Subscribe(playerModels =>
             {

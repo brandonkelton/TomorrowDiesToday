@@ -7,7 +7,7 @@ namespace TomorrowDiesToday.Models
 {
     public class SquadModel : IModel
     {
-        public string PlayerId { get; set; }
+        public ArmamentType PlayerId { get; set; }
 
         public string SquadId { get; set; }
 

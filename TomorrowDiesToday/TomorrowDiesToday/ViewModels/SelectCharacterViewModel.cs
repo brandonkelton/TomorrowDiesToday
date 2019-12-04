@@ -36,7 +36,7 @@ namespace TomorrowDiesToday.ViewModels
             _navService = navService;
             _storageService = storageService;
 
-            SelectPlayerCommand = new Command<string>(async playerId => await SelectPlayer(playerId));
+            SelectPlayerCommand = new Command<ArmamentType>(async playerId => await SelectPlayer(playerId));
             SubscribeToUpdates();
         }
 
@@ -73,14 +73,14 @@ namespace TomorrowDiesToday.ViewModels
             if (_gameSubscription != null) _gameSubscription.Dispose();
         }
 
-        private async Task SelectPlayer(string playerId)
+        private async Task SelectPlayer(ArmamentType playerId)
         {
             PlayerAlreadySelected = String.Empty;
             PlayerExists = false;
             IsLoadingData = true;
-            if (! await _playerService.ChoosePlayer(playerId))
+            if (!await _playerService.ChoosePlayer(playerId))
             {
-                PlayerAlreadySelected = $"{playerId} Has Already Been Selected";
+                PlayerAlreadySelected = $"{playerId.ToDescription()} Has Already Been Selected";
                 IsLoadingData = false;
                 return;
             }

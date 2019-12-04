@@ -24,22 +24,22 @@ namespace TomorrowDiesToday.Services.Game
 
         // Required Service(s)
         private IDataService<GameModel, GameRequest> _gameDataService;
-        private IGameService _gameService;
+        private IGameState _gameState;
         private ISquadService _squadService;
 
         // Subscriptions
         private IDisposable _selectedSquadStatsUpdateSubscription = null;
         private IDisposable _tilesUpdateSubscription = null;
 
-        private List<TileModel> _activeTiles => _gameService.Game.Tiles.Where(t => t.IsActive).ToList();
-        private List<TileModel> _allTiles => _gameService.Game.Tiles;
+        private List<TileModel> _activeTiles => _gameState.Game.Tiles.Where(t => t.IsActive).ToList();
+        private List<TileModel> _allTiles => _gameState.Game.Tiles;
 
         #endregion
 
         #region Constructor
-        public TileService(IDataService<GameModel, GameRequest> gameDataService, IGameService gameService, ISquadService squadService)
+        public TileService(IGameState gameState, IDataService<GameModel, GameRequest> gameDataService, ISquadService squadService)
         {
-            _gameService = gameService;
+            _gameState = gameState;
             _gameDataService = gameDataService;
             _squadService = squadService;
             InitializeAllTiles();
@@ -82,14 +82,14 @@ namespace TomorrowDiesToday.Services.Game
 
         public async Task RequestTilesUpdate()
         {
-            GameRequest gameRequest = new GameRequest { GameId = _gameService.Game.GameId };
+            GameRequest gameRequest = new GameRequest { GameId = _gameState.Game.GameId };
 
             await _gameDataService.RequestUpdate(gameRequest);
         }
 
         public async Task SendTiles()
         {
-            await _gameDataService.Update(_gameService.Game);
+            await _gameDataService.Update(_gameState.Game);
         }
 
         public void ToggleActive(TileModel tileModel)
@@ -97,10 +97,10 @@ namespace TomorrowDiesToday.Services.Game
             if (tileModel.TileType != TileType.CIABuilding && tileModel.TileType != TileType.InterpolHQ)
             {
                 tileModel.IsActive = !tileModel.IsActive;
-                var activeTiles = _gameService.Game.Tiles.Where(tile => tile.IsActive).ToList();
+                var activeTiles = _gameState.Game.Tiles.Where(tile => tile.IsActive).ToList();
 
                 _activeTilesUpdate.OnNext(activeTiles);
-                _allTilesUpdate.OnNext(_gameService.Game.Tiles);
+                _allTilesUpdate.OnNext(_gameState.Game.Tiles);
             }
             else
             {
@@ -112,7 +112,7 @@ namespace TomorrowDiesToday.Services.Game
         {
             if (tileModel.IsDoomsday || tileModel.TileType == TileType.CIABuilding)
             { // Toggle CIA Agent
-                var existingAgentTile = _gameService.Game.Tiles.Where(tile => tile.IsAgentCIA).FirstOrDefault();
+                var existingAgentTile = _gameState.Game.Tiles.Where(tile => tile.IsAgentCIA).FirstOrDefault();
                 if (existingAgentTile != null)
                 { // Agent is currently on a tile
                     if (tileModel.Equals(existingAgentTile))
@@ -132,7 +132,7 @@ namespace TomorrowDiesToday.Services.Game
             }
             else
             { // Toggle Interpol Agent
-                var existingAgentTile = _gameService.Game.Tiles.Where(tile => tile.IsAgentInterpol).FirstOrDefault();
+                var existingAgentTile = _gameState.Game.Tiles.Where(tile => tile.IsAgentInterpol).FirstOrDefault();
                 if (existingAgentTile != null)
                 { // Agent is currently on a tile
                     if (tileModel.Equals(existingAgentTile))
@@ -166,10 +166,10 @@ namespace TomorrowDiesToday.Services.Game
                 tileModel.IsFlipped = !tileModel.IsFlipped;
                 if (tileModel.IsActive)
                 {
-                    var activeTiles = _gameService.Game.Tiles.Where(tile => tile.IsActive).ToList();
+                    var activeTiles = _gameState.Game.Tiles.Where(tile => tile.IsActive).ToList();
                     _activeTilesUpdate.OnNext(activeTiles);
                 }
-                _allTilesUpdate.OnNext(_gameService.Game.Tiles);
+                _allTilesUpdate.OnNext(_gameState.Game.Tiles);
             }
             else
             {
@@ -229,7 +229,7 @@ namespace TomorrowDiesToday.Services.Game
             allTiles.Add(new TileModel(TileType.CIABuilding, new TileStats(2,2,2,2)));
             allTiles.Add(new TileModel(TileType.InterpolHQ, new TileStats(1,2,2,1)));
 
-            _gameService.Game.Tiles = allTiles;
+            _gameState.Game.Tiles = allTiles;
             _allTilesUpdate.OnNext(allTiles);
         }
 
@@ -237,16 +237,16 @@ namespace TomorrowDiesToday.Services.Game
         {
             _selectedSquadStatsUpdateSubscription = _squadService.SelectedSquadStatsUpdate.Subscribe(squadStats =>
             {
-                var activeTiles = _gameService.Game.Tiles.Where(tile => tile.IsActive).ToList();
+                var activeTiles = _gameState.Game.Tiles.Where(tile => tile.IsActive).ToList();
                 activeTiles.ForEach(t => SuccessCheck(t));
                 _activeTilesUpdate.OnNext(activeTiles);
-                _allTilesUpdate.OnNext(_gameService.Game.Tiles);
+                _allTilesUpdate.OnNext(_gameState.Game.Tiles);
             });
 
             _tilesUpdateSubscription = _gameDataService.DataReceived.Subscribe(gameModel =>
             {
                 var receivedTiles = gameModel.Tiles;
-                _gameService.Game.Tiles.ForEach(tile =>
+                _gameState.Game.Tiles.ForEach(tile =>
                 {
                     var receivedTile = receivedTiles.Where(t => t.TileId == tile.TileId).FirstOrDefault();
                     tile.AlertTokens = receivedTile.AlertTokens;
@@ -265,7 +265,7 @@ namespace TomorrowDiesToday.Services.Game
         private void SuccessCheck(TileModel tileModel)
         {
             TileStats tileStats = tileModel.Stats;
-            SquadStats selectedSquadStats = _gameService.Game.SelectedSquadStats;
+            SquadStats selectedSquadStats = _gameState.Game.SelectedSquadStats;
             tileModel.Success = true;
 
             if (tileStats.Combat.Value > selectedSquadStats.Combat.Value)

@@ -5,6 +5,7 @@ using Amazon.DynamoDBv2.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TomorrowDiesToday.Models.Enums;
 using TomorrowDiesToday.Models.Templates;
 using TomorrowDiesToday.Services.Database.DTOs;
 
@@ -35,13 +36,13 @@ namespace TomorrowDiesToday.Services.Database
             return existingGame != null && existingGame.GameId == gameId;
         }
 
-        public async Task<bool> PlayerExists(string gameId, string playerId)
+        public async Task<bool> PlayerExists(string gameId, ArmamentType playerId)
         {
             var existingPlayer = await _context.LoadAsync<PlayerDTO>(gameId, playerId);
             return existingPlayer != null;
         }
 
-        public async Task DeleteGame(string gameId, string playerId)
+        public async Task DeleteGame(string gameId, ArmamentType playerId)
         {
             // NOTE: possible better solutions, but delete player when the player exits game,
             // if no more players exist, then delete game; checking on game load for
@@ -62,7 +63,7 @@ namespace TomorrowDiesToday.Services.Database
             return gameDTO;
         }
 
-        public async Task<PlayerDTO> RequestPlayer(string gameId, string playerId)
+        public async Task<PlayerDTO> RequestPlayer(string gameId, ArmamentType playerId)
         {
             var player = await _context.LoadAsync<PlayerDTO>(gameId, playerId);
             return player;
@@ -128,7 +129,7 @@ namespace TomorrowDiesToday.Services.Database
                         new AttributeDefinition
                         {
                             AttributeName = "PlayerId",
-                            AttributeType = "S"
+                            AttributeType = "N"
                         }
                     },
                     KeySchema = new List<KeySchemaElement>

@@ -25,17 +25,17 @@ namespace TomorrowDiesToday.Services.Game
         private readonly ReplaySubject<SquadModel> _squadUpdate = new ReplaySubject<SquadModel>(1);
 
         // Required Service(s)
-        private IGameService _gameService;
+        private IGameState _gameState;
 
-        List<SquadModel> _selectedSquads => _gameService.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
+        private List<SquadModel> _selectedSquads => _gameState.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
 
         #endregion
 
         #region Constructor
 
-        public SquadService(IGameService gameService)
+        public SquadService(IGameState gameState)
         {
-            _gameService = gameService;
+            _gameState = gameState;
         }
 
         #endregion
@@ -66,7 +66,7 @@ namespace TomorrowDiesToday.Services.Game
 
             if (squadModel.IsSelected)
             {
-                var selectedSquads = _gameService.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
+                var selectedSquads = _gameState.Game.Players.SelectMany(player => player.Squads.Where(squad => squad.IsSelected)).ToList();
                 _selectedSquadsUpdate.OnNext(selectedSquads);
             }
 
@@ -112,7 +112,7 @@ namespace TomorrowDiesToday.Services.Game
                 }
                 else
                 {
-                    if (armament.ArmamentType == _gameService.Game.PlayerType)
+                    if (armament.ArmamentType == _gameState.Game.PlayerId)
                     {
                         _errorMessage.OnNext(ErrorType.InvalidNamedHenchmanCount.ToDescription());
                     }
@@ -151,14 +151,14 @@ namespace TomorrowDiesToday.Services.Game
 
         public void IncrementAbilityCount(ArmamentType abilityType, SquadModel squadModel)
         {
-            ArmamentType playerArmamentType = _gameService.Game.PlayerType;
+            ArmamentType playerArmamentType = _gameState.Game.PlayerId;
             if (playerArmamentType == ArmamentType.UgoDottore)
             {
                 var targetAbilityArmament = squadModel.Abilities.Where(a => a.ArmamentType == abilityType).FirstOrDefault();
 
                 if (targetAbilityArmament != null)
                 {
-                    var squads = _gameService.Game.Players.Where(p => p.PlayerId == squadModel.PlayerId).FirstOrDefault().Squads;
+                    var squads = _gameState.Game.Players.Where(p => p.PlayerId == squadModel.PlayerId).FirstOrDefault().Squads;
                     var abilityArmamentList = squads.SelectMany(s => s.Abilities.Where(a => a.ArmamentType == abilityType).ToList());
                     var existingAbilityArmament = abilityArmamentList.Where(a => a.Count > 0).FirstOrDefault();
 
@@ -197,12 +197,12 @@ namespace TomorrowDiesToday.Services.Game
             {
                 if (totalArmamentCount + 1 <= validTotalArmamentCount)
                 {
-                    var playerArmamentType = _gameService.Game.PlayerType;
+                    var playerArmamentType = _gameState.Game.PlayerId;
 
-                    if (targetArmament.ArmamentType == _gameService.Game.PlayerType)
+                    if (targetArmament.ArmamentType == _gameState.Game.PlayerId)
                     {
-                        var playerId = _gameService.Game.PlayerId;
-                        var squads = _gameService.Game.Players.Where(p => p.PlayerId == playerId).FirstOrDefault().Squads;
+                        var playerId = _gameState.Game.PlayerId;
+                        var squads = _gameState.Game.Players.Where(p => p.PlayerId == playerId).FirstOrDefault().Squads;
                         var playerArmamentList = squads.SelectMany(s => s.Armaments.Where(a => a.ArmamentType == armamentType).ToList());
                         var existingNamedHenchmanArmament = playerArmamentList.Where(a => a.Count > 0).FirstOrDefault();
 
@@ -248,7 +248,7 @@ namespace TomorrowDiesToday.Services.Game
 
             if (targetItemArmament != null)
             {
-                var squads = _gameService.Game.Players.Where(p => p.PlayerId == squadModel.PlayerId).FirstOrDefault().Squads;
+                var squads = _gameState.Game.Players.Where(p => p.PlayerId == squadModel.PlayerId).FirstOrDefault().Squads;
                 var itemArmamentList = squads.SelectMany(s => s.Items.Where(a => a.ArmamentType == itemType).ToList());
                 var existingItemArmament = itemArmamentList.Where(a => a.Count > 0).FirstOrDefault();
 
@@ -287,7 +287,7 @@ namespace TomorrowDiesToday.Services.Game
 
         private void SumSelectedSquadStats()
         {
-            SquadStats stats = _gameService.Game.SelectedSquadStats;
+            SquadStats stats = _gameState.Game.SelectedSquadStats;
 
             stats.Combat.SetValue(_selectedSquads.Sum(a => a.Stats.Combat.Value));
             stats.Stealth.SetValue(_selectedSquads.Sum(a => a.Stats.Stealth.Value));
