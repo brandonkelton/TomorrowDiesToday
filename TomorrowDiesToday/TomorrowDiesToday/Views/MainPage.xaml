@@ -116,25 +116,25 @@
                          WidthRequest="50"
                          BackgroundColor="Gray"
                          HorizontalOptions="Center"/>
-                    <StackLayout Orientation="Horizontal">
+                    <StackLayout Orientation="Horizontal" Spacing="1">
                         <Button Text="Squad 1"
                             BackgroundColor="#ffffff"
                             BorderRadius="10"
                             BorderWidth="2"
                             BorderColor="#000000"
-                            HorizontalOptions="StartAndExpand"/>
+                            HorizontalOptions="FillAndExpand"/>
                         <Button Text="Squad 2"
                             BackgroundColor="#ffffff"
                             BorderRadius="10"
                             BorderWidth="2"
                             BorderColor="#000000"
-                            HorizontalOptions="CenterAndExpand"/>
+                            HorizontalOptions="FillAndExpand"/>
                         <Button Text="Squad 3"
                             BackgroundColor="#ffffff"
                             BorderRadius="10"
                             BorderWidth="2"
                             BorderColor="#000000"
-                            HorizontalOptions="EndAndExpand"/>
+                            HorizontalOptions="FillAndExpand"/>
                     </StackLayout>
                 </StackLayout>
             </Frame>
